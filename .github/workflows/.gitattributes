@@ -1,0 +1,7 @@
+*.sh   text eol=lf
+*.ps1  text eol=crlf
+threadpilot/demo/**       text eol=lf
+threadpilot/briefings/**  text eol=lf
+*.png  binary
+*.xlsx binary
+*.pkl  binary
