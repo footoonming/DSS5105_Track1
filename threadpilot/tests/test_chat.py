@@ -289,3 +289,16 @@ def test_drawer_roundtrip(page):
     assert page.locator("#log li").count() >= n0
     page.keyboard.press("Escape")
     assert not page.is_visible("#chatPanel")
+
+
+def test_dates_do_not_depend_on_the_browser(page):
+    """Browsers disagree on punctuation (newer date data drops the comma in 'Fri, 10 Apr'); the page must not."""
+    out = page.evaluate("""() => { go(8); ThreadPilotChat.reset();
+        const orig = Date.prototype.toLocaleDateString;
+        Date.prototype.toLocaleDateString = function (l, o) { const r = orig.call(this, l, o); return /^[A-Za-z]{3},/.test(r) ? r.replace(',', '') : r + '!'; };
+        try { return [fmt('2026-04-10', {weekday: 'short', day: 'numeric', month: 'short'}), fmt('2026-04-09', {weekday: 'long', day: 'numeric', month: 'long'}),
+                      fmt('2026-04-09', {weekday: 'short', day: 'numeric', month: 'short', year: 'numeric'}), fmt('2026-04-09', {day: 'numeric', month: 'short'}),
+                      ThreadPilotChat.respond('Can we take 800 hoodies by Friday?').lines[0]]; }
+        finally { Date.prototype.toLocaleDateString = orig; } }""")
+    assert out[:4] == ["Fri, 10 Apr", "Thursday 9 April", "Thu, 9 Apr 2026", "9 Apr"]
+    assert "by Fri, 10 Apr" in out[4]

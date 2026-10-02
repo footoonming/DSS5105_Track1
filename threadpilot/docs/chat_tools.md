@@ -58,7 +58,7 @@ The estimate was tested against the simulator by injecting a real extra order an
 
 ## Automated checks
 
-`tests/test_chat.py` drives the real page in a headless browser: 40 checks covering retrieval numbers (compared with
+`tests/test_chat.py` drives the real page in a headless browser: 41 checks covering retrieval numbers (compared with
 the briefing JSON), tracing to rows, multi-turn memory, ambiguity ("which TrendCart order?"), refusals (revenue,
 price, profit, workers, demand, cost), no invented causes, feasibility with missing or varied dates, confirmed
 actions and logging, watches that fire from later data, and the drawer itself. They were written by the author of the

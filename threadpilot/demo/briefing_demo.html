@@ -417,7 +417,19 @@ const LABEL = {late:"Late", at_risk:"At risk", on_track:"On track", critical:"Cr
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const cap = s => s.charAt(0) + s.slice(1).toLowerCase();
-const fmt = (s, o) => new Date(s + "T12:00:00Z").toLocaleDateString("en-GB", {timeZone:"UTC", ...o});
+/* Dates are formatted by hand. The browser's toLocaleDateString output depends on its date data and changed between
+   browser versions (newer data drops the comma in "Fri, 10 Apr"), so the page and its tests varied by browser. */
+const WD_S = ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"], WD_L = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const MO_S = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+const MO_L = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const fmt = (s, o) => {
+  const d = new Date(s + "T12:00:00Z");
+  const md = [o.day ? d.getUTCDate() : null, o.month ? (o.month === "long" ? MO_L : MO_S)[d.getUTCMonth()] : null, o.year ? d.getUTCFullYear() : null]
+    .filter(x => x !== null).join(" ");
+  if (!o.weekday) return md;
+  const w = (o.weekday === "long" ? WD_L : WD_S)[d.getUTCDay()];
+  return !md ? w : o.weekday === "long" ? `${w} ${md}` : `${w}, ${md}`;
+};
 const n = v => v == null ? "–" : Number(v).toLocaleString("en-GB");
 const short = t => t.length > 64 ? t.slice(0, 62) + "…" : t;
 
