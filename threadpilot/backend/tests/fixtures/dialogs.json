@@ -1,0 +1,410 @@
+[
+  {
+    "row": 1,
+    "cells": {
+      "A": "Scenario",
+      "B": "Sub-Scenario",
+      "C": "UX focus",
+      "D": "Key",
+      "E": "Recognition and route",
+      "F": "Input",
+      "G": "Output（example, not the truth)"
+    }
+  },
+  {
+    "row": 2,
+    "cells": {
+      "A": "1 Order and customer management",
+      "B": "1.1 Clarify a vague order request",
+      "C": "The manager wants an order-status lookup, but the order has not been uniquely identified.The manager should never need to remember an order ID before asking a quick question. The Co-pilot narrows the request with the smallest possible clarification and never guesses among similar orders.",
+      "D": "User provides an incomplete order description\n → Search for matching orders\n → More than one record is found\n → Do not automatically select the first record\n → Present distinguishing information\n → Ask the user to clarify\n → Identify the selected order\n → Save it as the active order",
+      "E": "Signals: customer name plus the singular phrase “the order”; no order ID or unique attribute. \n Decision: identify a status-lookup request, search candidate orders, then ask for one distinguishing detail.",
+      "F": "Turn 1: Show me the TrendCart order./How is the TrendCart order doing?",
+      "G": "TrendCart has several active orders. Which one do you mean? You can identify it by order number, product, quantity, or due date."
+    }
+  },
+  {
+    "row": 3,
+    "cells": {
+      "E": "Signals: product category supplied, but it may still match multiple rows.\n Decision: filter by customer and product; if multiple candidates remain, ask for the shortest useful discriminator.",
+      "F": "Turn 2: The scarf order.",
+      "G": "I found more than one TrendCart scarf order. Do you mean the [500-piece order due on 20 April] or the [800-piece order due later this month]?"
+    }
+  },
+  {
+    "row": 4,
+    "cells": {
+      "E": "Slots complete: customer, product, quantity, and due date identify one order.\n Decision: resolve the entity, set active_order, and retrieve its latest record before responding.",
+      "F": "Turn 3: The 500-piece order due on 20 April.",
+      "G": "That is [ORD-005]. Fresh record: [500 scarves], current stage [KNITTING], due [20 April 2026], latest recorded activity [24 March 2026]."
+    }
+  },
+  {
+    "row": 5,
+    "cells": {
+      "E": "Signals: contextual pronoun “it” plus a request for a delay judgement.\n  Decision: resolve “it” to active_order; compare due date with current date; keep observed facts separate from a forecast.",
+      "F": "Turn 4: Is it already late?",
+      "G": "No. Its due date has not passed. However, it has had no recorded activity for [eight days], so I would flag it for attention rather than call it confirmed late."
+    }
+  },
+  {
+    "row": 6,
+    "cells": {
+      "B": "1.2 Refresh an active order",
+      "C": "The manager assumes the Co-pilot remembers the order just discussed. The Co-pilot should preserve this context but refresh live fields before answering, so a convenient follow-up never returns stale information.",
+      "D": "A prior order is active\n→ Recognise a contextual follow-up\n→ Keep the active order as the entity\n→ Refresh the requested live field\n→ State the current record and timestamp\n→ Offer the next relevant check",
+      "E": "Signals: pronoun ‘it’ follows an already resolved order; request concerns a live stage.\nDecision: bind the request to active_order and refresh the stage field before responding.",
+      "F": "Turn 1: Has it moved on yet?",
+      "G": "I am checking the latest record for [ORD-005]. Its current recorded stage is [KNITTING], last updated on [24 March 2026]."
+    }
+  },
+  {
+    "row": 7,
+    "cells": {
+      "E": "Signals: manager asks for recency after a live-field answer.\nDecision: retrieve the most recent event rather than infer progress from the stage alone.",
+      "F": "Turn 2: What was the last activity?",
+      "G": "The latest recorded activity is [machine allocation confirmed] on [24 March 2026]. There is no newer recorded production event."
+    }
+  },
+  {
+    "row": 8,
+    "cells": {
+      "E": "Signals: ‘today’ requires a time-bounded verification.\nDecision: search for events dated today; do not transform ‘no update’ into ‘no work happened’.",
+      "F": "Turn 3: Has anyone updated it today?",
+      "G": "I cannot see a recorded update for [ORD-005] today. That means the record is unchanged; it does not prove that no work has happened."
+    }
+  },
+  {
+    "row": 9,
+    "cells": {
+      "E": "Signals: request shifts from fact lookup to a management decision.\nDecision: state the observed condition, label the risk judgement, then offer a safe action.",
+      "F": "Turn 4: Should I chase it?",
+      "G": "I would flag it for follow-up because the record is unchanged and the due date is approaching. I can draft a chase-up message for your review if you want."
+    }
+  },
+  {
+    "row": 10,
+    "cells": {
+      "B": "1.3 Assess order risk and trace it",
+      "C": "A risk label must be explainable and must not be confused with a confirmed failure.",
+      "D": "Refresh order → compare due date and activity → state risk → trace back to source fields.",
+      "E": "‘It’ refers to an active order and asks for a judgement. Refresh before assessing.",
+      "F": "Turn 1: Is it at risk?",
+      "G": "It needs attention because it has no recorded activity for [eight days]. Its due date has not passed, so this is a risk flag, not confirmed lateness."
+    }
+  },
+  {
+    "row": 11,
+    "cells": {
+      "E": "Manager asks why the risk exists. Trace specific fields and dates.",
+      "F": "Turn 2 : Why did you flag it?",
+      "G": "The flag uses [latest activity date], [days since activity], and [due date]."
+    }
+  },
+  {
+    "row": 12,
+    "cells": {
+      "E": "Manager asks whether outcome is certain. Separate observed fact from forecast.",
+      "F": "Turn 3 : So it will be late?",
+      "G": "Not necessarily. The record shows a risk pattern, but it does not establish a confirmed late delivery."
+    }
+  },
+  {
+    "row": 13,
+    "cells": {
+      "E": "Manager requests provenance. Present activity history.",
+      "F": "Turn 4: Show the activity history.",
+      "G": " I will show the timestamped activity history for [ORD-005], with the latest event highlighted."
+    }
+  },
+  {
+    "row": 14,
+    "cells": {
+      "B": "1.4 Compare customer orders",
+      "C": "When two orders compete for attention, the manager needs a transparent comparison rather than an opaque score.",
+      "D": "Load both orders → compare requested fields → resolve ambiguous pronouns → select one for action.",
+      "E": "Two order IDs are supplied. Ask which comparison dimension matters.",
+      "F": "Turn 1 : Compare ORD-005 and ORD-021.",
+      "G": "Which aspect matters most: due date, stage, latest activity, or recorded risk?"
+    }
+  },
+  {
+    "row": 15,
+    "cells": {
+      "E": "Manager specifies fields. Return side-by-side facts with labels.",
+      "F": "Turn 2: Due date and recent updates.",
+      "G": "[ORD-005]: due [date], latest update [date]. [ORD-021]: due [date], latest update [date]."
+    }
+  },
+  {
+    "row": 16,
+    "cells": {
+      "E": "‘It’ is ambiguous after comparison. Ask, do not guess.",
+      "F": "Turn 3 : Which one is more risky?",
+      "G": "I can assess both. Should I prioritise by due-date pressure, recorded blockers, or update recency?"
+    }
+  },
+  {
+    "row": 17,
+    "cells": {
+      "E": "Manager chooses criterion. Apply transparent rule and recommend.",
+      "F": "Turn 4 : Prioritise the nearest deadline.",
+      "G": "On that criterion, [selected order] should be reviewed first because it is due [sooner]."
+    }
+  },
+  {
+    "row": 18,
+    "cells": {
+      "B": "1.5 Assess an urgent new-order commitment",
+      "C": "The manager needs a conditional capacity estimate before promising a customer.",
+      "D": "Clarify delivery requirement → retrieve load and rates → estimate feasibility → state assumptions → test contingency → recommend.",
+      "E": "New-order feasibility request; delivery point is a material missing constraint.",
+      "F": "Turn 1 : Can we take 800 hoodies by the 25th?",
+      "G": "Does ‘by the 25th’ mean ready at our factory or delivered to the customer?"
+    }
+  },
+  {
+    "row": 19,
+    "cells": {
+      "E": "Delivery point clarified. Call capacity and throughput tools; do not calculate in narration.",
+      "F": "Turn 2 : Delivered to the customer.",
+      "G": "Preliminary estimate: [feasible / not feasible / feasible with conditions]. The limiting stage is [stage]."
+    }
+  },
+  {
+    "row": 20,
+    "cells": {
+      "E": "Manager asks for assumptions. Expose data-derived and controllable inputs.",
+      "F": "Turn 3 : What assumptions did you use?",
+      "G": "I used [working days], comparable recent stage rates, current load, and [delivery buffer]."
+    }
+  },
+  {
+    "row": 21,
+    "cells": {
+      "E": "Manager tests a disruption. Rerun under named scenario.",
+      "F": "Turn 4: What if packing loses one day?",
+      "G": " Under that scenario, the result becomes [result]; the main effect is [delay / reduced buffer]."
+    }
+  },
+  {
+    "row": 22,
+    "cells": {
+      "E": "Manager seeks customer-facing decision. Give bounded recommendation.",
+      "F": "Turn 5 : What should I tell the customer?",
+      "G": "Recommend [accept only if condition X / offer later date / decline]. I can draft the response with the condition stated clearly."
+    }
+  },
+  {
+    "row": 23,
+    "cells": {
+      "B": "1.6 Prioritise a daily exception list（感觉和晨报的功能有重合？）",
+      "C": "The manager wants a fast start-of-day view, not a raw dump of every order. The Co-pilot should clarify the operating window, apply a transparent priority rule, and surface why each item needs attention.",
+      "D": "Manager asks what needs attention\n→ Recognise a prioritisation intent\n→ Clarify time window and scope if absent\n→ Retrieve candidate exceptions\n→ Rank by an explainable rule\n→ Show evidence for each priority\n→ Let the manager drill into one order",
+      "E": "Signals: broad phrase ‘needs attention’ with no time boundary.\nDecision: classify as prioritisation, ask for a concise time window, and avoid choosing an arbitrary list.",
+      "F": "Turn 1: What needs attention today?",
+      "G": "Do you want items due today only, or the next [seven days] as well? I can prioritise by due-date pressure, missing updates, and recorded blockers."
+    }
+  },
+  {
+    "row": 24,
+    "cells": {
+      "E": "Signals: a time window is supplied.\nDecision: retrieve orders in scope and compute an explainable priority ordering from recorded facts.",
+      "F": "Turn 2: Include the next seven days.",
+      "G": "I found [three] orders to review first: [ORD-014] due tomorrow with no update for [six days]; [ORD-005] due in [ten days] with no update for [eight days]; and [ORD-021] with a recorded material blocker."
+    }
+  },
+  {
+    "row": 25,
+    "cells": {
+      "E": "Signals: the manager challenges the rank of one item.\nDecision: reveal the evidence used in the ordering; do not hide the rule behind an opaque score.",
+      "F": "Turn 3: Why is ORD-014 first?",
+      "G": "[ORD-014] is first because its due date is closest and its latest recorded activity is older than the review threshold. The ranking reflects urgency, not a prediction that it will fail."
+    }
+  },
+  {
+    "row": 26,
+    "cells": {
+      "E": "Signals: the manager selects an item from the list.\nDecision: set the selected item as active_order and move into the requested detail view.",
+      "F": "Turn 4: Open ORD-014.",
+      "G": "[ORD-014] is now the active order. Its latest record shows [current stage], [due date], and [last recorded activity]. What would you like to check next?"
+    }
+  },
+  {
+    "row": 27,
+    "cells": {
+      "A": "2 Factory operations and daily decisions",
+      "B": "2.1 Check whether a stage output is normal",
+      "C": "A production number is useful only when compared against a valid baseline.",
+      "D": "Identify stage and date → define a fair comparison → run normality tool → state result and limits.",
+      "E": "Normal’ is a judgement request, but the comparison baseline is missing.",
+      "F": "Turn 1 : Is packing output of 800 pieces normal?",
+      "G": "Do you mean today’s output? I can compare it with the same weekday in recent working weeks."
+    }
+  },
+  {
+    "row": 28,
+    "cells": {
+      "E": "Manager accepts the comparison. Use the judgement tool, not a simple average across non-working days.",
+      "F": "Turn 2: Yes, use the same weekday.",
+      "G": " [800 pieces] is [within / below / above] the comparison range for the selected same-weekday records."
+    }
+  },
+  {
+    "row": 29,
+    "cells": {
+      "E": "Manager asks for meaning. Translate the result into a proportionate management check.",
+      "F": "Turn 3: Should I worry about it?",
+      "G": "Review it today if the lower output repeats or threatens near-due orders. One low observation alone is a signal to check, not proof of a sustained problem."
+    }
+  },
+  {
+    "row": 30,
+    "cells": {
+      "E": "Manager asks for evidence. Surface the rows behind the comparison.",
+      "F": "Turn 4: Show me the records behind it.",
+      "G": "I will show the selected production-log rows with [date], [stage], and [output]."
+    }
+  },
+  {
+    "row": 31,
+    "cells": {
+      "B": "2.2 Explain a production deviation",
+      "C": "The manager needs an evidence-led explanation, not an invented cause.",
+      "D": "Retrieve related records → show co-occurring facts → distinguish pattern from cause → propose a check.\n",
+      "E": "‘Why’ may request causality. Retrieve related facts before explaining.",
+      "F": "Turn 1: Why was packing output lower yesterday?",
+      "G": " I will check the packing log and related upstream records for that day."
+    }
+  },
+  {
+    "row": 32,
+    "cells": {
+      "E": "Records are available. Present observed co-occurrences, not a causal claim.",
+      "F": "Turn 2: What did you find?",
+      "G": "The records show [lower upstream output] and [a recorded blocker] on the same day. These may help explain the pattern, but the log does not prove a single cause."
+    }
+  },
+  {
+    "row": 33,
+    "cells": {
+      "E": " Manager requests raw evidence. Show source rows distinctly from interpretation.",
+      "F": "Turn 3 : Show the raw records.",
+      "G": "Here are the relevant rows: [date / stage / output / recorded event]."
+    }
+  },
+  {
+    "row": 34,
+    "cells": {
+      "E": "Manager needs a next step. Recommend an evidence-proportionate operational check.",
+      "F": "Turn 4 : What should we check next?",
+      "G": " First verify whether the [blocker] is still active and whether upstream output has recovered today."
+    }
+  },
+  {
+    "row": 35,
+    "cells": {
+      "A": "3 Execution and ongoing monitoring",
+      "B": "3.1 Draft, revise, and send a chase-up",
+      "C": "Drafting should be easy; sending must be explicitly confirmed and logged.",
+      "D": "Verify order → draft only → revise → preview recipient and final text → confirm → send and log.",
+      "E": "Manager asks to chase. Verify factual trigger before drafting.",
+      "F": "Turn 1: ORD-005 has not moved for a week. What should we do?",
+      "G": "The record shows no activity for [one week]. I recommend requesting a status and recovery plan; I can draft it."
+    }
+  },
+  {
+    "row": 36,
+    "cells": {
+      "E": "]Drafting authorised, not sending. Capture recipient and tone.",
+      "F": "Turn 2: Draft it to Maya, firm but polite.",
+      "G": "Draft to Maya: ‘Please provide an updated status, recovery plan, and expected completion date for [ORD-005].’"
+    }
+  },
+  {
+    "row": 37,
+    "cells": {
+      "E": "Targeted revision requested. Update unsent draft.",
+      "F": "Turn 3: Ask for an answer by tomorrow noon.",
+      "G": "Revised draft includes: ‘Please respond by [tomorrow, 12:00 p.m.].’ It remains unsent."
+    }
+  },
+  {
+    "row": 38,
+    "cells": {
+      "E": "External send requested. Require explicit confirmation.",
+      "F": "Turn 4 : Send it.",
+      "G": " Ready to send the revised message to [Maya] about [ORD-005]. Please confirm ‘send now’."
+    }
+  },
+  {
+    "row": 39,
+    "cells": {
+      "E": "Explicit confirmation. Send, then record actual result.",
+      "F": "Turn 5 : Send now.",
+      "G": "Message sent. Recipient, final text, and send time were recorded in the order history."
+    }
+  },
+  {
+    "row": 40,
+    "cells": {
+      "B": "3.2 Record an internal decision",
+      "C": " Internal notes must be attached to the right order and never confused with an external message.",
+      "D": " Identify target order → capture note → classify as internal → preview → confirm → save with timestamp.",
+      "E": "Manager requests a note but target needs confirmation.",
+      "F": "Turn 1: Add a note that we escalated this today.",
+      "G": "I can add an internal note to [active order: ORD-005]. Is that the correct order?"
+    }
+  },
+  {
+    "row": 41,
+    "cells": {
+      "E": " Target confirmed. Present exact internal note before saving.",
+      "F": "Turn 2: Yes, ORD-005.",
+      "G": "Proposed internal note: ‘Escalated with supplier on [date]; awaiting status and recovery plan.’ Please confirm to save."
+    }
+  },
+  {
+    "row": 42,
+    "cells": {
+      "E": "Explicit confirmation. Save as internal only and log timestamp.",
+      "F": "Turn 3: Save it.",
+      "G": "Internal note saved to [ORD-005] with today’s timestamp. It was not sent externally."
+    }
+  },
+  {
+    "row": 43,
+    "cells": {
+      "B": "3.3 Create a conditional reminder",
+      "C": "The manager should not need to remember to re-check a risk. A reminder should monitor a defined condition and alert only when needed.",
+      "D": "Capture order and condition → resolve relative date → preview trigger → confirm → create and log reminder.",
+      "E": "Conditional monitoring request with relative deadline. Resolve date and ask for missing time if needed.",
+      "F": "Turn 1 : If there is no reply by tomorrow noon, remind me.",
+      "G": "I will check whether [ORD-005] has a recorded reply by [tomorrow, 12:00 p.m., explicit date]. Please confirm to create this reminder."
+    }
+  },
+  {
+    "row": 44,
+    "cells": {
+      "E": "Manager changes scheduling detail. Update the proposed reminder; do not create one yet.",
+      "F": "Turn 2: Make it 2 p.m. instead.",
+      "G": "Updated reminder: check [ORD-005] at [2:00 p.m. on explicit date] and notify you only if no reply is recorded."
+    }
+  },
+  {
+    "row": 45,
+    "cells": {
+      "E": " Explicit confirmation. Create condition, schedule, and order link.",
+      "F": "Turn 3 : Confirm.",
+      "G": "Reminder created for [ORD-005]. It will notify you only if the reply condition remains unmet."
+    }
+  },
+  {
+    "row": 46,
+    "cells": {
+      "E": "Manager requests later change. Locate existing reminder and update it rather than duplicating it.",
+      "F": "Turn 4 : Move it to Friday morning.",
+      "G": " I found the existing reminder for [ORD-005]. What time on Friday morning would you prefer?"
+    }
+  }
+]

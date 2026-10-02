@@ -1,0 +1,30 @@
+# Local configuration and credentials
+.env
+.env.*
+!.env.example
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+node_modules/
+test-results/
+playwright-report/
+*.log
+.DS_Store
+Thumbs.db
+
+data/raw/*
+!data/raw/.gitkeep
+data/staging/*
+!data/staging/.gitkeep
+data/snapshots/*
+!data/snapshots/.gitkeep
+backend/runtime/*
+!backend/runtime/.gitkeep
+
+# Simulator output, local databases and keys, notebook checkpoints
+data/live/
+*.sqlite3
+*.pem
+.ipynb_checkpoints/

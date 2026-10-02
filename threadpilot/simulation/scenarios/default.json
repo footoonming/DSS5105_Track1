@@ -1,0 +1,51 @@
+{
+  "description": "Default demo scenario. Events are injected into the simulated factory so the briefing has something real to discover. The briefing code never reads this file; it has to find these events from the data alone, which also makes this file the ground truth for measuring discovery recall.",
+  "seed": 5105,
+  "events": [
+    {
+      "id": "EV-1",
+      "type": "stage_slowdown",
+      "stage": "ASSEMBLY",
+      "start": "2026-04-01",
+      "end": "2026-04-03",
+      "factor": 0.6,
+      "note": "Continuation of the late-March assembly dip already visible in the original data"
+    },
+    {
+      "id": "EV-2",
+      "type": "stage_slowdown",
+      "stage": "WASHING",
+      "start": "2026-04-07",
+      "end": "2026-04-08",
+      "factor": 0.4,
+      "note": "Dryer breakdown in the washing room"
+    },
+    {
+      "id": "EV-3",
+      "type": "customer_hold",
+      "customer": "TrendCart",
+      "start": "2026-04-04",
+      "end": "2026-04-11",
+      "note": "All TrendCart orders stop moving (trim supplier delay)"
+    },
+    {
+      "id": "EV-4",
+      "type": "order_hold",
+      "order_id": "ORD-036",
+      "start": "2026-04-02",
+      "end": "2026-04-14",
+      "note": "Order goes quiet while waiting for a yarn colour approval"
+    },
+    {
+      "id": "EV-5",
+      "type": "rush_order",
+      "date": "2026-04-09",
+      "customer": "Maple & Co",
+      "product": "Hoodie",
+      "category": "TOPS",
+      "pieces": 1500,
+      "lead_days": 12,
+      "note": "Large rush order lands with a short lead time"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+# 列名相同时自动映射。这里只声明别名；未知列拒绝导入，避免静默丢失。
+orders:
+  Order ID: order_id
+  Customer: customer
+  Due Date: due_date
+production_log:
+  Date: date
+  Stage: stage
+  Pieces Completed: pieces_completed
+workshops:
+  Workshop ID: workshop_id
+  Name: name

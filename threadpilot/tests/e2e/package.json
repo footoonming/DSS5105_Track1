@@ -1,0 +1,10 @@
+{
+  "name": "threadpilot-e2e",
+  "private": true,
+  "scripts": {
+    "test": "node verify_stream_ui.cjs"
+  },
+  "devDependencies": {
+    "playwright": "1.62.1"
+  }
+}

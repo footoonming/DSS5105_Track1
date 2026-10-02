@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SweaterCo Co-Pilot</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#1E2229; --paper:#EFF1EC; --panel:#FFFFFF; --line:#DBD9D1;
+  --amber:#D68A2D; --amber-soft:#F7E7D0; --good:#3F7658; --good-soft:#E3EDE6;
+  --risk:#B4472F; --risk-soft:#F5E1DC; --muted:#6B7280; --r:10px;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:'IBM Plex Sans',sans-serif;background:var(--paper);color:var(--ink);font-size:14px;line-height:1.5}
+button{font-family:inherit;cursor:pointer}
+.mono{font-family:'IBM Plex Mono',monospace;font-weight:600}
+.num{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:.94em;background:var(--paper);padding:1px 5px;border-radius:4px}
+.num.unverified{background:var(--risk-soft);color:var(--risk);text-decoration:underline dotted}
+
+/* Shell */
+.shell{display:grid;grid-template-rows:auto 1fr auto;height:100vh;height:100dvh}
+.topbar{background:var(--ink);color:#fff;padding:12px 18px;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.topbar h1{font-size:15px;font-weight:600;margin:0}
+.topbar .date{font-size:12px;color:#B7BCC4}
+.status-pill{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--amber)}
+.status-pill .dot{width:7px;height:7px;border-radius:50%;background:var(--amber)}
+.dial{display:flex;align-items:center;gap:6px;font-size:11.5px;color:#B7BCC4}
+.dial select{background:#2B303A;color:#fff;border:1px solid #454B55;border-radius:6px;padding:3px 6px;font-size:11.5px}
+
+.main{display:grid;grid-template-columns:300px 1fr 300px;min-height:0}
+.col{min-height:0;overflow-y:auto;padding:14px}
+.col.side{background:#E7E9E3;border-right:1px solid var(--line)}
+.col.right{background:#E7E9E3;border-left:1px solid var(--line)}
+.col.chat{display:flex;flex-direction:column;padding:0}
+
+/* Panels */
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.panel-h{padding:10px 13px;font-size:13px;font-weight:600;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--line)}
+.panel-h .sub{font-weight:400;font-size:11.5px;color:var(--muted)}
+.panel-b{padding:8px 13px 12px;font-size:12.5px}
+.line{display:flex;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.line:first-child{border-top:none}
+.tag{flex-shrink:0;width:8px;height:8px;border-radius:50%;margin-top:6px}
+.tag.risk{background:var(--risk)} .tag.good{background:var(--good)} .tag.amber{background:var(--amber)}
+.line .why{margin-left:auto;background:none;border:none;color:var(--muted);font-size:11px;font-weight:600;padding:0 0 0 6px;white-space:nowrap}
+.empty{color:var(--muted);font-size:12px;padding:6px 0}
+.small-btn{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:11.5px;font-weight:600}
+.small-btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+
+/* Chat */
+.thread{flex:1;overflow-y:auto;padding:14px 16px 8px;display:flex;flex-direction:column;gap:12px}
+.msg{max-width:720px;animation:rise .2s ease}
+@keyframes rise{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.msg.user{align-self:flex-end;background:var(--ink);color:#fff;padding:9px 13px;border-radius:14px 14px 3px 14px;max-width:80%}
+.msg.agent{align-self:flex-start;width:100%}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:3px 14px 14px 14px;overflow:hidden;border-left:3px solid #B9B7AD}
+.card.good{border-left-color:var(--good)} .card.risk{border-left-color:var(--risk)} .card.amber{border-left-color:var(--amber)}
+.headline{padding:11px 13px 9px;font-size:14px;line-height:1.55}
+.headline b{font-weight:600}
+.toggle{width:100%;text-align:left;background:#FAFAF8;border:none;border-top:1px solid var(--line);padding:8px 13px;font-size:11.5px;font-weight:600;color:var(--muted);display:flex;justify-content:space-between}
+.detail{display:none;padding:10px 13px 12px;background:#FAFAF8;border-top:1px solid var(--line);font-size:12px}
+.detail.open{display:block}
+.detail h4{margin:8px 0 4px;font-size:11px;color:var(--muted);font-weight:600}
+.row{display:flex;justify-content:space-between;gap:10px;padding:4px 0;border-bottom:1px dashed #E2E0D7;font-family:'IBM Plex Mono',monospace;font-size:11.5px}
+.row:last-child{border-bottom:none}
+.row span:first-child{color:#454B55}
+.tools{margin-top:8px;display:flex;flex-wrap:wrap;gap:4px}
+.tool{font-size:10.5px;font-weight:600;color:#fff;background:#454B55;padding:2px 8px;border-radius:999px}
+.def{margin-top:6px;font-size:11.5px;color:#454B55;background:var(--paper);padding:7px 9px;border-radius:6px;border-left:2px solid var(--amber)}
+.chips{display:flex;flex-wrap:wrap;gap:6px;padding:0 13px 12px}
+.chip{background:var(--paper);border:1px solid var(--line);padding:6px 11px;border-radius:999px;font-size:12px;font-weight:500}
+.chip:hover{border-color:var(--ink)}
+.chip.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.watch-card{align-self:center;width:92%;max-width:680px;background:var(--amber-soft);border:1px solid #E7C68C;border-radius:10px;padding:9px 12px;font-size:12.5px;color:#7A5316;display:flex;gap:8px}
+.watch-card b{display:block}
+.sys{align-self:center;font-size:11.5px;color:var(--muted)}
+
+.inputbar{background:var(--panel);border-top:1px solid var(--line);padding:10px 12px;display:flex;gap:8px;align-items:center}
+.inputbar input{flex:1;border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:10px 14px;font-size:13.5px;font-family:inherit;outline:none;min-width:0}
+.inputbar input:focus{border-color:var(--ink)}
+.ib{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:var(--paper);display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
+.ib.send{background:var(--ink);color:#fff;border-color:var(--ink)}
+.ib.listening{background:var(--risk);color:#fff;border-color:var(--risk)}
+.suggest{display:flex;gap:6px;overflow-x:auto;padding:8px 12px 0;background:var(--panel);border-top:1px solid var(--line)}
+.suggest .chip{white-space:nowrap;flex-shrink:0}
+
+/* Confirm sheet */
+.overlay{position:fixed;inset:0;background:rgba(30,34,41,.45);display:none;align-items:flex-end;justify-content:center;z-index:50}
+.overlay.open{display:flex}
+.sheet{background:var(--panel);width:100%;max-width:560px;border-radius:16px 16px 0 0;padding:18px;animation:rise .2s ease}
+.sheet h3{margin:0 0 6px;font-size:15px}
+.sheet .blast{background:var(--risk-soft);border-left:3px solid var(--risk);padding:8px 10px;font-size:12px;border-radius:6px;margin:10px 0}
+.sheet textarea{width:100%;min-height:110px;border:1px solid var(--line);border-radius:8px;padding:10px;font-family:inherit;font-size:13px;resize:vertical}
+.sheet .acts{display:flex;gap:8px;justify-content:flex-end;margin-top:12px}
+.btn{padding:9px 16px;border-radius:999px;border:1px solid var(--line);background:var(--paper);font-weight:600;font-size:13px}
+.btn.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+.audit{font-size:11.5px}
+.audit .line{flex-direction:column;gap:2px}
+.audit .t{color:var(--muted);font-family:'IBM Plex Mono',monospace;font-size:10.5px}
+
+/* Mobile tabs */
+.tabs{display:none;background:var(--ink);border-top:1px solid #2B303A}
+.tabs button{flex:1;background:none;border:none;color:#B7BCC4;padding:10px 4px;font-size:11.5px;font-weight:600}
+.tabs button.active{color:#fff;border-top:2px solid var(--amber)}
+@media (max-width:900px){
+  .main{grid-template-columns:1fr}
+  .col.side,.col.right{display:none;border:none}
+  .main.show-side .col.side{display:block} .main.show-side .col.chat,.main.show-right .col.chat{display:none}
+  .main.show-right .col.right{display:block}
+  .tabs{display:flex}
+  .dial{display:none}
+}
+@media (prefers-reduced-motion:reduce){.msg,.sheet{animation:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+  <div class="topbar">
+    <div>
+      <h1>SweaterCo Co-Pilot</h1>
+      <div class="date" id="today-label"></div>
+    </div>
+    <div class="status-pill" id="status-pill"><span class="dot"></span><span>Loading</span></div>
+    <div class="dial">Proactive dial
+      <select id="dial" onchange="renderSide()">
+        <option value="quiet">Quiet (top 2)</option>
+        <option value="normal" selected>Normal (top 5)</option>
+        <option value="chatty">Chatty (all)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="main" id="main">
+    <div class="col side">
+      <div class="panel">
+        <div class="panel-h"><span>Morning briefing <span class="sub" id="brief-time"></span></span><button class="small-btn" onclick="regenBriefing()">Refresh</button></div>
+        <div class="panel-b" id="briefing"></div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><span>Standing watches</span><span class="sub" id="watch-count"></span></div>
+        <div class="panel-b" id="watches"><div class="empty">None yet. Try: "tell me if ORD-002 hasn't moved by Thursday".</div></div>
+      </div>
+    </div>
+
+    <div class="col chat">
+      <div class="thread" id="thread"></div>
+      <div class="suggest" id="suggest"></div>
+      <div class="inputbar">
+        <button class="ib" id="mic" onclick="toggleVoice()" title="Voice input">🎤</button>
+        <input id="q" type="text" placeholder="Ask about any order, stage, or workshop" onkeydown="if(event.key==='Enter')send()">
+        <button class="ib send" onclick="send()">↑</button>
+      </div>
+    </div>
+
+    <div class="col right">
+      <div class="panel">
+        <div class="panel-h"><span>Action log</span><span class="sub">confirmed and logged</span></div>
+        <div class="panel-b audit" id="audit"><div class="empty">No actions yet.</div></div>
+      </div>
+      <div class="panel">
+        <div class="panel-h"><span>Backend</span></div>
+        <div class="panel-b">
+          <div style="font-size:12px;margin-bottom:6px">Mode: <b id="mode-label">mock (browser tools, rule router)</b></div>
+          <div style="font-size:11.5px;color:var(--muted)">Set <span class="mono">API_MODE='live'</span> and <span class="mono">LIVE_ENDPOINT</span> in the script to route through the LangGraph agent. Tool contracts are identical.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs">
+    <button onclick="tab('side')">Briefing</button>
+    <button class="active" onclick="tab('chat')">Chat</button>
+    <button onclick="tab('right')">Log</button>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="sheet" id="sheet"></div>
+</div>
+
+<script>
+/* =========================================================
+   DATA (injected from the real CSVs by build.py)
+   ========================================================= */
+const DATA = {"orders": [{"order_id": "ORD-057", "customer": "UrbanThread", "product": "Cardigan", "category": "TOPS", "pieces": "600", "order_date": "2026-01-01", "due_date": "2026-02-02", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-25", "completed_date": "2026-01-25", "days_late": "-8"}, {"order_id": "ORD-076", "customer": "TrendCart", "product": "Crewneck sweater", "category": "TOPS", "pieces": "1200", "order_date": "2026-01-02", "due_date": "2026-01-27", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-08", "completed_date": "2026-02-08", "days_late": "12"}, {"order_id": "ORD-110", "customer": "Cotton Club", "product": "Scarf", "category": "ACCESSORIES", "pieces": "600", "order_date": "2026-01-02", "due_date": "2026-01-24", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-27", "completed_date": "2026-01-27", "days_late": "3"}, {"order_id": "ORD-025", "customer": "Cotton Club", "product": "Scarf", "category": "ACCESSORIES", "pieces": "400", "order_date": "2026-01-03", "due_date": "2026-01-26", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-23", "completed_date": "2026-01-23", "days_late": "-3"}, {"order_id": "ORD-077", "customer": "UrbanThread", "product": "Hoodie", "category": "TOPS", "pieces": "1000", "order_date": "2026-01-03", "due_date": "2026-02-07", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-29", "completed_date": "2026-01-29", "days_late": "-9"}, {"order_id": "ORD-087", "customer": "TrendCart", "product": "Hoodie", "category": "TOPS", "pieces": "1000", "order_date": "2026-01-03", "due_date": "2026-01-19", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-18", "completed_date": "2026-02-18", "days_late": "30"}, {"order_id": "ORD-091", "customer": "TrendCart", "product": "Polo shirt", "category": "TOPS", "pieces": "600", "order_date": "2026-01-03", "due_date": "2026-02-02", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-27", "completed_date": "2026-01-27", "days_late": "-6"}, {"order_id": "ORD-117", "customer": "Cotton Club", "product": "Scarf", "category": "ACCESSORIES", "pieces": "1000", "order_date": "2026-01-04", "due_date": "2026-01-18", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-02", "completed_date": "2026-02-02", "days_late": "15"}, {"order_id": "ORD-007", "customer": "Harbor Knits", "product": "Cardigan", "category": "TOPS", "pieces": "2000", "order_date": "2026-01-06", "due_date": "2026-01-30", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-13", "completed_date": "2026-02-13", "days_late": "14"}, {"order_id": "ORD-080", "customer": "Bright Basics", "product": "Hoodie", "category": "TOPS", "pieces": "2000", "order_date": "2026-01-07", "due_date": "2026-01-30", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-18", "completed_date": "2026-02-18", "days_late": "19"}, {"order_id": "ORD-038", "customer": "Loom & Leaf", "product": "Hoodie", "category": "TOPS", "pieces": "2000", "order_date": "2026-01-08", "due_date": "2026-02-08", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-09", "completed_date": "2026-02-09", "days_late": "1"}, {"order_id": "ORD-049", "customer": "Harbor Knits", "product": "Scarf", "category": "ACCESSORIES", "pieces": "300", "order_date": "2026-01-08", "due_date": "2026-01-22", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-30", "completed_date": "2026-01-30", "days_late": "8"}, {"order_id": "ORD-105", "customer": "Cotton Club", "product": "Hoodie", "category": "TOPS", "pieces": "200", "order_date": "2026-01-08", "due_date": "2026-02-10", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-27", "completed_date": "2026-01-27", "days_late": "-14"}, {"order_id": "ORD-094", "customer": "Maple & Co", "product": "Vest", "category": "TOPS", "pieces": "800", "order_date": "2026-01-09", "due_date": "2026-02-03", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-31", "completed_date": "2026-01-31", "days_late": "-3"}, {"order_id": "ORD-028", "customer": "TrendCart", "product": "Beanie", "category": "ACCESSORIES", "pieces": "150", "order_date": "2026-01-10", "due_date": "2026-01-26", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-04", "completed_date": "2026-02-04", "days_late": "9"}, {"order_id": "ORD-100", "customer": "Northwind Apparel", "product": "Crewneck sweater", "category": "TOPS", "pieces": "200", "order_date": "2026-01-10", "due_date": "2026-01-31", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-04", "completed_date": "2026-02-04", "days_late": "4"}, {"order_id": "ORD-115", "customer": "TrendCart", "product": "Cardigan", "category": "TOPS", "pieces": "2000", "order_date": "2026-01-10", "due_date": "2026-01-28", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-28", "completed_date": "2026-02-28", "days_late": "31"}, {"order_id": "ORD-039", "customer": "UrbanThread", "product": "Cardigan", "category": "TOPS", "pieces": "600", "order_date": "2026-01-11", "due_date": "2026-02-10", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-10", "completed_date": "2026-02-10", "days_late": "0"}, {"order_id": "ORD-001", "customer": "Cotton Club", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1000", "order_date": "2026-01-12", "due_date": "2026-02-08", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-10", "completed_date": "2026-02-10", "days_late": "2"}, {"order_id": "ORD-106", "customer": "UrbanThread", "product": "Crewneck sweater", "category": "TOPS", "pieces": "100", "order_date": "2026-01-12", "due_date": "2026-02-11", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-01", "completed_date": "2026-02-01", "days_late": "-10"}, {"order_id": "ORD-089", "customer": "Maple & Co", "product": "Cardigan", "category": "TOPS", "pieces": "1000", "order_date": "2026-01-13", "due_date": "2026-02-07", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-15", "completed_date": "2026-02-15", "days_late": "8"}, {"order_id": "ORD-101", "customer": "Harbor Knits", "product": "Scarf", "category": "ACCESSORIES", "pieces": "1200", "order_date": "2026-01-13", "due_date": "2026-01-27", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-07", "completed_date": "2026-02-07", "days_late": "11"}, {"order_id": "ORD-052", "customer": "Harbor Knits", "product": "Hoodie", "category": "TOPS", "pieces": "1200", "order_date": "2026-01-14", "due_date": "2026-02-13", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-12", "completed_date": "2026-02-12", "days_late": "-1"}, {"order_id": "ORD-009", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "500", "order_date": "2026-01-16", "due_date": "2026-02-12", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-01-31", "completed_date": "2026-01-31", "days_late": "-12"}, {"order_id": "ORD-026", "customer": "Cotton Club", "product": "Hoodie", "category": "TOPS", "pieces": "800", "order_date": "2026-01-16", "due_date": "2026-01-31", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-05", "completed_date": "2026-02-05", "days_late": "5"}, {"order_id": "ORD-065", "customer": "Loom & Leaf", "product": "Crewneck sweater", "category": "TOPS", "pieces": "100", "order_date": "2026-01-16", "due_date": "2026-02-12", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-01", "completed_date": "2026-02-01", "days_late": "-11"}, {"order_id": "ORD-070", "customer": "Northwind Apparel", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1200", "order_date": "2026-01-16", "due_date": "2026-02-09", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-09", "completed_date": "2026-02-09", "days_late": "0"}, {"order_id": "ORD-098", "customer": "Cotton Club", "product": "Hoodie", "category": "TOPS", "pieces": "400", "order_date": "2026-01-16", "due_date": "2026-02-15", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-06", "completed_date": "2026-02-06", "days_late": "-9"}, {"order_id": "ORD-021", "customer": "TrendCart", "product": "Vest", "category": "TOPS", "pieces": "800", "order_date": "2026-01-17", "due_date": "2026-02-18", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-13", "completed_date": "2026-02-13", "days_late": "-5"}, {"order_id": "ORD-056", "customer": "UrbanThread", "product": "Scarf", "category": "ACCESSORIES", "pieces": "500", "order_date": "2026-01-17", "due_date": "2026-02-16", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-03", "completed_date": "2026-02-03", "days_late": "-13"}, {"order_id": "ORD-102", "customer": "Loom & Leaf", "product": "Beanie", "category": "ACCESSORIES", "pieces": "600", "order_date": "2026-01-19", "due_date": "2026-02-12", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-12", "completed_date": "2026-02-12", "days_late": "0"}, {"order_id": "ORD-006", "customer": "Northwind Apparel", "product": "Vest", "category": "TOPS", "pieces": "150", "order_date": "2026-01-20", "due_date": "2026-02-20", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-04", "completed_date": "2026-02-04", "days_late": "-16"}, {"order_id": "ORD-064", "customer": "Loom & Leaf", "product": "Beanie", "category": "ACCESSORIES", "pieces": "400", "order_date": "2026-01-20", "due_date": "2026-02-21", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-09", "completed_date": "2026-02-09", "days_late": "-12"}, {"order_id": "ORD-116", "customer": "Cotton Club", "product": "Cardigan", "category": "TOPS", "pieces": "600", "order_date": "2026-01-21", "due_date": "2026-02-20", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-11", "completed_date": "2026-02-11", "days_late": "-9"}, {"order_id": "ORD-059", "customer": "TrendCart", "product": "Scarf", "category": "ACCESSORIES", "pieces": "100", "order_date": "2026-01-22", "due_date": "2026-02-24", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-15", "completed_date": "2026-02-15", "days_late": "-9"}, {"order_id": "ORD-090", "customer": "TrendCart", "product": "Polo shirt", "category": "TOPS", "pieces": "600", "order_date": "2026-01-22", "due_date": "2026-02-23", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-06", "completed_date": "2026-03-06", "days_late": "11"}, {"order_id": "ORD-018", "customer": "Maple & Co", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1200", "order_date": "2026-01-23", "due_date": "2026-02-18", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-27", "completed_date": "2026-02-27", "days_late": "9"}, {"order_id": "ORD-078", "customer": "Bright Basics", "product": "Beanie", "category": "ACCESSORIES", "pieces": "300", "order_date": "2026-01-23", "due_date": "2026-02-14", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-11", "completed_date": "2026-02-11", "days_late": "-3"}, {"order_id": "ORD-086", "customer": "Bright Basics", "product": "Hoodie", "category": "TOPS", "pieces": "300", "order_date": "2026-01-23", "due_date": "2026-02-11", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-09", "completed_date": "2026-02-09", "days_late": "-2"}, {"order_id": "ORD-022", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "800", "order_date": "2026-01-25", "due_date": "2026-02-21", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-24", "completed_date": "2026-02-24", "days_late": "3"}, {"order_id": "ORD-051", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "200", "order_date": "2026-01-25", "due_date": "2026-02-19", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-09", "completed_date": "2026-02-09", "days_late": "-10"}, {"order_id": "ORD-003", "customer": "Maple & Co", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1200", "order_date": "2026-01-27", "due_date": "2026-02-17", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-27", "completed_date": "2026-02-27", "days_late": "10"}, {"order_id": "ORD-014", "customer": "TrendCart", "product": "Vest", "category": "TOPS", "pieces": "2000", "order_date": "2026-01-27", "due_date": "2026-02-28", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-23", "completed_date": "2026-03-23", "days_late": "23"}, {"order_id": "ORD-118", "customer": "UrbanThread", "product": "Cardigan", "category": "TOPS", "pieces": "100", "order_date": "2026-01-29", "due_date": "2026-03-02", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-10", "completed_date": "2026-02-10", "days_late": "-20"}, {"order_id": "ORD-067", "customer": "Harbor Knits", "product": "Hoodie", "category": "TOPS", "pieces": "400", "order_date": "2026-01-30", "due_date": "2026-03-04", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-15", "completed_date": "2026-02-15", "days_late": "-17"}, {"order_id": "ORD-071", "customer": "Loom & Leaf", "product": "Scarf", "category": "ACCESSORIES", "pieces": "1200", "order_date": "2026-01-30", "due_date": "2026-03-04", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-25", "completed_date": "2026-02-25", "days_late": "-7"}, {"order_id": "ORD-004", "customer": "Bright Basics", "product": "Cardigan", "category": "TOPS", "pieces": "500", "order_date": "2026-01-31", "due_date": "2026-03-07", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-27", "completed_date": "2026-02-27", "days_late": "-8"}, {"order_id": "ORD-058", "customer": "Maple & Co", "product": "Crewneck sweater", "category": "TOPS", "pieces": "2000", "order_date": "2026-02-02", "due_date": "2026-02-20", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-12", "completed_date": "2026-03-12", "days_late": "20"}, {"order_id": "ORD-072", "customer": "Maple & Co", "product": "Cardigan", "category": "TOPS", "pieces": "600", "order_date": "2026-02-02", "due_date": "2026-02-27", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-18", "completed_date": "2026-02-18", "days_late": "-9"}, {"order_id": "ORD-043", "customer": "UrbanThread", "product": "Scarf", "category": "ACCESSORIES", "pieces": "500", "order_date": "2026-02-03", "due_date": "2026-02-23", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-21", "completed_date": "2026-02-21", "days_late": "-2"}, {"order_id": "ORD-047", "customer": "Cotton Club", "product": "Vest", "category": "TOPS", "pieces": "150", "order_date": "2026-02-03", "due_date": "2026-02-23", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-22", "completed_date": "2026-02-22", "days_late": "-1"}, {"order_id": "ORD-042", "customer": "Maple & Co", "product": "Scarf", "category": "ACCESSORIES", "pieces": "400", "order_date": "2026-02-04", "due_date": "2026-03-05", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-25", "completed_date": "2026-02-25", "days_late": "-8"}, {"order_id": "ORD-085", "customer": "Harbor Knits", "product": "Vest", "category": "TOPS", "pieces": "1500", "order_date": "2026-02-07", "due_date": "2026-03-01", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-05", "completed_date": "2026-03-05", "days_late": "4"}, {"order_id": "ORD-119", "customer": "Maple & Co", "product": "Scarf", "category": "ACCESSORIES", "pieces": "150", "order_date": "2026-02-08", "due_date": "2026-02-22", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-27", "completed_date": "2026-02-27", "days_late": "5"}, {"order_id": "ORD-023", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "600", "order_date": "2026-02-09", "due_date": "2026-02-23", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-03", "completed_date": "2026-03-03", "days_late": "8"}, {"order_id": "ORD-111", "customer": "Cotton Club", "product": "Crewneck sweater", "category": "TOPS", "pieces": "2000", "order_date": "2026-02-09", "due_date": "2026-03-16", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-22", "completed_date": "2026-03-22", "days_late": "6"}, {"order_id": "ORD-097", "customer": "Bright Basics", "product": "Cardigan", "category": "TOPS", "pieces": "800", "order_date": "2026-02-10", "due_date": "2026-03-01", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-09", "completed_date": "2026-03-09", "days_late": "8"}, {"order_id": "ORD-016", "customer": "Cotton Club", "product": "Hoodie", "category": "TOPS", "pieces": "800", "order_date": "2026-02-11", "due_date": "2026-03-16", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-08", "completed_date": "2026-03-08", "days_late": "-8"}, {"order_id": "ORD-074", "customer": "Loom & Leaf", "product": "Scarf", "category": "ACCESSORIES", "pieces": "300", "order_date": "2026-02-12", "due_date": "2026-03-12", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-10", "completed_date": "2026-03-10", "days_late": "-2"}, {"order_id": "ORD-011", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "1200", "order_date": "2026-02-13", "due_date": "2026-03-14", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-12", "completed_date": "2026-03-12", "days_late": "-2"}, {"order_id": "ORD-032", "customer": "Northwind Apparel", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1500", "order_date": "2026-02-13", "due_date": "2026-03-14", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-17", "completed_date": "2026-03-17", "days_late": "3"}, {"order_id": "ORD-050", "customer": "Northwind Apparel", "product": "Vest", "category": "TOPS", "pieces": "500", "order_date": "2026-02-13", "due_date": "2026-03-05", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-02-28", "completed_date": "2026-02-28", "days_late": "-5"}, {"order_id": "ORD-068", "customer": "Cotton Club", "product": "Cardigan", "category": "TOPS", "pieces": "600", "order_date": "2026-02-13", "due_date": "2026-03-10", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-04", "completed_date": "2026-03-04", "days_late": "-6"}, {"order_id": "ORD-012", "customer": "Cotton Club", "product": "Vest", "category": "TOPS", "pieces": "1200", "order_date": "2026-02-14", "due_date": "2026-03-09", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-08", "completed_date": "2026-03-08", "days_late": "-1"}, {"order_id": "ORD-013", "customer": "Northwind Apparel", "product": "Polo shirt", "category": "TOPS", "pieces": "1000", "order_date": "2026-02-16", "due_date": "2026-03-03", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-17", "completed_date": "2026-03-17", "days_late": "14"}, {"order_id": "ORD-034", "customer": "Harbor Knits", "product": "Cardigan", "category": "TOPS", "pieces": "1000", "order_date": "2026-02-17", "due_date": "2026-03-12", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-19", "completed_date": "2026-03-19", "days_late": "7"}, {"order_id": "ORD-048", "customer": "Northwind Apparel", "product": "Hoodie", "category": "TOPS", "pieces": "200", "order_date": "2026-02-20", "due_date": "2026-03-25", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-13", "completed_date": "2026-03-13", "days_late": "-12"}, {"order_id": "ORD-054", "customer": "TrendCart", "product": "Vest", "category": "TOPS", "pieces": "600", "order_date": "2026-02-20", "due_date": "2026-03-06", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-29", "completed_date": "2026-03-29", "days_late": "23"}, {"order_id": "ORD-037", "customer": "Cotton Club", "product": "Vest", "category": "TOPS", "pieces": "200", "order_date": "2026-02-23", "due_date": "2026-03-18", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-20", "completed_date": "2026-03-20", "days_late": "2"}, {"order_id": "ORD-079", "customer": "Northwind Apparel", "product": "Crewneck sweater", "category": "TOPS", "pieces": "300", "order_date": "2026-02-24", "due_date": "2026-03-30", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-23", "completed_date": "2026-03-23", "days_late": "-7"}, {"order_id": "ORD-092", "customer": "Maple & Co", "product": "Beanie", "category": "ACCESSORIES", "pieces": "500", "order_date": "2026-02-24", "due_date": "2026-03-15", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-19", "completed_date": "2026-03-19", "days_late": "4"}, {"order_id": "ORD-104", "customer": "UrbanThread", "product": "Vest", "category": "TOPS", "pieces": "200", "order_date": "2026-02-24", "due_date": "2026-03-28", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-11", "completed_date": "2026-03-11", "days_late": "-17"}, {"order_id": "ORD-046", "customer": "UrbanThread", "product": "Hoodie", "category": "TOPS", "pieces": "150", "order_date": "2026-02-25", "due_date": "2026-03-31", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-09", "completed_date": "2026-03-09", "days_late": "-22"}, {"order_id": "ORD-075", "customer": "UrbanThread", "product": "Crewneck sweater", "category": "TOPS", "pieces": "400", "order_date": "2026-02-25", "due_date": "2026-03-28", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-11", "completed_date": "2026-03-11", "days_late": "-17"}, {"order_id": "ORD-120", "customer": "TrendCart", "product": "Vest", "category": "TOPS", "pieces": "1500", "order_date": "2026-02-27", "due_date": "2026-03-17", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-027", "customer": "Loom & Leaf", "product": "Hoodie", "category": "TOPS", "pieces": "600", "order_date": "2026-02-28", "due_date": "2026-03-19", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-16", "completed_date": "2026-03-16", "days_late": "-3"}, {"order_id": "ORD-030", "customer": "TrendCart", "product": "Cardigan", "category": "TOPS", "pieces": "400", "order_date": "2026-02-28", "due_date": "2026-03-27", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-28", "completed_date": "2026-03-28", "days_late": "1"}, {"order_id": "ORD-031", "customer": "Maple & Co", "product": "Crewneck sweater", "category": "TOPS", "pieces": "300", "order_date": "2026-02-28", "due_date": "2026-03-31", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-26", "completed_date": "2026-03-26", "days_late": "-5"}, {"order_id": "ORD-033", "customer": "Bright Basics", "product": "Polo shirt", "category": "TOPS", "pieces": "200", "order_date": "2026-03-01", "due_date": "2026-03-18", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-15", "completed_date": "2026-03-15", "days_late": "-3"}, {"order_id": "ORD-107", "customer": "Northwind Apparel", "product": "Cardigan", "category": "TOPS", "pieces": "2000", "order_date": "2026-03-01", "due_date": "2026-03-16", "status": "IN_PROGRESS", "current_stage": "PACKING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-113", "customer": "Bright Basics", "product": "Scarf", "category": "ACCESSORIES", "pieces": "800", "order_date": "2026-03-01", "due_date": "2026-03-22", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-26", "completed_date": "2026-03-26", "days_late": "4"}, {"order_id": "ORD-019", "customer": "Northwind Apparel", "product": "Vest", "category": "TOPS", "pieces": "600", "order_date": "2026-03-02", "due_date": "2026-03-29", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-29", "completed_date": "2026-03-29", "days_late": "0"}, {"order_id": "ORD-088", "customer": "Harbor Knits", "product": "Crewneck sweater", "category": "TOPS", "pieces": "300", "order_date": "2026-03-02", "due_date": "2026-03-21", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-18", "completed_date": "2026-03-18", "days_late": "-3"}, {"order_id": "ORD-114", "customer": "Northwind Apparel", "product": "Hoodie", "category": "TOPS", "pieces": "2000", "order_date": "2026-03-03", "due_date": "2026-03-23", "status": "IN_PROGRESS", "current_stage": "PACKING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-002", "customer": "Cotton Club", "product": "Crewneck sweater", "category": "TOPS", "pieces": "1000", "order_date": "2026-03-06", "due_date": "2026-03-29", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-23", "completed_date": "", "days_late": ""}, {"order_id": "ORD-044", "customer": "Cotton Club", "product": "Cardigan", "category": "TOPS", "pieces": "500", "order_date": "2026-03-07", "due_date": "2026-04-06", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-26", "completed_date": "2026-03-26", "days_late": "-11"}, {"order_id": "ORD-083", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "1000", "order_date": "2026-03-07", "due_date": "2026-03-23", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-099", "customer": "Northwind Apparel", "product": "Polo shirt", "category": "TOPS", "pieces": "1500", "order_date": "2026-03-07", "due_date": "2026-04-05", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-020", "customer": "TrendCart", "product": "Vest", "category": "TOPS", "pieces": "1200", "order_date": "2026-03-08", "due_date": "2026-03-31", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-103", "customer": "Bright Basics", "product": "Scarf", "category": "ACCESSORIES", "pieces": "2000", "order_date": "2026-03-09", "due_date": "2026-04-04", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-029", "customer": "Northwind Apparel", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1500", "order_date": "2026-03-10", "due_date": "2026-04-01", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-109", "customer": "Harbor Knits", "product": "Vest", "category": "TOPS", "pieces": "500", "order_date": "2026-03-10", "due_date": "2026-04-13", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-069", "customer": "Harbor Knits", "product": "Cardigan", "category": "TOPS", "pieces": "400", "order_date": "2026-03-11", "due_date": "2026-04-09", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-30", "completed_date": "2026-03-30", "days_late": "-10"}, {"order_id": "ORD-112", "customer": "Harbor Knits", "product": "Hoodie", "category": "TOPS", "pieces": "300", "order_date": "2026-03-11", "due_date": "2026-03-28", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-24", "completed_date": "2026-03-24", "days_late": "-4"}, {"order_id": "ORD-060", "customer": "Maple & Co", "product": "Hoodie", "category": "TOPS", "pieces": "300", "order_date": "2026-03-12", "due_date": "2026-04-01", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-27", "completed_date": "2026-03-27", "days_late": "-5"}, {"order_id": "ORD-061", "customer": "Harbor Knits", "product": "Scarf", "category": "ACCESSORIES", "pieces": "800", "order_date": "2026-03-12", "due_date": "2026-04-05", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-084", "customer": "Maple & Co", "product": "Cardigan", "category": "TOPS", "pieces": "500", "order_date": "2026-03-13", "due_date": "2026-04-01", "status": "COMPLETE", "current_stage": "COMPLETE", "last_activity_date": "2026-03-28", "completed_date": "2026-03-28", "days_late": "-4"}, {"order_id": "ORD-093", "customer": "Maple & Co", "product": "Beanie", "category": "ACCESSORIES", "pieces": "100", "order_date": "2026-03-14", "due_date": "2026-03-29", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-055", "customer": "Cotton Club", "product": "Crewneck sweater", "category": "TOPS", "pieces": "800", "order_date": "2026-03-15", "due_date": "2026-03-31", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-108", "customer": "Harbor Knits", "product": "Scarf", "category": "ACCESSORIES", "pieces": "2000", "order_date": "2026-03-17", "due_date": "2026-04-03", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-081", "customer": "Harbor Knits", "product": "Crewneck sweater", "category": "TOPS", "pieces": "1500", "order_date": "2026-03-18", "due_date": "2026-04-13", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-041", "customer": "Harbor Knits", "product": "Beanie", "category": "ACCESSORIES", "pieces": "600", "order_date": "2026-03-19", "due_date": "2026-04-21", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-096", "customer": "TrendCart", "product": "Beanie", "category": "ACCESSORIES", "pieces": "1000", "order_date": "2026-03-19", "due_date": "2026-04-17", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-005", "customer": "TrendCart", "product": "Scarf", "category": "ACCESSORIES", "pieces": "500", "order_date": "2026-03-21", "due_date": "2026-04-20", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-24", "completed_date": "", "days_late": ""}, {"order_id": "ORD-045", "customer": "Cotton Club", "product": "Vest", "category": "TOPS", "pieces": "150", "order_date": "2026-03-21", "due_date": "2026-04-09", "status": "IN_PROGRESS", "current_stage": "WASHING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-053", "customer": "UrbanThread", "product": "Polo shirt", "category": "TOPS", "pieces": "800", "order_date": "2026-03-21", "due_date": "2026-04-10", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-073", "customer": "Loom & Leaf", "product": "Hoodie", "category": "TOPS", "pieces": "400", "order_date": "2026-03-21", "due_date": "2026-04-20", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-036", "customer": "UrbanThread", "product": "Scarf", "category": "ACCESSORIES", "pieces": "1000", "order_date": "2026-03-22", "due_date": "2026-04-26", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-062", "customer": "Bright Basics", "product": "Scarf", "category": "ACCESSORIES", "pieces": "2000", "order_date": "2026-03-22", "due_date": "2026-04-08", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-066", "customer": "Northwind Apparel", "product": "Polo shirt", "category": "TOPS", "pieces": "1000", "order_date": "2026-03-22", "due_date": "2026-04-26", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-008", "customer": "Loom & Leaf", "product": "Polo shirt", "category": "TOPS", "pieces": "600", "order_date": "2026-03-23", "due_date": "2026-04-09", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-31", "completed_date": "", "days_late": ""}, {"order_id": "ORD-015", "customer": "UrbanThread", "product": "Vest", "category": "TOPS", "pieces": "300", "order_date": "2026-03-23", "due_date": "2026-04-16", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-017", "customer": "TrendCart", "product": "Cardigan", "category": "TOPS", "pieces": "800", "order_date": "2026-03-23", "due_date": "2026-04-10", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-010", "customer": "Cotton Club", "product": "Cardigan", "category": "TOPS", "pieces": "1000", "order_date": "2026-03-24", "due_date": "2026-04-25", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-024", "customer": "Loom & Leaf", "product": "Vest", "category": "TOPS", "pieces": "300", "order_date": "2026-03-24", "due_date": "2026-04-15", "status": "IN_PROGRESS", "current_stage": "ASSEMBLY", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-035", "customer": "Loom & Leaf", "product": "Beanie", "category": "ACCESSORIES", "pieces": "300", "order_date": "2026-03-25", "due_date": "2026-04-29", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-040", "customer": "Loom & Leaf", "product": "Hoodie", "category": "TOPS", "pieces": "1200", "order_date": "2026-03-25", "due_date": "2026-04-21", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}, {"order_id": "ORD-063", "customer": "Loom & Leaf", "product": "Cardigan", "category": "TOPS", "pieces": "100", "order_date": "2026-03-27", "due_date": "2026-04-29", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-082", "customer": "TrendCart", "product": "Beanie", "category": "ACCESSORIES", "pieces": "600", "order_date": "2026-03-27", "due_date": "2026-05-01", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-03-30", "completed_date": "", "days_late": ""}, {"order_id": "ORD-095", "customer": "Bright Basics", "product": "Hoodie", "category": "TOPS", "pieces": "800", "order_date": "2026-03-27", "due_date": "2026-04-26", "status": "IN_PROGRESS", "current_stage": "KNITTING", "last_activity_date": "2026-04-01", "completed_date": "", "days_late": ""}], "log": [{"date": "2026-01-01", "stage": "KNITTING", "pieces_completed": "1027"}, {"date": "2026-01-01", "stage": "ASSEMBLY", "pieces_completed": "836"}, {"date": "2026-01-01", "stage": "WASHING", "pieces_completed": "795"}, {"date": "2026-01-01", "stage": "PACKING", "pieces_completed": "699"}, {"date": "2026-01-02", "stage": "KNITTING", "pieces_completed": "997"}, {"date": "2026-01-02", "stage": "ASSEMBLY", "pieces_completed": "785"}, {"date": "2026-01-02", "stage": "WASHING", "pieces_completed": "615"}, {"date": "2026-01-02", "stage": "PACKING", "pieces_completed": "606"}, {"date": "2026-01-03", "stage": "KNITTING", "pieces_completed": "811"}, {"date": "2026-01-03", "stage": "ASSEMBLY", "pieces_completed": "718"}, {"date": "2026-01-03", "stage": "WASHING", "pieces_completed": "643"}, {"date": "2026-01-03", "stage": "PACKING", "pieces_completed": "568"}, {"date": "2026-01-04", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-01-04", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-01-04", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-01-04", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-01-05", "stage": "KNITTING", "pieces_completed": "861"}, {"date": "2026-01-05", "stage": "ASSEMBLY", "pieces_completed": "773"}, {"date": "2026-01-05", "stage": "WASHING", "pieces_completed": "601"}, {"date": "2026-01-05", "stage": "PACKING", "pieces_completed": "595"}, {"date": "2026-01-06", "stage": "KNITTING", "pieces_completed": "1017"}, {"date": "2026-01-06", "stage": "ASSEMBLY", "pieces_completed": "734"}, {"date": "2026-01-06", "stage": "WASHING", "pieces_completed": "598"}, {"date": "2026-01-06", "stage": "PACKING", "pieces_completed": "670"}, {"date": "2026-01-07", "stage": "KNITTING", "pieces_completed": "933"}, {"date": "2026-01-07", "stage": "ASSEMBLY", "pieces_completed": "878"}, {"date": "2026-01-07", "stage": "WASHING", "pieces_completed": "728"}, {"date": "2026-01-07", "stage": "PACKING", "pieces_completed": "711"}, {"date": "2026-01-08", "stage": "KNITTING", "pieces_completed": "790"}, {"date": "2026-01-08", "stage": "ASSEMBLY", "pieces_completed": "719"}, {"date": "2026-01-08", "stage": "WASHING", "pieces_completed": "765"}, {"date": "2026-01-08", "stage": "PACKING", "pieces_completed": "566"}, {"date": "2026-01-09", "stage": "KNITTING", "pieces_completed": "849"}, {"date": "2026-01-09", "stage": "ASSEMBLY", "pieces_completed": "812"}, {"date": "2026-01-09", "stage": "WASHING", "pieces_completed": "765"}, {"date": "2026-01-09", "stage": "PACKING", "pieces_completed": "721"}, {"date": "2026-01-10", "stage": "KNITTING", "pieces_completed": "947"}, {"date": "2026-01-10", "stage": "ASSEMBLY", "pieces_completed": "751"}, {"date": "2026-01-10", "stage": "WASHING", "pieces_completed": "632"}, {"date": "2026-01-10", "stage": "PACKING", "pieces_completed": "611"}, {"date": "2026-01-11", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-01-11", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-01-11", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-01-11", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-01-12", "stage": "KNITTING", "pieces_completed": "1026"}, {"date": "2026-01-12", "stage": "ASSEMBLY", "pieces_completed": "695"}, {"date": "2026-01-12", "stage": "WASHING", "pieces_completed": "650"}, {"date": "2026-01-12", "stage": "PACKING", "pieces_completed": "567"}, {"date": "2026-01-13", "stage": "KNITTING", "pieces_completed": "988"}, {"date": "2026-01-13", "stage": "ASSEMBLY", "pieces_completed": "881"}, {"date": "2026-01-13", "stage": "WASHING", "pieces_completed": "612"}, {"date": "2026-01-13", "stage": "PACKING", "pieces_completed": "566"}, {"date": "2026-01-14", "stage": "KNITTING", "pieces_completed": "838"}, {"date": "2026-01-14", "stage": "ASSEMBLY", "pieces_completed": "734"}, {"date": "2026-01-14", "stage": "WASHING", "pieces_completed": "609"}, {"date": "2026-01-14", "stage": "PACKING", "pieces_completed": "610"}, {"date": "2026-01-15", "stage": "KNITTING", "pieces_completed": "853"}, {"date": "2026-01-15", "stage": "ASSEMBLY", "pieces_completed": "752"}, {"date": "2026-01-15", "stage": "WASHING", "pieces_completed": "710"}, {"date": "2026-01-15", "stage": "PACKING", "pieces_completed": "724"}, {"date": "2026-01-16", "stage": "KNITTING", "pieces_completed": "806"}, {"date": "2026-01-16", "stage": "ASSEMBLY", "pieces_completed": "738"}, {"date": "2026-01-16", "stage": "WASHING", "pieces_completed": "733"}, {"date": "2026-01-16", "stage": "PACKING", "pieces_completed": "610"}, {"date": "2026-01-17", "stage": "KNITTING", "pieces_completed": "1012"}, {"date": "2026-01-17", "stage": "ASSEMBLY", "pieces_completed": "823"}, {"date": "2026-01-17", "stage": "WASHING", "pieces_completed": "636"}, {"date": "2026-01-17", "stage": "PACKING", "pieces_completed": "674"}, {"date": "2026-01-18", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-01-18", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-01-18", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-01-18", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-01-19", "stage": "KNITTING", "pieces_completed": "902"}, {"date": "2026-01-19", "stage": "ASSEMBLY", "pieces_completed": "685"}, {"date": "2026-01-19", "stage": "WASHING", "pieces_completed": "732"}, {"date": "2026-01-19", "stage": "PACKING", "pieces_completed": "613"}, {"date": "2026-01-20", "stage": "KNITTING", "pieces_completed": "929"}, {"date": "2026-01-20", "stage": "ASSEMBLY", "pieces_completed": "825"}, {"date": "2026-01-20", "stage": "WASHING", "pieces_completed": "762"}, {"date": "2026-01-20", "stage": "PACKING", "pieces_completed": "722"}, {"date": "2026-01-21", "stage": "KNITTING", "pieces_completed": "987"}, {"date": "2026-01-21", "stage": "ASSEMBLY", "pieces_completed": "841"}, {"date": "2026-01-21", "stage": "WASHING", "pieces_completed": "668"}, {"date": "2026-01-21", "stage": "PACKING", "pieces_completed": "624"}, {"date": "2026-01-22", "stage": "KNITTING", "pieces_completed": "793"}, {"date": "2026-01-22", "stage": "ASSEMBLY", "pieces_completed": "908"}, {"date": "2026-01-22", "stage": "WASHING", "pieces_completed": "765"}, {"date": "2026-01-22", "stage": "PACKING", "pieces_completed": "727"}, {"date": "2026-01-23", "stage": "KNITTING", "pieces_completed": "874"}, {"date": "2026-01-23", "stage": "ASSEMBLY", "pieces_completed": "707"}, {"date": "2026-01-23", "stage": "WASHING", "pieces_completed": "649"}, {"date": "2026-01-23", "stage": "PACKING", "pieces_completed": "659"}, {"date": "2026-01-24", "stage": "KNITTING", "pieces_completed": "786"}, {"date": "2026-01-24", "stage": "ASSEMBLY", "pieces_completed": "690"}, {"date": "2026-01-24", "stage": "WASHING", "pieces_completed": "656"}, {"date": "2026-01-24", "stage": "PACKING", "pieces_completed": "695"}, {"date": "2026-01-25", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-01-25", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-01-25", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-01-25", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-01-26", "stage": "KNITTING", "pieces_completed": "961"}, {"date": "2026-01-26", "stage": "ASSEMBLY", "pieces_completed": "735"}, {"date": "2026-01-26", "stage": "WASHING", "pieces_completed": "680"}, {"date": "2026-01-26", "stage": "PACKING", "pieces_completed": "735"}, {"date": "2026-01-27", "stage": "KNITTING", "pieces_completed": "959"}, {"date": "2026-01-27", "stage": "ASSEMBLY", "pieces_completed": "713"}, {"date": "2026-01-27", "stage": "WASHING", "pieces_completed": "749"}, {"date": "2026-01-27", "stage": "PACKING", "pieces_completed": "599"}, {"date": "2026-01-28", "stage": "KNITTING", "pieces_completed": "801"}, {"date": "2026-01-28", "stage": "ASSEMBLY", "pieces_completed": "890"}, {"date": "2026-01-28", "stage": "WASHING", "pieces_completed": "686"}, {"date": "2026-01-28", "stage": "PACKING", "pieces_completed": "746"}, {"date": "2026-01-29", "stage": "KNITTING", "pieces_completed": "791"}, {"date": "2026-01-29", "stage": "ASSEMBLY", "pieces_completed": "703"}, {"date": "2026-01-29", "stage": "WASHING", "pieces_completed": "718"}, {"date": "2026-01-29", "stage": "PACKING", "pieces_completed": "626"}, {"date": "2026-01-30", "stage": "KNITTING", "pieces_completed": "937"}, {"date": "2026-01-30", "stage": "ASSEMBLY", "pieces_completed": "895"}, {"date": "2026-01-30", "stage": "WASHING", "pieces_completed": "776"}, {"date": "2026-01-30", "stage": "PACKING", "pieces_completed": "737"}, {"date": "2026-01-31", "stage": "KNITTING", "pieces_completed": "837"}, {"date": "2026-01-31", "stage": "ASSEMBLY", "pieces_completed": "766"}, {"date": "2026-01-31", "stage": "WASHING", "pieces_completed": "711"}, {"date": "2026-01-31", "stage": "PACKING", "pieces_completed": "567"}, {"date": "2026-02-01", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-02-01", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-02-01", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-02-01", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-02-02", "stage": "KNITTING", "pieces_completed": "765"}, {"date": "2026-02-02", "stage": "ASSEMBLY", "pieces_completed": "847"}, {"date": "2026-02-02", "stage": "WASHING", "pieces_completed": "623"}, {"date": "2026-02-02", "stage": "PACKING", "pieces_completed": "589"}, {"date": "2026-02-03", "stage": "KNITTING", "pieces_completed": "854"}, {"date": "2026-02-03", "stage": "ASSEMBLY", "pieces_completed": "807"}, {"date": "2026-02-03", "stage": "WASHING", "pieces_completed": "720"}, {"date": "2026-02-03", "stage": "PACKING", "pieces_completed": "723"}, {"date": "2026-02-04", "stage": "KNITTING", "pieces_completed": "868"}, {"date": "2026-02-04", "stage": "ASSEMBLY", "pieces_completed": "777"}, {"date": "2026-02-04", "stage": "WASHING", "pieces_completed": "716"}, {"date": "2026-02-04", "stage": "PACKING", "pieces_completed": "721"}, {"date": "2026-02-05", "stage": "KNITTING", "pieces_completed": "876"}, {"date": "2026-02-05", "stage": "ASSEMBLY", "pieces_completed": "785"}, {"date": "2026-02-05", "stage": "WASHING", "pieces_completed": "769"}, {"date": "2026-02-05", "stage": "PACKING", "pieces_completed": "587"}, {"date": "2026-02-06", "stage": "KNITTING", "pieces_completed": "781"}, {"date": "2026-02-06", "stage": "ASSEMBLY", "pieces_completed": "736"}, {"date": "2026-02-06", "stage": "WASHING", "pieces_completed": "790"}, {"date": "2026-02-06", "stage": "PACKING", "pieces_completed": "689"}, {"date": "2026-02-07", "stage": "KNITTING", "pieces_completed": "882"}, {"date": "2026-02-07", "stage": "ASSEMBLY", "pieces_completed": "918"}, {"date": "2026-02-07", "stage": "WASHING", "pieces_completed": "668"}, {"date": "2026-02-07", "stage": "PACKING", "pieces_completed": "689"}, {"date": "2026-02-08", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-02-08", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-02-08", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-02-08", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-02-09", "stage": "KNITTING", "pieces_completed": "990"}, {"date": "2026-02-09", "stage": "ASSEMBLY", "pieces_completed": "754"}, {"date": "2026-02-09", "stage": "WASHING", "pieces_completed": "770"}, {"date": "2026-02-09", "stage": "PACKING", "pieces_completed": "662"}, {"date": "2026-02-10", "stage": "KNITTING", "pieces_completed": "967"}, {"date": "2026-02-10", "stage": "ASSEMBLY", "pieces_completed": "696"}, {"date": "2026-02-10", "stage": "WASHING", "pieces_completed": "774"}, {"date": "2026-02-10", "stage": "PACKING", "pieces_completed": "734"}, {"date": "2026-02-11", "stage": "KNITTING", "pieces_completed": "801"}, {"date": "2026-02-11", "stage": "ASSEMBLY", "pieces_completed": "702"}, {"date": "2026-02-11", "stage": "WASHING", "pieces_completed": "645"}, {"date": "2026-02-11", "stage": "PACKING", "pieces_completed": "633"}, {"date": "2026-02-12", "stage": "KNITTING", "pieces_completed": "866"}, {"date": "2026-02-12", "stage": "ASSEMBLY", "pieces_completed": "859"}, {"date": "2026-02-12", "stage": "WASHING", "pieces_completed": "752"}, {"date": "2026-02-12", "stage": "PACKING", "pieces_completed": "609"}, {"date": "2026-02-13", "stage": "KNITTING", "pieces_completed": "818"}, {"date": "2026-02-13", "stage": "ASSEMBLY", "pieces_completed": "702"}, {"date": "2026-02-13", "stage": "WASHING", "pieces_completed": "797"}, {"date": "2026-02-13", "stage": "PACKING", "pieces_completed": "562"}, {"date": "2026-02-14", "stage": "KNITTING", "pieces_completed": "1004"}, {"date": "2026-02-14", "stage": "ASSEMBLY", "pieces_completed": "779"}, {"date": "2026-02-14", "stage": "WASHING", "pieces_completed": "801"}, {"date": "2026-02-14", "stage": "PACKING", "pieces_completed": "635"}, {"date": "2026-02-15", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-02-15", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-02-15", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-02-15", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-02-16", "stage": "KNITTING", "pieces_completed": "852"}, {"date": "2026-02-16", "stage": "ASSEMBLY", "pieces_completed": "875"}, {"date": "2026-02-16", "stage": "WASHING", "pieces_completed": "730"}, {"date": "2026-02-16", "stage": "PACKING", "pieces_completed": "723"}, {"date": "2026-02-17", "stage": "KNITTING", "pieces_completed": "922"}, {"date": "2026-02-17", "stage": "ASSEMBLY", "pieces_completed": "786"}, {"date": "2026-02-17", "stage": "WASHING", "pieces_completed": "685"}, {"date": "2026-02-17", "stage": "PACKING", "pieces_completed": "562"}, {"date": "2026-02-18", "stage": "KNITTING", "pieces_completed": "862"}, {"date": "2026-02-18", "stage": "ASSEMBLY", "pieces_completed": "715"}, {"date": "2026-02-18", "stage": "WASHING", "pieces_completed": "764"}, {"date": "2026-02-18", "stage": "PACKING", "pieces_completed": "700"}, {"date": "2026-02-19", "stage": "KNITTING", "pieces_completed": "864"}, {"date": "2026-02-19", "stage": "ASSEMBLY", "pieces_completed": "727"}, {"date": "2026-02-19", "stage": "WASHING", "pieces_completed": "618"}, {"date": "2026-02-19", "stage": "PACKING", "pieces_completed": "697"}, {"date": "2026-02-20", "stage": "KNITTING", "pieces_completed": "883"}, {"date": "2026-02-20", "stage": "ASSEMBLY", "pieces_completed": "710"}, {"date": "2026-02-20", "stage": "WASHING", "pieces_completed": "618"}, {"date": "2026-02-20", "stage": "PACKING", "pieces_completed": "573"}, {"date": "2026-02-21", "stage": "KNITTING", "pieces_completed": "885"}, {"date": "2026-02-21", "stage": "ASSEMBLY", "pieces_completed": "687"}, {"date": "2026-02-21", "stage": "WASHING", "pieces_completed": "793"}, {"date": "2026-02-21", "stage": "PACKING", "pieces_completed": "554"}, {"date": "2026-02-22", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-02-22", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-02-22", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-02-22", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-02-23", "stage": "KNITTING", "pieces_completed": "974"}, {"date": "2026-02-23", "stage": "ASSEMBLY", "pieces_completed": "720"}, {"date": "2026-02-23", "stage": "WASHING", "pieces_completed": "685"}, {"date": "2026-02-23", "stage": "PACKING", "pieces_completed": "724"}, {"date": "2026-02-24", "stage": "KNITTING", "pieces_completed": "1018"}, {"date": "2026-02-24", "stage": "ASSEMBLY", "pieces_completed": "711"}, {"date": "2026-02-24", "stage": "WASHING", "pieces_completed": "668"}, {"date": "2026-02-24", "stage": "PACKING", "pieces_completed": "702"}, {"date": "2026-02-25", "stage": "KNITTING", "pieces_completed": "786"}, {"date": "2026-02-25", "stage": "ASSEMBLY", "pieces_completed": "706"}, {"date": "2026-02-25", "stage": "WASHING", "pieces_completed": "756"}, {"date": "2026-02-25", "stage": "PACKING", "pieces_completed": "560"}, {"date": "2026-02-26", "stage": "KNITTING", "pieces_completed": "1009"}, {"date": "2026-02-26", "stage": "ASSEMBLY", "pieces_completed": "725"}, {"date": "2026-02-26", "stage": "WASHING", "pieces_completed": "649"}, {"date": "2026-02-26", "stage": "PACKING", "pieces_completed": "711"}, {"date": "2026-02-27", "stage": "KNITTING", "pieces_completed": "994"}, {"date": "2026-02-27", "stage": "ASSEMBLY", "pieces_completed": "725"}, {"date": "2026-02-27", "stage": "WASHING", "pieces_completed": "715"}, {"date": "2026-02-27", "stage": "PACKING", "pieces_completed": "742"}, {"date": "2026-02-28", "stage": "KNITTING", "pieces_completed": "1032"}, {"date": "2026-02-28", "stage": "ASSEMBLY", "pieces_completed": "808"}, {"date": "2026-02-28", "stage": "WASHING", "pieces_completed": "647"}, {"date": "2026-02-28", "stage": "PACKING", "pieces_completed": "744"}, {"date": "2026-03-01", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-03-01", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-03-01", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-03-01", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-03-02", "stage": "KNITTING", "pieces_completed": "767"}, {"date": "2026-03-02", "stage": "ASSEMBLY", "pieces_completed": "782"}, {"date": "2026-03-02", "stage": "WASHING", "pieces_completed": "780"}, {"date": "2026-03-02", "stage": "PACKING", "pieces_completed": "676"}, {"date": "2026-03-03", "stage": "KNITTING", "pieces_completed": "852"}, {"date": "2026-03-03", "stage": "ASSEMBLY", "pieces_completed": "687"}, {"date": "2026-03-03", "stage": "WASHING", "pieces_completed": "728"}, {"date": "2026-03-03", "stage": "PACKING", "pieces_completed": "707"}, {"date": "2026-03-04", "stage": "KNITTING", "pieces_completed": "907"}, {"date": "2026-03-04", "stage": "ASSEMBLY", "pieces_completed": "901"}, {"date": "2026-03-04", "stage": "WASHING", "pieces_completed": "702"}, {"date": "2026-03-04", "stage": "PACKING", "pieces_completed": "721"}, {"date": "2026-03-05", "stage": "KNITTING", "pieces_completed": "868"}, {"date": "2026-03-05", "stage": "ASSEMBLY", "pieces_completed": "762"}, {"date": "2026-03-05", "stage": "WASHING", "pieces_completed": "680"}, {"date": "2026-03-05", "stage": "PACKING", "pieces_completed": "676"}, {"date": "2026-03-06", "stage": "KNITTING", "pieces_completed": "1011"}, {"date": "2026-03-06", "stage": "ASSEMBLY", "pieces_completed": "733"}, {"date": "2026-03-06", "stage": "WASHING", "pieces_completed": "790"}, {"date": "2026-03-06", "stage": "PACKING", "pieces_completed": "722"}, {"date": "2026-03-07", "stage": "KNITTING", "pieces_completed": "999"}, {"date": "2026-03-07", "stage": "ASSEMBLY", "pieces_completed": "912"}, {"date": "2026-03-07", "stage": "WASHING", "pieces_completed": "798"}, {"date": "2026-03-07", "stage": "PACKING", "pieces_completed": "682"}, {"date": "2026-03-08", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-03-08", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-03-08", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-03-08", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-03-09", "stage": "KNITTING", "pieces_completed": "878"}, {"date": "2026-03-09", "stage": "ASSEMBLY", "pieces_completed": "770"}, {"date": "2026-03-09", "stage": "WASHING", "pieces_completed": "598"}, {"date": "2026-03-09", "stage": "PACKING", "pieces_completed": "642"}, {"date": "2026-03-10", "stage": "KNITTING", "pieces_completed": "797"}, {"date": "2026-03-10", "stage": "ASSEMBLY", "pieces_completed": "761"}, {"date": "2026-03-10", "stage": "WASHING", "pieces_completed": "737"}, {"date": "2026-03-10", "stage": "PACKING", "pieces_completed": "605"}, {"date": "2026-03-11", "stage": "KNITTING", "pieces_completed": "924"}, {"date": "2026-03-11", "stage": "ASSEMBLY", "pieces_completed": "855"}, {"date": "2026-03-11", "stage": "WASHING", "pieces_completed": "740"}, {"date": "2026-03-11", "stage": "PACKING", "pieces_completed": "662"}, {"date": "2026-03-12", "stage": "KNITTING", "pieces_completed": "837"}, {"date": "2026-03-12", "stage": "ASSEMBLY", "pieces_completed": "755"}, {"date": "2026-03-12", "stage": "WASHING", "pieces_completed": "671"}, {"date": "2026-03-12", "stage": "PACKING", "pieces_completed": "679"}, {"date": "2026-03-13", "stage": "KNITTING", "pieces_completed": "772"}, {"date": "2026-03-13", "stage": "ASSEMBLY", "pieces_completed": "799"}, {"date": "2026-03-13", "stage": "WASHING", "pieces_completed": "711"}, {"date": "2026-03-13", "stage": "PACKING", "pieces_completed": "714"}, {"date": "2026-03-14", "stage": "KNITTING", "pieces_completed": "768"}, {"date": "2026-03-14", "stage": "ASSEMBLY", "pieces_completed": "763"}, {"date": "2026-03-14", "stage": "WASHING", "pieces_completed": "602"}, {"date": "2026-03-14", "stage": "PACKING", "pieces_completed": "619"}, {"date": "2026-03-15", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-03-15", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-03-15", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-03-15", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-03-16", "stage": "KNITTING", "pieces_completed": "867"}, {"date": "2026-03-16", "stage": "ASSEMBLY", "pieces_completed": "788"}, {"date": "2026-03-16", "stage": "WASHING", "pieces_completed": "679"}, {"date": "2026-03-16", "stage": "PACKING", "pieces_completed": "631"}, {"date": "2026-03-17", "stage": "KNITTING", "pieces_completed": "909"}, {"date": "2026-03-17", "stage": "ASSEMBLY", "pieces_completed": "735"}, {"date": "2026-03-17", "stage": "WASHING", "pieces_completed": "617"}, {"date": "2026-03-17", "stage": "PACKING", "pieces_completed": "638"}, {"date": "2026-03-18", "stage": "KNITTING", "pieces_completed": "960"}, {"date": "2026-03-18", "stage": "ASSEMBLY", "pieces_completed": "882"}, {"date": "2026-03-18", "stage": "WASHING", "pieces_completed": "723"}, {"date": "2026-03-18", "stage": "PACKING", "pieces_completed": "707"}, {"date": "2026-03-19", "stage": "KNITTING", "pieces_completed": "956"}, {"date": "2026-03-19", "stage": "ASSEMBLY", "pieces_completed": "868"}, {"date": "2026-03-19", "stage": "WASHING", "pieces_completed": "701"}, {"date": "2026-03-19", "stage": "PACKING", "pieces_completed": "708"}, {"date": "2026-03-20", "stage": "KNITTING", "pieces_completed": "867"}, {"date": "2026-03-20", "stage": "ASSEMBLY", "pieces_completed": "762"}, {"date": "2026-03-20", "stage": "WASHING", "pieces_completed": "628"}, {"date": "2026-03-20", "stage": "PACKING", "pieces_completed": "627"}, {"date": "2026-03-21", "stage": "KNITTING", "pieces_completed": "871"}, {"date": "2026-03-21", "stage": "ASSEMBLY", "pieces_completed": "746"}, {"date": "2026-03-21", "stage": "WASHING", "pieces_completed": "721"}, {"date": "2026-03-21", "stage": "PACKING", "pieces_completed": "561"}, {"date": "2026-03-22", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-03-22", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-03-22", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-03-22", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-03-23", "stage": "KNITTING", "pieces_completed": "891"}, {"date": "2026-03-23", "stage": "ASSEMBLY", "pieces_completed": "733"}, {"date": "2026-03-23", "stage": "WASHING", "pieces_completed": "757"}, {"date": "2026-03-23", "stage": "PACKING", "pieces_completed": "667"}, {"date": "2026-03-24", "stage": "KNITTING", "pieces_completed": "992"}, {"date": "2026-03-24", "stage": "ASSEMBLY", "pieces_completed": "779"}, {"date": "2026-03-24", "stage": "WASHING", "pieces_completed": "741"}, {"date": "2026-03-24", "stage": "PACKING", "pieces_completed": "671"}, {"date": "2026-03-25", "stage": "KNITTING", "pieces_completed": "915"}, {"date": "2026-03-25", "stage": "ASSEMBLY", "pieces_completed": "394"}, {"date": "2026-03-25", "stage": "WASHING", "pieces_completed": "801"}, {"date": "2026-03-25", "stage": "PACKING", "pieces_completed": "658"}, {"date": "2026-03-26", "stage": "KNITTING", "pieces_completed": "1033"}, {"date": "2026-03-26", "stage": "ASSEMBLY", "pieces_completed": "464"}, {"date": "2026-03-26", "stage": "WASHING", "pieces_completed": "801"}, {"date": "2026-03-26", "stage": "PACKING", "pieces_completed": "673"}, {"date": "2026-03-27", "stage": "KNITTING", "pieces_completed": "882"}, {"date": "2026-03-27", "stage": "ASSEMBLY", "pieces_completed": "399"}, {"date": "2026-03-27", "stage": "WASHING", "pieces_completed": "793"}, {"date": "2026-03-27", "stage": "PACKING", "pieces_completed": "580"}, {"date": "2026-03-28", "stage": "KNITTING", "pieces_completed": "1031"}, {"date": "2026-03-28", "stage": "ASSEMBLY", "pieces_completed": "445"}, {"date": "2026-03-28", "stage": "WASHING", "pieces_completed": "624"}, {"date": "2026-03-28", "stage": "PACKING", "pieces_completed": "734"}, {"date": "2026-03-29", "stage": "KNITTING", "pieces_completed": "0"}, {"date": "2026-03-29", "stage": "ASSEMBLY", "pieces_completed": "0"}, {"date": "2026-03-29", "stage": "WASHING", "pieces_completed": "0"}, {"date": "2026-03-29", "stage": "PACKING", "pieces_completed": "0"}, {"date": "2026-03-30", "stage": "KNITTING", "pieces_completed": "829"}, {"date": "2026-03-30", "stage": "ASSEMBLY", "pieces_completed": "396"}, {"date": "2026-03-30", "stage": "WASHING", "pieces_completed": "605"}, {"date": "2026-03-30", "stage": "PACKING", "pieces_completed": "625"}, {"date": "2026-03-31", "stage": "KNITTING", "pieces_completed": "905"}, {"date": "2026-03-31", "stage": "ASSEMBLY", "pieces_completed": "455"}, {"date": "2026-03-31", "stage": "WASHING", "pieces_completed": "732"}, {"date": "2026-03-31", "stage": "PACKING", "pieces_completed": "657"}], "workshops": [{"workshop_id": "W1", "name": "QuickStitch", "capacity_pieces_per_day": "300", "pickup_lead_days": "1", "defect_rate": "0.12", "cost_per_piece": "1.5", "makes": "TOPS", "status": "ACTIVE", "max_batch_pieces": "", "current_queue_days": "4.0", "notes": "fastest in the region; quality slips under pressure"}, {"workshop_id": "W2", "name": "SteadyHands", "capacity_pieces_per_day": "170", "pickup_lead_days": "2", "defect_rate": "0.03", "cost_per_piece": "1.3", "makes": "TOPS+ACCESSORIES", "status": "ACTIVE", "max_batch_pieces": "", "current_queue_days": "2.5", "notes": "never early, never late, never sloppy"}, {"workshop_id": "W3", "name": "BudgetWorks", "capacity_pieces_per_day": "230", "pickup_lead_days": "3", "defect_rate": "0.09", "cost_per_piece": "0.8", "makes": "TOPS", "status": "ACTIVE", "max_batch_pieces": "", "current_queue_days": "5.0", "notes": "cheapest by far"}, {"workshop_id": "W4", "name": "Little Loom", "capacity_pieces_per_day": "70", "pickup_lead_days": "1", "defect_rate": "0.02", "cost_per_piece": "1.6", "makes": "ACCESSORIES", "status": "ACTIVE", "max_batch_pieces": "", "current_queue_days": "0.5", "notes": "tiny boutique shop, immaculate work"}, {"workshop_id": "W5", "name": "GiantWeave", "capacity_pieces_per_day": "400", "pickup_lead_days": "4", "defect_rate": "0.06", "cost_per_piece": "1.1", "makes": "TOPS", "status": "ACTIVE", "max_batch_pieces": "", "current_queue_days": "3.0", "notes": "huge capacity, slow pickup and delivery"}, {"workshop_id": "W6", "name": "Nimble Needle", "capacity_pieces_per_day": "130", "pickup_lead_days": "1", "defect_rate": "0.05", "cost_per_piece": "1.2", "makes": "TOPS+ACCESSORIES", "status": "ACTIVE", "max_batch_pieces": "", "current_queue_days": "1.0", "notes": "quick turnaround on small batches"}, {"workshop_id": "W7", "name": "OldMill", "capacity_pieces_per_day": "200", "pickup_lead_days": "2", "defect_rate": "0.1", "cost_per_piece": "0.9", "makes": "TOPS+ACCESSORIES", "status": "SUSPENDED", "max_batch_pieces": "", "current_queue_days": "0.0", "notes": "suspended after last month's quality audit"}, {"workshop_id": "W8", "name": "FreshStart", "capacity_pieces_per_day": "100", "pickup_lead_days": "2", "defect_rate": "0.04", "cost_per_piece": "1.0", "makes": "TOPS", "status": "ACTIVE", "max_batch_pieces": "300", "current_queue_days": "0.0", "notes": "new workshop on trial: small batches only"}]};
+const TODAY = '2026-04-01';
+const STAGES = ['KNITTING','ASSEMBLY','WASHING','PACKING'];
+const ORDERS = DATA.orders.map(o => ({...o, pieces:+o.pieces, days_late: o.days_late===''?null:+o.days_late}));
+const LOG = DATA.log.map(r => ({...r, pieces_completed:+r.pieces_completed}));
+const WORKSHOPS = DATA.workshops.map(w => ({...w, capacity_pieces_per_day:+w.capacity_pieces_per_day, pickup_lead_days:+w.pickup_lead_days, defect_rate:+w.defect_rate, cost_per_piece:+w.cost_per_piece, current_queue_days:+w.current_queue_days, max_batch_pieces: w.max_batch_pieces===''?null:+w.max_batch_pieces}));
+
+/* Backend switch. In live mode the UI posts {question, history} to LIVE_ENDPOINT and expects
+   {narration, tone, tool_calls:[{name,input,output_rows}], chips:[], action:{...}|null} */
+const API_MODE = 'mock';
+const LIVE_ENDPOINT = 'http://localhost:8000/chat';
+
+/* =========================================================
+   DATE HELPERS
+   ========================================================= */
+const d = s => new Date(s+'T00:00:00');
+const iso = dt => `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')}`; /* local date, never UTC */
+const addDays = (s,n) => { const x=d(s); x.setDate(x.getDate()+n); return iso(x); };
+const diffDays = (a,b) => Math.round((d(b)-d(a))/86400000);
+const dow = s => d(s).getDay();
+const DOWN = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+const fmt = s => d(s).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'});
+/* working days: factory closed Sunday */
+function addWorkDays(s,n){ let x=s, left=n, guard=0; while(left>0 && guard++<400){ x=addDays(x,1); if(dow(x)!==0) left--; } return x; }
+
+/* =========================================================
+   TOOLS. Every tool returns {output, rows, definition?}.
+   The LLM never sees raw data; it only sees these outputs.
+   Each one is mirrored 1:1 in the Python tool layer.
+   ========================================================= */
+const TOOLS = {};
+
+TOOLS.order_lookup = ({order_id, customer, status}) => {
+  let rows = ORDERS;
+  if(order_id) rows = rows.filter(o => o.order_id.toUpperCase()===order_id.toUpperCase());
+  if(customer) rows = rows.filter(o => o.customer.toLowerCase().includes(customer.toLowerCase()));
+  if(status) rows = rows.filter(o => o.status===status);
+  return {output:{count:rows.length}, rows};
+};
+
+TOOLS.production_stats = ({stage, days=14}) => {
+  const from = addDays(TODAY,-days);
+  const rows = LOG.filter(r => (!stage||r.stage===stage) && r.date>=from && r.date<TODAY && dow(r.date)!==0);
+  const by = {};
+  rows.forEach(r => { by[r.stage]=by[r.stage]||[]; by[r.stage].push(r.pieces_completed); });
+  const avg = {}; Object.keys(by).forEach(s => avg[s]=Math.round(by[s].reduce((a,b)=>a+b,0)/by[s].length));
+  return {output:{window_days:days, working_days_counted:rows.length/(stage?1:4), avg_per_day:avg}, rows};
+};
+
+/* JUDGEMENT: "is this normal?" with an inspectable definition */
+TOOLS.judge_normal = ({stage, date}) => {
+  date = date || addDays(TODAY,-1);
+  if(dow(date)===0) return {output:{verdict:'CLOSED', note:'Factory closed on Sundays; nothing to compare.'}, rows:[], definition:DEF_NORMAL};
+  const actual = LOG.find(r => r.stage===stage && r.date===date);
+  const sameDow = LOG.filter(r => r.stage===stage && r.date<date && r.date>=addDays(date,-56) && dow(r.date)===dow(date));
+  const base = Math.round(sameDow.reduce((a,b)=>a+b.pieces_completed,0)/sameDow.length);
+  const pct = Math.round((actual.pieces_completed-base)/base*100);
+  const verdict = pct<=-15?'BELOW_NORMAL':pct>=15?'ABOVE_NORMAL':'NORMAL';
+  return {output:{stage, date, actual:actual.pieces_completed, baseline_same_weekday_8w:base, pct_diff:pct, verdict}, rows:[actual,...sameDow], definition:DEF_NORMAL};
+};
+const DEF_NORMAL = 'Normal = mean output for the same weekday over the previous 8 weeks (Sundays excluded because the factory is closed). Flag if more than 15% away from that baseline.';
+
+/* Progress model: an order needs (remaining stages) x (typical days per stage). Stated assumption. */
+const DAYS_PER_STAGE = 1.5;
+function remainingStages(o){ if(o.status==='COMPLETE') return 0; return STAGES.length - STAGES.indexOf(o.current_stage); }
+function projectedFinish(o){ return addWorkDays(o.last_activity_date, Math.ceil(remainingStages(o)*DAYS_PER_STAGE)); }
+
+TOOLS.orders_at_risk = ({due_within_days=14}={}) => {
+  const rows = ORDERS.filter(o => o.status==='IN_PROGRESS').map(o => {
+    const stalled = diffDays(o.last_activity_date, TODAY);
+    const finish = projectedFinish(o);
+    const slack = diffDays(finish, o.due_date);
+    let flag = null;
+    if(o.due_date < TODAY) flag='OVERDUE';
+    else if(slack<0) flag='WILL_MISS';
+    else if(stalled>=5) flag='STALLED';
+    return {...o, stalled_days:stalled, projected_finish:finish, slack_days:slack, flag};
+  }).filter(o => o.flag && diffDays(TODAY,o.due_date)<=due_within_days).sort((a,b)=>a.due_date.localeCompare(b.due_date));
+  return {output:{count:rows.length, overdue:rows.filter(r=>r.flag==='OVERDUE').length, will_miss:rows.filter(r=>r.flag==='WILL_MISS').length, stalled:rows.filter(r=>r.flag==='STALLED').length}, rows,
+    definition:`At risk = overdue, or projected finish (last activity + remaining stages x ${DAYS_PER_STAGE} working days) is after the due date, or no activity for 5+ days.`};
+};
+
+TOOLS.workshop_lookup = ({category, active_only=true, pieces}={}) => {
+  let rows = WORKSHOPS.filter(w => !category || w.makes.includes(category));
+  if(active_only) rows = rows.filter(w => w.status==='ACTIVE');
+  if(pieces) rows = rows.filter(w => !w.max_batch_pieces || w.max_batch_pieces>=pieces);
+  rows = rows.map(w => ({...w, days_to_finish: pieces ? +(w.current_queue_days + w.pickup_lead_days + pieces/w.capacity_pieces_per_day).toFixed(1) : null}));
+  return {output:{eligible:rows.map(r=>r.name)}, rows};
+};
+
+TOOLS.feasibility_check = ({pieces, category, due_date}) => {
+  const openOrders = ORDERS.filter(o=>o.status==='IN_PROGRESS');
+  const open = openOrders.reduce((a,o)=>a+o.pieces,0);
+  const ahead = openOrders.filter(o=>o.due_date<=due_date).reduce((a,o)=>a+o.pieces,0);
+  const stats = TOOLS.production_stats({days:14}).output.avg_per_day;
+  const bottleneck = Math.min(...STAGES.map(s=>stats[s]));
+  const factoryFinish = addWorkDays(TODAY, Math.ceil((open + pieces)/bottleneck));
+  const factoryPriority = addWorkDays(TODAY, Math.ceil((ahead + pieces)/bottleneck));
+  const ws = TOOLS.workshop_lookup({category, pieces}).rows.sort((a,b)=>a.days_to_finish-b.days_to_finish);
+  const best = ws[0];
+  const wsFinish = best ? addWorkDays(TODAY, Math.ceil(best.days_to_finish)) : null;
+  const bestFinish = [factoryPriority, wsFinish].filter(Boolean).sort()[0];
+  const verdict = bestFinish<=due_date ? (diffDays(bestFinish,due_date)<=2?'TIGHT':'YES') : 'NO';
+  return {output:{pieces, category, due_date, open_load_pieces:open, open_pieces_due_before_target:ahead, bottleneck_stage:STAGES.find(s=>stats[s]===bottleneck), bottleneck_rate_per_day:bottleneck, factory_finish_if_prioritised:factoryPriority, factory_finish_behind_all_open_work:factoryFinish, best_workshop:best?best.name:null, workshop_finish:wsFinish, verdict,
+    assumptions:['no new orders arrive in the meantime','prioritised = only work due before the target date runs ahead of it','Sunday closure honoured','stage rates = last 14 working days average at the slowest stage','workshop estimate = its queue + pickup lead + pieces / daily capacity; defect rework not included']},
+    rows: ws};
+};
+
+/* DISCOVERY: things nobody asked about, ranked */
+TOOLS.discover_findings = () => {
+  const f = [];
+  const risk = TOOLS.orders_at_risk({due_within_days:60});
+  risk.rows.filter(r=>r.flag==='OVERDUE').forEach(r => f.push({score:100+Math.abs(diffDays(TODAY,r.due_date)), tone:'risk', text:`${r.order_id} (${r.customer}, ${r.product}) is ${diffDays(r.due_date,TODAY)} days past due, still in ${r.current_stage}.`, trace:{tool:'orders_at_risk', rows:[r]}}));
+  risk.rows.filter(r=>r.flag==='STALLED').forEach(r => f.push({score:70+r.stalled_days*3, tone:'risk', text:`${r.order_id} has had no activity for ${r.stalled_days} days (in ${r.current_stage}).`, trace:{tool:'orders_at_risk', rows:[r]}}));
+  risk.rows.filter(r=>r.flag==='WILL_MISS').forEach(r => f.push({score:60-r.slack_days, tone:'amber', text:`${r.order_id} (${r.customer}) is projected to miss its due date by ${-r.slack_days} day(s).`, trace:{tool:'orders_at_risk', rows:[r]}}));
+  STAGES.forEach(s => { const j = TOOLS.judge_normal({stage:s}); if(j.output.verdict==='BELOW_NORMAL') f.push({score:80+Math.abs(j.output.pct_diff), tone:'amber', text:`${cap(s)} output yesterday was ${Math.abs(j.output.pct_diff)}% below its normal ${DOWN[dow(j.output.date)]}.`, trace:{tool:'judge_normal', rows:j.rows.slice(0,1), definition:DEF_NORMAL, output:j.output}}); });
+  /* customer whose orders are all slipping */
+  const byCust = {}; risk.rows.forEach(r => { byCust[r.customer]=(byCust[r.customer]||0)+1; });
+  Object.entries(byCust).filter(([c,n])=>n>=3).forEach(([c,n]) => f.push({score:65+n*5, tone:'amber', text:`${c} has ${n} orders at risk at the same time.`, trace:{tool:'orders_at_risk', rows:risk.rows.filter(r=>r.customer===c)}}));
+  const good = ORDERS.filter(o=>o.status==='IN_PROGRESS' && !risk.rows.find(r=>r.order_id===o.order_id));
+  f.push({score:10, tone:'good', text:`${good.length} of ${ORDERS.filter(o=>o.status==='IN_PROGRESS').length} open orders are on track.`, trace:{tool:'orders_at_risk', rows:good.slice(0,10)}});
+  f.sort((a,b)=>b.score-a.score);
+  return {output:{count:f.length}, rows:f, definition:'Ranked by severity: overdue > stage output drop > stalled > will miss > customer clusters. Score shown in the trace.'};
+};
+
+/* WATCHES */
+const WATCHES = [];
+TOOLS.create_watch = ({order_id, by_date}) => { const w={id:'W'+(WATCHES.length+1), order_id, by_date, condition:`no activity on ${order_id} by ${by_date}`, created:TODAY, fired:false}; WATCHES.push(w); return {output:w, rows:[w]}; };
+function evaluateWatches(){
+  WATCHES.forEach(w => { if(w.fired) return; const o=ORDERS.find(x=>x.order_id===w.order_id); if(!o) return;
+    if(o.status==='COMPLETE'){ w.fired=true; w.result='completed'; return; }
+    /* dataset is a static snapshot at TODAY; fire if already stalled through today */
+    if(TODAY>=w.by_date || diffDays(o.last_activity_date,TODAY)>=diffDays(TODAY,w.by_date)+3){ w.fired=true; w.result='fired';
+      addWatchCard(`<b>Watch fired: ${w.order_id}</b>No activity since ${fmt(o.last_activity_date)} (${diffDays(o.last_activity_date,TODAY)} days). You asked to be told. <button class="small-btn primary" style="margin-top:6px" onclick="proposeAction('chase',{order_id:'${w.order_id}'})">Draft a chase-up</button>`); } });
+  renderWatches();
+}
+
+/* ACTIONS (side effects): confirm, then log */
+const AUDIT = [];
+const ACTIONS = {
+  chase:{ title:o=>`Draft chase-up for ${o.order_id}`, blast:'Sends a message to the planner. Worst case: a wrong or duplicate chase-up email. Nothing in the order data changes.',
+    body:o=>{ const r=ORDERS.find(x=>x.order_id===o.order_id); return `Hi, ${r.order_id} (${r.customer}, ${r.pieces} x ${r.product}) has had no recorded activity since ${fmt(r.last_activity_date)} and is due ${fmt(r.due_date)}. Can you check what is holding it in ${r.current_stage} and give me an ETA today?`; } },
+  note:{ title:o=>`Add note to ${o.order_id}`, blast:'Appends text to the order record. Worst case: a misleading note. Reversible by deleting the note.', body:o=>o.text||'' },
+  reminder:{ title:o=>`Set reminder`, blast:'Creates a reminder for you only. Worst case: an unnecessary ping.', body:o=>o.text||'' }
+};
+function proposeAction(kind, params){
+  const a = ACTIONS[kind];
+  document.getElementById('sheet').innerHTML = `<h3>${a.title(params)}</h3>
+    <div style="font-size:12.5px;color:var(--muted)">Review before it goes anywhere. Nothing happens until you confirm.</div>
+    <div class="blast"><b>Blast radius:</b> ${a.blast}</div>
+    <textarea id="act-body">${a.body(params)}</textarea>
+    <div class="acts"><button class="btn" onclick="closeSheet()">Cancel</button><button class="btn primary" onclick="confirmAction('${kind}','${params.order_id||''}')">Confirm and log</button></div>`;
+  document.getElementById('overlay').classList.add('open');
+}
+function confirmAction(kind, order_id){
+  const body = document.getElementById('act-body').value;
+  AUDIT.unshift({t:new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}), kind, order_id, body});
+  closeSheet(); renderAudit();
+  addAgent({tone:'good', narration:`<b>Done.</b> ${kind==='chase'?'Chase-up':cap(kind)} for ${order_id||'you'} sent and logged.`, tool_calls:[{name:'action_'+kind, output:{confirmed:true, order_id}, rows:[]}]});
+}
+function closeSheet(){ document.getElementById('overlay').classList.remove('open'); }
+
+/* =========================================================
+   VERIFIER: every number in the narration must appear in a tool output.
+   In mock mode this always passes; in live mode it catches LLM arithmetic.
+   ========================================================= */
+function verifyNumbers(narration, tool_calls){
+  const pool = new Set();
+  const walk = v => { if(v==null) return; if(typeof v==='number') pool.add(String(v)); else if(typeof v==='string'){ (v.match(/\d+(\.\d+)?/g)||[]).forEach(n=>pool.add(n)); } else if(Array.isArray(v)) v.forEach(walk); else if(typeof v==='object') Object.values(v).forEach(walk); };
+  tool_calls.forEach(tc => { walk(tc.output); walk(tc.rows); });
+  return narration.replace(/<span class="num">([^<]*?)<\/span>/g, (m,inner) => {
+    const nums = inner.match(/\d+(\.\d+)?/g)||[];
+    const ok = nums.every(n => pool.has(n) || pool.has(String(+n)));
+    return `<span class="num${ok?'':' unverified'}" title="${ok?'Verified against tool output':'Not found in any tool output'}">${inner}</span>`;
+  });
+}
+
+/* =========================================================
+   MOCK AGENT: a rule router standing in for the LLM.
+   Same output contract as the live backend.
+   ========================================================= */
+const HISTORY = [];
+/* Safe click-to-send: store text in a registry instead of inlining it into an
+   HTML attribute, so quotes/apostrophes in the text can never break onclick. */
+const CHIP_TEXT = [];
+function chip(label, text, cls){ CHIP_TEXT.push(text); return `<button class="chip${cls?' '+cls:''}" onclick="send(CHIP_TEXT[${CHIP_TEXT.length-1}])">${label}</button>`; }
+const pendingClarify = {};
+function cap(s){ return s.charAt(0)+s.slice(1).toLowerCase(); }
+const N = n => `<span class="num">${n}</span>`;
+const PRODUCT_CAT = {hoodie:'TOPS',hoodies:'TOPS',cardigan:'TOPS',cardigans:'TOPS',vest:'TOPS',vests:'TOPS',crewneck:'TOPS',crewnecks:'TOPS',sweater:'TOPS',sweaters:'TOPS',polo:'TOPS',polos:'TOPS',scarf:'ACCESSORIES',scarves:'ACCESSORIES',beanie:'ACCESSORIES',beanies:'ACCESSORIES'};
+const DAYNAME = {monday:1,tuesday:2,wednesday:3,thursday:4,friday:5,saturday:6,sunday:0};
+
+async function agentAnswer(text){
+  if(API_MODE==='live'){
+    const r = await fetch(LIVE_ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:text,history:HISTORY})});
+    return await r.json();
+  }
+  const q = text.toLowerCase().trim();
+  const idm = q.match(/ord-?\s?(\d{3})/);
+  const orderId = idm ? 'ORD-'+idm[1] : null;
+
+  /* 0. No-data refusals (hallucination bait) */
+  if(/(price|cost|margin|revenue|profit|invoice|\$|who works|worker|staff|shift|machine)/.test(q) && !/workshop/.test(q))
+    return {tone:'risk', narration:`I can't answer that. This system holds order status, daily stage output and workshop profiles only; there is no pricing, revenue or staff data.`, tool_calls:[]};
+
+  /* 1. Watches */
+  const wm = q.match(/(tell me|remind me|alert me|let me know|watch).*(ord-?\s?\d{3}).*(by|on|before)\s+(\w+)/);
+  if(wm && orderId){
+    let by = wm[4]; let byDate;
+    if(DAYNAME[by]!==undefined){ byDate = TODAY; let g=0; do{ byDate=addDays(byDate,1);}while(dow(byDate)!==DAYNAME[by] && g++<8); }
+    else if(/^\d{1,2}(st|nd|rd|th)?$/.test(by)) byDate = '2026-04-'+String(parseInt(by)).padStart(2,'0');
+    else byDate = addDays(TODAY,3);
+    const tc = TOOLS.create_watch({order_id:orderId, by_date:byDate});
+    setTimeout(evaluateWatches, 400);
+    return {tone:'good', narration:`<b>Watching ${orderId}.</b> I'll tell you if there's no activity by ${fmt(byDate)}.`, tool_calls:[{name:'create_watch', input:{order_id:orderId, by_date:byDate}, ...tc}]};
+  }
+
+  /* 2. Actions */
+  if(/(chase|follow up|follow-up|nudge)/.test(q) && orderId){ setTimeout(()=>proposeAction('chase',{order_id:orderId}),300);
+    return {tone:'amber', narration:`Drafting a chase-up for ${orderId}. Review it before it sends.`, tool_calls:[{name:'order_lookup', input:{order_id:orderId}, ...TOOLS.order_lookup({order_id:orderId})}]}; }
+  if(/(add a note|note on|add note)/.test(q) && orderId){ setTimeout(()=>proposeAction('note',{order_id:orderId, text:text.replace(/.*(note on|add a note to|add note to)\s*ord-?\d{3}:?\s*/i,'')}),300);
+    return {tone:'amber', narration:`Adding a note to ${orderId}. Confirm in the sheet.`, tool_calls:[]}; }
+
+  /* 3. Feasibility: "can we take 800 hoodies by the 25th" */
+  const fm = q.match(/(\d[\d,]*)\s+([a-z]+).*by (?:the )?(\d{1,2})(?:st|nd|rd|th)?(?:\s+(?:of\s+)?(\w+))?/);
+  if(/(can we|could we|take|accept|fit in|room for)/.test(q) && fm){
+    const pieces = parseInt(fm[1].replace(/,/g,'')); const cat = PRODUCT_CAT[fm[2]]; 
+    if(!cat) return {tone:'risk', narration:`I don't know what category "${fm[2]}" is. This factory makes tops (hoodies, cardigans, vests, crewnecks, polos) and accessories (scarves, beanies). Which is it?`, tool_calls:[]};
+    const month = fm[4] ? ({april:'04',may:'05',june:'06',march:'03'})[fm[4]]||'04' : '04';
+    const due = `2026-${month}-${fm[3].padStart(2,'0')}`;
+    const tc = TOOLS.feasibility_check({pieces, category:cat, due_date:due});
+    const o = tc.output;
+    const head = o.verdict==='YES'?`<b>Yes, this fits.</b>`:o.verdict==='TIGHT'?`<b>Tight, but likely yes.</b>`:`<b>Not by the ${fm[3]}${suffix(fm[3])}, not on current numbers.</b>`;
+    const ws = o.best_workshop ? ` Sending the batch out to ${o.best_workshop} instead: around ${N(fmt(o.workshop_finish))}.` : ' No active workshop is equipped for this category.';
+    return {tone:o.verdict==='NO'?'risk':o.verdict==='TIGHT'?'amber':'good',
+      narration:`${head} In-house, if prioritised: around ${N(fmt(o.factory_finish_if_prioritised))} (due ${fmt(due)}); behind all open work it slips to ${N(fmt(o.factory_finish_behind_all_open_work))}.${ws} This is an estimate; assumptions are one click down.`,
+      tool_calls:[{name:'feasibility_check', input:{pieces, category:cat, due_date:due}, ...tc}]};
+  }
+
+  /* 4. "Did anything go wrong yesterday" / what's at risk */
+  if(/(go wrong|what happened|yesterday|at risk|worry|problem|late|overdue|behind)/.test(q) && !orderId && !/normal/.test(q)){
+    const f = TOOLS.discover_findings(); const top = f.rows.filter(r=>r.tone!=='good').slice(0,3);
+    return {tone:top.length?'risk':'good', narration:top.length?`<b>${top.length} things need attention.</b><br>`+top.map((t,i)=>`${i+1}. ${t.text}`).join('<br>'):`<b>Nothing flagged.</b> All open orders are on track and every stage was within normal range.`,
+      tool_calls:[{name:'discover_findings', input:{}, output:f.output, rows:top.map(t=>({finding:t.text, score:t.score, from:t.trace.tool})), definition:f.definition}], chips:top.slice(0,2).map(t=>({label:'Why '+(t.text.match(/ORD-\d{3}/)||['this'])[0]+'?', send:'why is '+(t.text.match(/ORD-\d{3}/)||['it'])[0]+' at risk'}))};
+  }
+
+  /* 5. Judgement: "is packing normal" / "is 800 from assembly normal" */
+  const sm = q.match(/(knitting|assembly|washing|packing)/);
+  if(sm && /(normal|usual|typical|ok|fine|how (is|was|did))/.test(q)){
+    const stage = sm[1].toUpperCase(); const j = TOOLS.judge_normal({stage});
+    const o = j.output;
+    return {tone:o.verdict==='NORMAL'?'good':o.verdict==='BELOW_NORMAL'?'risk':'amber',
+      narration:`<b>${cap(stage)} was ${o.verdict.replace('_',' ').toLowerCase()} yesterday.</b> ${N(o.actual)} pieces against a normal ${DOWN[dow(o.date)]} of ${N(o.baseline_same_weekday_8w)} (${N(Math.abs(o.pct_diff)+'%')} ${o.pct_diff<0?'below':'above'}).`,
+      tool_calls:[{name:'judge_normal', input:{stage, date:o.date}, ...j}]};
+  }
+
+  /* 6. Why is ORD-xxx at risk */
+  if(orderId && /why/.test(q)){
+    const r = TOOLS.orders_at_risk({due_within_days:365}).rows.find(x=>x.order_id===orderId);
+    if(!r) return {tone:'good', narration:`<b>${orderId} isn't flagged.</b> It's not overdue, not stalled, and projected to finish before its due date.`, tool_calls:[{name:'orders_at_risk', input:{}, output:{flag:null}, rows:[ORDERS.find(x=>x.order_id===orderId)]}]};
+    const why = r.flag==='OVERDUE'?`its due date (${fmt(r.due_date)}) has passed and it's still in ${r.current_stage}`:r.flag==='STALLED'?`nothing has been recorded on it for ${N(r.stalled_days)} days`:`at the usual pace it finishes around ${fmt(r.projected_finish)}, ${N(-r.slack_days)} day(s) after its due date`;
+    return {tone:'risk', narration:`<b>${orderId} is flagged because ${why}.</b>`, tool_calls:[{name:'orders_at_risk', input:{order_id:orderId}, output:{flag:r.flag, stalled_days:r.stalled_days, projected_finish:r.projected_finish, slack_days:r.slack_days}, rows:[r], definition:TOOLS.orders_at_risk().definition}],
+      chips:[{label:'Draft a chase-up', send:`chase up ${orderId}`},{label:'Watch it', send:`tell me if ${orderId} hasn't moved by Friday`}]};
+  }
+
+  /* 7. Specific order status */
+  if(orderId){
+    const tc = TOOLS.order_lookup({order_id:orderId}); const o = tc.rows[0];
+    if(!o) return {tone:'risk', narration:`There's no ${orderId} in the order book. IDs run ORD-001 to ORD-120.`, tool_calls:[{name:'order_lookup', input:{order_id:orderId}, ...tc}]};
+    if(o.status==='COMPLETE') return {tone:'good', narration:`<b>${o.order_id} is complete.</b> ${o.customer}, ${N(o.pieces)} x ${o.product}, finished ${fmt(o.completed_date)} (${o.days_late>0?N(o.days_late)+' days late':o.days_late<0?N(-o.days_late)+' days early':'on time'}).`, tool_calls:[{name:'order_lookup', input:{order_id:orderId}, ...tc}]};
+    const r = TOOLS.orders_at_risk({due_within_days:365}).rows.find(x=>x.order_id===orderId);
+    const stalled = diffDays(o.last_activity_date, TODAY), left = diffDays(TODAY,o.due_date);
+    const status = r ? (r.flag==='OVERDUE'?`<b>${o.order_id} is overdue.</b>`:r.flag==='STALLED'?`<b>${o.order_id} has stalled.</b>`:`<b>${o.order_id} is at risk.</b>`) : `<b>${o.order_id} is on track.</b>`;
+    return {tone:r?'risk':'good', narration:`${status} ${o.customer}, ${N(o.pieces)} x ${o.product}, in ${cap(o.current_stage)}, due ${fmt(o.due_date)} (${left<0?N(-left)+' days ago':'in '+N(left)+' days'}). Last activity ${stalled===0?'today':N(stalled)+' day(s) ago'}.`,
+      tool_calls:[{name:'order_lookup', input:{order_id:orderId}, ...tc},{name:'orders_at_risk', input:{order_id:orderId}, output:{flag:r?r.flag:null, projected_finish:projectedFinish(o)}, rows:[]}],
+      chips:[{label:'Why?', send:`why is ${orderId} at risk`},{label:'Chase it up', send:`chase up ${orderId}`}]};
+  }
+
+  /* 8. Customer (ambiguous): "how is the TrendCart order" */
+  const cust = ORDERS.map(o=>o.customer).find(c => q.includes(c.toLowerCase().split(' ')[0].replace('&','')));
+  if(cust){
+    const open = TOOLS.order_lookup({customer:cust, status:'IN_PROGRESS'}); const rows = open.rows;
+    if(rows.length===0) return {tone:'good', narration:`<b>${cust} has no open orders.</b> ${TOOLS.order_lookup({customer:cust}).rows.length} completed in the last 90 days.`, tool_calls:[{name:'order_lookup', input:{customer:cust}, ...open}]};
+    if(rows.length===1) return agentAnswer(rows[0].order_id);
+    return {tone:'neutral', narration:`${cust} has <b>${rows.length} open orders</b> right now. Which one did you mean?`,
+      tool_calls:[{name:'order_lookup', input:{customer:cust, status:'IN_PROGRESS'}, ...open}],
+      chips:rows.slice(0,4).map(o=>({label:`${o.order_id} · ${o.product} · due ${fmt(o.due_date)}`, send:o.order_id})).concat(rows.length>4?[{label:`Show all ${rows.length}`, send:`list all open ${cust} orders`}]:[])};
+  }
+  if(/list all open/.test(q)){ const c = ORDERS.map(o=>o.customer).find(c=>q.includes(c.toLowerCase())); const tc=TOOLS.order_lookup({customer:c,status:'IN_PROGRESS'});
+    return {tone:'neutral', narration:`<b>${c}: ${tc.rows.length} open orders.</b><br>`+tc.rows.map(o=>`${o.order_id} · ${o.product} · ${o.pieces} · ${cap(o.current_stage)} · due ${fmt(o.due_date)}`).join('<br>'), tool_calls:[{name:'order_lookup', input:{customer:c}, ...tc}]}; }
+
+  /* 9. Workshops */
+  if(/workshop|subcontract|outside|who can/.test(q)){
+    const cat = Object.entries(PRODUCT_CAT).find(([k])=>q.includes(k)); const tc = TOOLS.workshop_lookup({category:cat?cat[1]:undefined});
+    return {tone:'neutral', narration:`<b>${tc.rows.length} active workshops</b>${cat?' can make '+cat[1].toLowerCase():''}: ${tc.rows.map(w=>w.name).join(', ')}. ${WORKSHOPS.filter(w=>w.status!=='ACTIVE').map(w=>w.name+' is '+w.status.toLowerCase()).join('; ')}.`, tool_calls:[{name:'workshop_lookup', input:{category:cat?cat[1]:null}, ...tc}]};
+  }
+
+  /* 10. Fallback: honest */
+  return {tone:'neutral', narration:`I'm not sure what to look up. I can answer about a specific order, a customer, a stage's output, whether we can take a new order, or set a watch. Try one of the suggestions below.`, tool_calls:[], chips:[{label:'What went wrong yesterday?', send:'did anything go wrong yesterday'},{label:'Is assembly normal?', send:'is assembly normal'},{label:'Can we take 800 hoodies by the 25th?', send:'can we take 800 hoodies by the 25th'}]};
+}
+function suffix(n){ n=+n; return [,'st','nd','rd'][n%10>3||Math.floor(n%100/10)===1?0:n%10]||'th'; }
+
+/* =========================================================
+   UI
+   ========================================================= */
+const thread = document.getElementById('thread');
+function addUser(t){ const e=document.createElement('div'); e.className='msg user'; e.textContent=t; thread.appendChild(e); thread.scrollTop=thread.scrollHeight; }
+function addWatchCard(html){ const e=document.createElement('div'); e.className='watch-card'; e.innerHTML=`<span>⏱</span><span>${html}</span>`; thread.appendChild(e); thread.scrollTop=thread.scrollHeight; }
+function addAgent(r){
+  const e=document.createElement('div'); e.className='msg agent';
+  const narration = verifyNumbers(r.narration, r.tool_calls||[]);
+  let detail='';
+  (r.tool_calls||[]).forEach(tc => {
+    detail += `<h4>${tc.name}${tc.input?' '+JSON.stringify(tc.input):''}</h4>`;
+    if(tc.definition) detail += `<div class="def">${tc.definition}</div>`;
+    if(tc.output) detail += Object.entries(tc.output).filter(([k])=>k!=='assumptions').map(([k,v])=>`<div class="row"><span>${k}</span><span>${typeof v==='object'?JSON.stringify(v):v}</span></div>`).join('');
+    if(tc.output && tc.output.assumptions) detail += `<div class="def"><b>Assumes:</b> ${tc.output.assumptions.join('; ')}</div>`;
+    if(tc.rows && tc.rows.length) detail += `<h4>source rows (${tc.rows.length})</h4>` + tc.rows.slice(0,8).map(row => `<div class="row"><span>${row.order_id||row.workshop_id||row.date||row.id||''}</span><span>${Object.entries(row).filter(([k,v])=>!['order_id','workshop_id','notes','finding'].includes(k)&&v!==null&&v!=='').slice(0,6).map(([k,v])=>`${k}=${v}`).join(' ')}${row.finding?row.finding:''}</span></div>`).join('') + (tc.rows.length>8?`<div class="row"><span></span><span>and ${tc.rows.length-8} more</span></div>`:'');
+  });
+  const tools = (r.tool_calls||[]).map(tc=>`<span class="tool">${tc.name}</span>`).join('');
+  e.innerHTML = `<div class="card ${r.tone||'neutral'}"><div class="headline">${narration}</div>
+    ${r.chips&&r.chips.length?`<div class="chips">${r.chips.map(c=>chip(c.label,c.send)).join('')}</div>`:''}
+    ${detail?`<button class="toggle" onclick="this.nextElementSibling.classList.toggle('open');this.lastElementChild.textContent=this.nextElementSibling.classList.contains('open')?'︿':'›'">Show the numbers <span>›</span></button><div class="detail">${detail}<div class="tools">${tools}</div></div>`:(tools?`<div class="tools" style="padding:0 13px 10px">${tools}</div>`:'')}
+  </div>`;
+  thread.appendChild(e); thread.scrollTop=thread.scrollHeight;
+}
+async function send(t){
+  const inp=document.getElementById('q'); const text = t || inp.value.trim(); if(!text) return; inp.value='';
+  addUser(text); HISTORY.push({role:'user', content:text});
+  const r = await agentAnswer(text); addAgent(r); HISTORY.push({role:'assistant', content:r.narration.replace(/<[^>]+>/g,'')});
+  tab('chat');
+}
+
+function renderSide(){
+  const dial = document.getElementById('dial').value; const limit = dial==='quiet'?2:dial==='normal'?5:99;
+  const f = TOOLS.discover_findings(); const items = f.rows.slice(0,limit);
+  document.getElementById('briefing').innerHTML = items.map((it,i)=>`<div class="line"><span class="tag ${it.tone}"></span><span>${it.text}</span><button class="why" onclick="traceFinding(${i})">why?</button></div>`).join('') + `<div style="margin-top:8px;font-size:11px;color:var(--muted)">${f.rows.length} findings total, showing ${items.length}. ${f.definition}</div>`;
+  const risk = TOOLS.orders_at_risk({due_within_days:60}).output;
+  document.getElementById('status-pill').innerHTML = `<span class="dot"></span><span>${risk.overdue} overdue · ${risk.stalled} stalled · ${risk.will_miss} at risk</span>`;
+  document.getElementById('brief-time').textContent = 'generated 6:58';
+  window._findings = f.rows;
+}
+function traceFinding(i){ const f = window._findings[i]; tab('chat'); addAgent({tone:f.tone, narration:`<b>Behind that finding:</b> ${f.text}`, tool_calls:[{name:f.trace.tool, input:{}, output:f.trace.output||{score:f.score}, rows:f.trace.rows, definition:f.trace.definition}]}); }
+function regenBriefing(){ renderSide(); document.getElementById('brief-time').textContent='regenerated '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}); }
+function renderWatches(){
+  const el=document.getElementById('watches'); document.getElementById('watch-count').textContent = WATCHES.length? WATCHES.length+' active':'';
+  if(!WATCHES.length) return;
+  el.innerHTML = WATCHES.map(w=>`<div class="line"><span class="tag ${w.fired?'risk':'amber'}"></span><span><b>${w.order_id}</b> · ${w.condition}<br><span style="color:var(--muted);font-size:11px">${w.fired?'Fired':'Watching'} · set ${w.created}</span></span></div>`).join('');
+}
+function renderAudit(){ const el=document.getElementById('audit'); if(!AUDIT.length) return; el.innerHTML = AUDIT.map(a=>`<div class="line"><span class="t">${a.t} · ${a.kind}${a.order_id?' · '+a.order_id:''}</span><span>${a.body.slice(0,120)}${a.body.length>120?'…':''}</span></div>`).join(''); }
+function tab(which){ const m=document.getElementById('main'); m.className='main'+(which==='side'?' show-side':which==='right'?' show-right':''); document.querySelectorAll('.tabs button').forEach((b,i)=>b.classList.toggle('active',['side','chat','right'][i]===which)); }
+
+/* Voice input (Web Speech API, works in Chrome/Edge; degrades silently elsewhere) */
+let rec=null;
+function toggleVoice(){
+  const SR = window.SpeechRecognition||window.webkitSpeechRecognition; const mic=document.getElementById('mic');
+  if(!SR){ addAgent({tone:'neutral', narration:'Voice input needs Chrome or Edge. Typing works everywhere.', tool_calls:[]}); return; }
+  if(rec){ rec.stop(); rec=null; mic.classList.remove('listening'); return; }
+  rec = new SR(); rec.lang='en-SG'; rec.interimResults=false; mic.classList.add('listening');
+  rec.onresult = e => { document.getElementById('q').value = e.results[0][0].transcript; send(); };
+  rec.onend = () => { rec=null; mic.classList.remove('listening'); }; rec.start();
+}
+
+/* Boot */
+document.getElementById('today-label').textContent = `Today is ${fmt(TODAY)} · 2026`;
+document.getElementById('suggest').innerHTML = ['Did anything go wrong yesterday?','How is the TrendCart order doing?','Can we take 800 hoodies by the 25th?','Is assembly normal?','Tell me if ORD-002 hasn\'t moved by Thursday','What margin are we making?'].map(s=>chip(s,s)).join('');
+renderSide();
+addAgent({tone:'neutral', narration:`Morning. The briefing is on the left${window.innerWidth<=900?' (Briefing tab)':''}. Ask me anything about orders, stages, workshops or whether we can take new work.`, tool_calls:[]});
+</script>
+</body>
+</html>

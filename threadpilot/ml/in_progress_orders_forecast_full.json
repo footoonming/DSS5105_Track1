@@ -1,0 +1,3232 @@
+{
+  "ORD-120": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-120"
+      },
+      "data": {
+        "order_id": "ORD-120",
+        "prediction": {
+          "delay_probability": 0.949,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1500.0,
+          "category": "TOPS",
+          "planned_lead_days": 18.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": -15
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.574232+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-120",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-120",
+        "pieces": 1500,
+        "remaining_pieces": 1500,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 3.99,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 10.99,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.576609+00:00"
+    }
+  },
+  "ORD-107": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-107"
+      },
+      "data": {
+        "order_id": "ORD-107",
+        "prediction": {
+          "delay_probability": 0.993,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 2000.0,
+          "category": "TOPS",
+          "planned_lead_days": 15.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": -16
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.586806+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-107",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-107",
+        "pieces": 2000,
+        "remaining_pieces": 2000,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 5.32,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 12.32,
+          "estimated_completion_date": "2026-04-13"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.588839+00:00"
+    }
+  },
+  "ORD-114": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-114"
+      },
+      "data": {
+        "order_id": "ORD-114",
+        "prediction": {
+          "delay_probability": 0.98,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 2000.0,
+          "category": "TOPS",
+          "planned_lead_days": 20.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": -9
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.596414+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-114",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-114",
+        "pieces": 2000,
+        "remaining_pieces": 2000,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 5.32,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 12.32,
+          "estimated_completion_date": "2026-04-13"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.599109+00:00"
+    }
+  },
+  "ORD-002": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-002"
+      },
+      "data": {
+        "order_id": "ORD-002",
+        "prediction": {
+          "delay_probability": 0.626,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1000.0,
+          "category": "TOPS",
+          "planned_lead_days": 23.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 9,
+          "days_to_due": -3
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.608050+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-002",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-002",
+        "pieces": 1000,
+        "remaining_pieces": 1000,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.66,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.66,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.610177+00:00"
+    }
+  },
+  "ORD-083": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-083"
+      },
+      "data": {
+        "order_id": "ORD-083",
+        "prediction": {
+          "delay_probability": 0.876,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1000.0,
+          "category": "TOPS",
+          "planned_lead_days": 16.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": -9
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.617890+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-083",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-083",
+        "pieces": 1000,
+        "remaining_pieces": 1000,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.66,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.66,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.619961+00:00"
+    }
+  },
+  "ORD-099": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-099"
+      },
+      "data": {
+        "order_id": "ORD-099",
+        "prediction": {
+          "delay_probability": 0.66,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1500.0,
+          "category": "TOPS",
+          "planned_lead_days": 29.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 4
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.627911+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-099",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-099",
+        "pieces": 1500,
+        "remaining_pieces": 1500,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 3.99,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 10.99,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.629835+00:00"
+    }
+  },
+  "ORD-020": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-020"
+      },
+      "data": {
+        "order_id": "ORD-020",
+        "prediction": {
+          "delay_probability": 0.744,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1200.0,
+          "category": "TOPS",
+          "planned_lead_days": 23.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": -1
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.637773+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-020",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-020",
+        "pieces": 1200,
+        "remaining_pieces": 1200,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 3.19,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 10.19,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.639840+00:00"
+    }
+  },
+  "ORD-103": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-103"
+      },
+      "data": {
+        "order_id": "ORD-103",
+        "prediction": {
+          "delay_probability": 0.959,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 2000.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 26.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 3
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.649168+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-103",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-103",
+        "pieces": 2000,
+        "remaining_pieces": 2000,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 12.13,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 16.63,
+          "estimated_completion_date": "2026-04-17"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.651455+00:00"
+    }
+  },
+  "ORD-029": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-029"
+      },
+      "data": {
+        "order_id": "ORD-029",
+        "prediction": {
+          "delay_probability": 0.931,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1500.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 22.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 0
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.660214+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-029",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-029",
+        "pieces": 1500,
+        "remaining_pieces": 1500,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 9.1,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 13.6,
+          "estimated_completion_date": "2026-04-14"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.662496+00:00"
+    }
+  },
+  "ORD-109": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-109"
+      },
+      "data": {
+        "order_id": "ORD-109",
+        "prediction": {
+          "delay_probability": 0.042,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 500.0,
+          "category": "TOPS",
+          "planned_lead_days": 34.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 12
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.670752+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-109",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-109",
+        "pieces": 500,
+        "remaining_pieces": 500,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 1.33,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 8.33,
+          "estimated_completion_date": "2026-04-09"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.672798+00:00"
+    }
+  },
+  "ORD-061": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-061"
+      },
+      "data": {
+        "order_id": "ORD-061",
+        "prediction": {
+          "delay_probability": 0.562,
+          "risk_level": "MEDIUM",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 800.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 24.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 4
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.691432+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-061",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-061",
+        "pieces": 800,
+        "remaining_pieces": 800,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 4.85,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 9.35,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.699046+00:00"
+    }
+  },
+  "ORD-093": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-093"
+      },
+      "data": {
+        "order_id": "ORD-093",
+        "prediction": {
+          "delay_probability": 0.54,
+          "risk_level": "MEDIUM",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 100.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 15.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": -3
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.711436+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-093",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-093",
+        "pieces": 100,
+        "remaining_pieces": 100,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 0.61,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 5.11,
+          "estimated_completion_date": "2026-04-06"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.713453+00:00"
+    }
+  },
+  "ORD-055": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-055"
+      },
+      "data": {
+        "order_id": "ORD-055",
+        "prediction": {
+          "delay_probability": 0.802,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 800.0,
+          "category": "TOPS",
+          "planned_lead_days": 16.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": -1
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.722243+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-055",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-055",
+        "pieces": 800,
+        "remaining_pieces": 800,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.13,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.13,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.724238+00:00"
+    }
+  },
+  "ORD-108": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-108"
+      },
+      "data": {
+        "order_id": "ORD-108",
+        "prediction": {
+          "delay_probability": 0.993,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 2000.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 17.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 2
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.739809+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-108",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-108",
+        "pieces": 2000,
+        "remaining_pieces": 2000,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 12.13,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 16.63,
+          "estimated_completion_date": "2026-04-17"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.748884+00:00"
+    }
+  },
+  "ORD-081": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-081"
+      },
+      "data": {
+        "order_id": "ORD-081",
+        "prediction": {
+          "delay_probability": 0.783,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1500.0,
+          "category": "TOPS",
+          "planned_lead_days": 26.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 12
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.756664+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-081",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-081",
+        "pieces": 1500,
+        "remaining_pieces": 1500,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 3.99,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 10.99,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.758614+00:00"
+    }
+  },
+  "ORD-041": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-041"
+      },
+      "data": {
+        "order_id": "ORD-041",
+        "prediction": {
+          "delay_probability": 0.103,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 600.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 33.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 20
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.770595+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-041",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-041",
+        "pieces": 600,
+        "remaining_pieces": 600,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 3.64,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 8.14,
+          "estimated_completion_date": "2026-04-09"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.772666+00:00"
+    }
+  },
+  "ORD-096": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-096"
+      },
+      "data": {
+        "order_id": "ORD-096",
+        "prediction": {
+          "delay_probability": 0.443,
+          "risk_level": "MEDIUM",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 1000.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 29.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 16
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.790273+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-096",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-096",
+        "pieces": 1000,
+        "remaining_pieces": 1000,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 6.06,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 10.56,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.798676+00:00"
+    }
+  },
+  "ORD-005": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-005"
+      },
+      "data": {
+        "order_id": "ORD-005",
+        "prediction": {
+          "delay_probability": 0.139,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 500.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 30.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 8,
+          "days_to_due": 19
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.806557+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-005",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-005",
+        "pieces": 500,
+        "remaining_pieces": 500,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 3.03,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 7.53,
+          "estimated_completion_date": "2026-04-08"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.808543+00:00"
+    }
+  },
+  "ORD-045": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-045"
+      },
+      "data": {
+        "order_id": "ORD-045",
+        "prediction": {
+          "delay_probability": 0.265,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 150.0,
+          "category": "TOPS",
+          "planned_lead_days": 19.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 8
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.816248+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-045",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-045",
+        "pieces": 150,
+        "remaining_pieces": 150,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 0.4,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 7.4,
+          "estimated_completion_date": "2026-04-08"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.818186+00:00"
+    }
+  },
+  "ORD-053": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-053"
+      },
+      "data": {
+        "order_id": "ORD-053",
+        "prediction": {
+          "delay_probability": 0.64,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 800.0,
+          "category": "TOPS",
+          "planned_lead_days": 20.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 9
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.827929+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-053",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-053",
+        "pieces": 800,
+        "remaining_pieces": 800,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.13,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.13,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.830025+00:00"
+    }
+  },
+  "ORD-073": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-073"
+      },
+      "data": {
+        "order_id": "ORD-073",
+        "prediction": {
+          "delay_probability": 0.07,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 400.0,
+          "category": "TOPS",
+          "planned_lead_days": 30.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 19
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.862777+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-073",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-073",
+        "pieces": 400,
+        "remaining_pieces": 400,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 1.06,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 8.06,
+          "estimated_completion_date": "2026-04-09"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.864984+00:00"
+    }
+  },
+  "ORD-036": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-036"
+      },
+      "data": {
+        "order_id": "ORD-036",
+        "prediction": {
+          "delay_probability": 0.188,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 1000.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 35.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 25
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.878542+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-036",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-036",
+        "pieces": 1000,
+        "remaining_pieces": 1000,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 6.06,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 10.56,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.880533+00:00"
+    }
+  },
+  "ORD-062": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-062"
+      },
+      "data": {
+        "order_id": "ORD-062",
+        "prediction": {
+          "delay_probability": 0.993,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 2000.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 17.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 7
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.888224+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-062",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-062",
+        "pieces": 2000,
+        "remaining_pieces": 2000,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 12.13,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 16.63,
+          "estimated_completion_date": "2026-04-17"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.895084+00:00"
+    }
+  },
+  "ORD-066": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-066"
+      },
+      "data": {
+        "order_id": "ORD-066",
+        "prediction": {
+          "delay_probability": 0.124,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 1000.0,
+          "category": "TOPS",
+          "planned_lead_days": 35.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 25
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.903039+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-066",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-066",
+        "pieces": 1000,
+        "remaining_pieces": 1000,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.66,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.66,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.911195+00:00"
+    }
+  },
+  "ORD-008": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-008"
+      },
+      "data": {
+        "order_id": "ORD-008",
+        "prediction": {
+          "delay_probability": 0.655,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 600.0,
+          "category": "TOPS",
+          "planned_lead_days": 17.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 1,
+          "days_to_due": 8
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.919404+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-008",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-008",
+        "pieces": 600,
+        "remaining_pieces": 600,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 1.6,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 8.6,
+          "estimated_completion_date": "2026-04-09"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.921529+00:00"
+    }
+  },
+  "ORD-015": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-015"
+      },
+      "data": {
+        "order_id": "ORD-015",
+        "prediction": {
+          "delay_probability": 0.163,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 300.0,
+          "category": "TOPS",
+          "planned_lead_days": 24.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 15
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.929143+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-015",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-015",
+        "pieces": 300,
+        "remaining_pieces": 300,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 0.8,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 7.8,
+          "estimated_completion_date": "2026-04-08"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.931381+00:00"
+    }
+  },
+  "ORD-017": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-017"
+      },
+      "data": {
+        "order_id": "ORD-017",
+        "prediction": {
+          "delay_probability": 0.729,
+          "risk_level": "HIGH",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 800.0,
+          "category": "TOPS",
+          "planned_lead_days": 18.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 9
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.950889+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-017",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-017",
+        "pieces": 800,
+        "remaining_pieces": 800,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.13,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.13,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.953135+00:00"
+    }
+  },
+  "ORD-010": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-010"
+      },
+      "data": {
+        "order_id": "ORD-010",
+        "prediction": {
+          "delay_probability": 0.207,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 1000.0,
+          "category": "TOPS",
+          "planned_lead_days": 32.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 24
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.960915+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-010",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-010",
+        "pieces": 1000,
+        "remaining_pieces": 1000,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.66,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.66,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.962952+00:00"
+    }
+  },
+  "ORD-024": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-024"
+      },
+      "data": {
+        "order_id": "ORD-024",
+        "prediction": {
+          "delay_probability": 0.228,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 300.0,
+          "category": "TOPS",
+          "planned_lead_days": 22.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 14
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.970898+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-024",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-024",
+        "pieces": 300,
+        "remaining_pieces": 300,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 0.8,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 7.8,
+          "estimated_completion_date": "2026-04-08"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.974503+00:00"
+    }
+  },
+  "ORD-035": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-035"
+      },
+      "data": {
+        "order_id": "ORD-035",
+        "prediction": {
+          "delay_probability": 0.032,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 300.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 35.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 28
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.982572+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-035",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-035",
+        "pieces": 300,
+        "remaining_pieces": 300,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 1.82,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 6.32,
+          "estimated_completion_date": "2026-04-07"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.989072+00:00"
+    }
+  },
+  "ORD-040": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-040"
+      },
+      "data": {
+        "order_id": "ORD-040",
+        "prediction": {
+          "delay_probability": 0.561,
+          "risk_level": "MEDIUM",
+          "predicted_delay": true
+        },
+        "features": {
+          "pieces": 1200.0,
+          "category": "TOPS",
+          "planned_lead_days": 27.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 20
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:37.996985+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-040",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-040",
+        "pieces": 1200,
+        "remaining_pieces": 1200,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 3.19,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 10.19,
+          "estimated_completion_date": "2026-04-11"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:37.998983+00:00"
+    }
+  },
+  "ORD-063": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-063"
+      },
+      "data": {
+        "order_id": "ORD-063",
+        "prediction": {
+          "delay_probability": 0.017,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 100.0,
+          "category": "TOPS",
+          "planned_lead_days": 33.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 28
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:38.029871+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-063",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-063",
+        "pieces": 100,
+        "remaining_pieces": 100,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 0.27,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 7.27,
+          "estimated_completion_date": "2026-04-08"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:38.031857+00:00"
+    }
+  },
+  "ORD-082": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-082"
+      },
+      "data": {
+        "order_id": "ORD-082",
+        "prediction": {
+          "delay_probability": 0.071,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 600.0,
+          "category": "ACCESSORIES",
+          "planned_lead_days": 35.0,
+          "workshop_avg_capacity": 123.3,
+          "workshop_avg_queue_days": 1.33,
+          "workshop_avg_defect_rate": 0.033,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 2,
+          "days_to_due": 30
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:38.040211+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-082",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-082",
+        "pieces": 600,
+        "remaining_pieces": 600,
+        "workshop": {
+          "workshop_id": "W2",
+          "name": "SteadyHands",
+          "capacity_per_day": 170.0,
+          "defect_rate": 0.03,
+          "effective_capacity_per_day": 164.9,
+          "current_queue_days": 2.5,
+          "pickup_lead_days": 2.0
+        },
+        "forecast": {
+          "production_days": 3.64,
+          "queue_days": 2.5,
+          "pickup_days": 2.0,
+          "total_estimated_days": 8.14,
+          "estimated_completion_date": "2026-04-09"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:38.042308+00:00"
+    }
+  },
+  "ORD-095": {
+    "predict_order_delay": {
+      "tool": "predict_order_delay",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-095"
+      },
+      "data": {
+        "order_id": "ORD-095",
+        "prediction": {
+          "delay_probability": 0.185,
+          "risk_level": "LOW",
+          "predicted_delay": false
+        },
+        "features": {
+          "pieces": 800.0,
+          "category": "TOPS",
+          "planned_lead_days": 30.0,
+          "workshop_avg_capacity": 221.7,
+          "workshop_avg_queue_days": 2.58,
+          "workshop_avg_defect_rate": 0.065,
+          "factory_output_trend": -0.0563,
+          "days_since_activity": 0,
+          "days_to_due": 25
+        },
+        "model": {
+          "name": "LogisticRegression",
+          "version": "v1",
+          "training_samples": 86,
+          "target": "order_delayed (days_late > 0)"
+        }
+      },
+      "calculation": {
+        "thresholds": {
+          "HIGH": ">= 0.6",
+          "MEDIUM": ">= 0.35",
+          "LOW": "< 0.35"
+        }
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity/queue/defect-rate features reflect current snapshot, not necessarily the workshop this order will actually use.",
+        "factory_output_trend is a whole-factory signal, not specific to this order."
+      ],
+      "limitations": [
+        "production_log has no order_id, so no production feature is directly attributable to this specific order.",
+        "Model trained on a small historical sample (86 orders); treat this as a risk estimate, not a guarantee."
+      ],
+      "timestamp": "2026-09-11T11:29:38.050407+00:00"
+    },
+    "estimate_completion_date": {
+      "tool": "estimate_completion_date",
+      "status": "success",
+      "query": {
+        "order_id": "ORD-095",
+        "workshop_id": null
+      },
+      "data": {
+        "order_id": "ORD-095",
+        "pieces": 800,
+        "remaining_pieces": 800,
+        "workshop": {
+          "workshop_id": "W5",
+          "name": "GiantWeave",
+          "capacity_per_day": 400.0,
+          "defect_rate": 0.06,
+          "effective_capacity_per_day": 376.0,
+          "current_queue_days": 3.0,
+          "pickup_lead_days": 4.0
+        },
+        "forecast": {
+          "production_days": 2.13,
+          "queue_days": 3.0,
+          "pickup_days": 4.0,
+          "total_estimated_days": 9.13,
+          "estimated_completion_date": "2026-04-10"
+        }
+      },
+      "calculation": {
+        "effective_capacity_per_day": "capacity_pieces_per_day * (1 - defect_rate)",
+        "production_days": "remaining_pieces / effective_capacity_per_day",
+        "total_estimated_days": "production_days + current_queue_days + pickup_lead_days"
+      },
+      "evidence": [],
+      "assumptions": [
+        "Workshop capacity and defect rate remain stable during production.",
+        "No disruption to the workshop or supply chain.",
+        "Order is assumed to receive the workshop's full stated capacity exclusively."
+      ],
+      "limitations": [
+        "orders.csv has no completed_quantity field, so remaining_pieces conservatively assumes 0 pieces completed so far."
+      ],
+      "timestamp": "2026-09-11T11:29:38.052203+00:00"
+    }
+  }
+}

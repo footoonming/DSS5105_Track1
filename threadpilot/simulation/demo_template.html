@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ThreadPilot · Factory overview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F6F8; --surface:#FFFFFF; --subtle:#F9FAFB; --border:#E6E8EC; --border-strong:#D0D5DD;
+  --text:#101828; --text-2:#475467; --text-3:#667085;
+  --primary:#101828; --on-primary:#FFFFFF;
+  --chart:#2563EB; --band:#DBEAFE; --band-2:#EEF2FF;
+  --ok:#12B76A; --ok-text:#067647; --ok-soft:#ECFDF3;
+  --warn:#F79009; --warn-text:#B54708; --warn-soft:#FFFAEB;
+  --bad:#F04438; --bad-text:#B42318; --bad-soft:#FEF3F2;
+  --info-soft:#EFF8FF; --info-text:#175CD3;
+  --shadow:0 1px 2px rgba(16,24,40,.05);
+  --radius:12px;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1117; --surface:#161B22; --subtle:#1C222B; --border:#262D38; --border-strong:#374151;
+  --text:#F2F4F7; --text-2:#C0C6D0; --text-3:#98A2B3; --primary:#F2F4F7; --on-primary:#101828;
+  --chart:#60A5FA; --band:#1E3A5F; --band-2:#1A2436;
+  --ok:#32D583; --ok-text:#6CE9A6; --ok-soft:rgba(18,183,106,.14);
+  --warn:#FDB022; --warn-text:#FEC84B; --warn-soft:rgba(247,144,9,.14);
+  --bad:#F97066; --bad-text:#FDA29B; --bad-soft:rgba(240,68,56,.14);
+  --info-soft:rgba(46,144,250,.14); --info-text:#84CAFF; --shadow:none;}}
+:root[data-theme="dark"]{
+  --bg:#0E1117; --surface:#161B22; --subtle:#1C222B; --border:#262D38; --border-strong:#374151;
+  --text:#F2F4F7; --text-2:#C0C6D0; --text-3:#98A2B3; --primary:#F2F4F7; --on-primary:#101828;
+  --chart:#60A5FA; --band:#1E3A5F; --band-2:#1A2436;
+  --ok:#32D583; --ok-text:#6CE9A6; --ok-soft:rgba(18,183,106,.14);
+  --warn:#FDB022; --warn-text:#FEC84B; --warn-soft:rgba(247,144,9,.14);
+  --bad:#F97066; --bad-text:#FDA29B; --bad-soft:rgba(240,68,56,.14);
+  --info-soft:rgba(46,144,250,.14); --info-text:#84CAFF; --shadow:none;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 76px)}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:14px/1.5 var(--font);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p{margin:0}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+:focus-visible{outline:2px solid var(--chart);outline-offset:2px}
+.muted{color:var(--text-3)}
+
+/* header */
+.topbar{position:sticky;top:env(safe-area-inset-top,0px);z-index:20;background:var(--surface);border-bottom:1px solid var(--border)}
+.topbar-in{max-width:1320px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.logo{display:flex;align-items:center;gap:10px;font-weight:600;font-size:15px;margin-right:auto}
+.logo i{width:28px;height:28px;border-radius:8px;background:var(--primary);display:grid;place-items:center;color:var(--on-primary);font-style:normal;font-weight:700;font-size:13px}
+.logo small{display:block;font-weight:400;color:var(--text-3);font-size:12.5px;line-height:1.2}
+.datepick{display:flex;align-items:center;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;background:var(--surface)}
+.datepick button{border:0;background:none;padding:7px 10px;color:var(--text-2)}
+.datepick button:disabled{opacity:.35;cursor:default}
+.datepick select{border:0;border-left:1px solid var(--border);border-right:1px solid var(--border);background:none;padding:7px 10px;font-weight:500;min-width:190px}
+.btn{border:1px solid var(--border-strong);background:var(--surface);border-radius:8px;padding:7px 12px;font-weight:500;box-shadow:var(--shadow);white-space:nowrap}
+.btn:hover{background:var(--subtle)}
+.btn.primary{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn.ghost{border-color:transparent;box-shadow:none;background:none;color:var(--text-2)}
+.btn[aria-pressed="true"]{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.iconbtn{width:34px;height:34px;display:grid;place-items:center;padding:0}
+
+.page{max-width:1320px;margin:0 auto;padding:20px 24px 56px}
+.pagehead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:8px 16px;margin-bottom:16px}
+.pagehead h1{font-size:24px;font-weight:600;letter-spacing:-.01em}
+.pagehead p{color:var(--text-3);margin-top:2px}
+.badge{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:500;background:var(--subtle);border:1px solid var(--border);color:var(--text-2)}
+.badge.sim{background:var(--info-soft);border-color:transparent;color:var(--info-text)}
+
+.grid{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:16px}
+.s12{grid-column:span 12}.s8{grid-column:span 8}.s7{grid-column:span 7}.s5{grid-column:span 5}.s4{grid-column:span 4}
+@media (max-width:1080px){.s8,.s7,.s5,.s4{grid-column:span 12}}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 20px 0;flex-wrap:wrap}
+.card-h h2{font-size:15px;font-weight:600}
+.card-h .muted{font-size:13px}
+.card-b{padding:14px 20px 18px}
+
+/* summary */
+.summary li{display:flex;gap:12px;align-items:flex-start;padding:8px 0;font-size:15.5px;line-height:1.45}
+.summary li+li{border-top:1px solid var(--border)}
+.summary ul{list-style:none;margin:0;padding:0}
+.summary .k{flex:0 0 78px;font-size:12.5px;font-weight:500;color:var(--text-3);padding-top:2px}
+.changes{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px}
+.pill{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 10px;font-size:12.5px;font-weight:500;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.pill.late,.pill.critical{background:var(--bad-soft);color:var(--bad-text)}
+.pill.at_risk,.pill.high{background:var(--warn-soft);color:var(--warn-text)}
+.pill.on_track,.pill.cleared{background:var(--ok-soft);color:var(--ok-text)}
+.pill.watch,.pill.neutral{background:var(--subtle);color:var(--text-2)}
+.pill.new{background:var(--info-soft);color:var(--info-text)}
+.pill.plain::before{display:none}
+.changes .pill{white-space:normal;max-width:100%}
+.changes .pill::before{flex:none}
+
+/* health */
+.stack{display:flex;height:12px;border-radius:6px;overflow:hidden;background:var(--subtle);margin:12px 0 10px}
+.stack span{display:block;height:100%}
+.legend3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.legend3 button{border:1px solid var(--border);background:var(--surface);border-radius:8px;padding:8px 10px;text-align:left}
+.legend3 button:hover{background:var(--subtle)}
+.legend3 b{display:block;font-size:20px;font-weight:600}
+.legend3 small{display:flex;align-items:center;gap:6px;color:var(--text-3);font-size:12.5px}
+.legend3 small i{width:8px;height:8px;border-radius:2px}
+.otd{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+.otd b{font-size:20px;font-weight:600}
+
+/* kpis */
+.kpis{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:16px}
+@media (max-width:1080px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{padding:16px 18px;display:flex;flex-direction:column;gap:6px;text-align:left;border:1px solid var(--border);background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);min-width:0}
+button.kpi:hover{border-color:var(--border-strong)}
+.kpi .label{color:var(--text-2);font-weight:500;font-size:13px}
+.kpi .row{display:flex;align-items:flex-end;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.kpi .value{font-size:28px;font-weight:600;line-height:1.1;letter-spacing:-.02em}
+.kpi .sub{font-size:12.5px;color:var(--text-3)}
+.delta{display:inline-flex;align-items:center;gap:2px;font-size:12.5px;font-weight:500;border-radius:6px;padding:1px 6px;white-space:nowrap}
+.delta.bad{background:var(--bad-soft);color:var(--bad-text)} .delta.good{background:var(--ok-soft);color:var(--ok-text)} .delta.flat{background:var(--subtle);color:var(--text-3)}
+.spark{width:84px;height:30px;flex:none}
+
+/* attention list */
+.alist{list-style:none;margin:0;padding:0}
+.aitem{padding:14px 20px;border-top:1px solid var(--border)}
+.aitem:first-child{border-top:0}
+.atop{display:flex;gap:10px;align-items:flex-start}
+.atop h3{font-size:14.5px;font-weight:600;line-height:1.4;flex:1}
+.anext{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin-top:8px;color:var(--text-2);font-size:13.5px}
+.anext .step{margin-right:auto}
+.adetail{margin-top:10px;color:var(--text-2);font-size:13.5px}
+.adetail p{margin-bottom:8px}
+
+table{border-collapse:collapse;width:100%}
+th{font-size:12px;font-weight:500;color:var(--text-3);text-align:left;padding:10px 12px;background:var(--subtle);border-bottom:1px solid var(--border);white-space:nowrap}
+td{padding:11px 12px;border-bottom:1px solid var(--border);vertical-align:middle;white-space:nowrap}
+tbody tr:last-child td{border-bottom:0}
+.tbl{overflow-x:auto}
+.mini th,.mini td{padding:6px 10px;font-size:12.5px}
+.num{text-align:right}
+tr.click{cursor:pointer}
+tr.click:hover td{background:var(--subtle)}
+.segbar{display:flex;width:120px;height:8px;border-radius:4px;overflow:hidden;background:var(--subtle)}
+.segbar span{height:100%}
+.flag{font-size:12px;color:var(--bad-text);font-weight:500}
+
+/* chart */
+.seg{display:inline-flex;border:1px solid var(--border-strong);border-radius:8px;overflow:hidden;flex-wrap:wrap}
+.seg button{border:0;background:var(--surface);padding:6px 11px;font-size:13px;font-weight:500;color:var(--text-2)}
+.seg button+button{border-left:1px solid var(--border)}
+.seg button[aria-pressed="true"]{background:var(--subtle);color:var(--text);box-shadow:inset 0 -2px 0 var(--text)}
+.chartsum{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 12px;margin-bottom:6px}
+.chartsum b{font-size:22px;font-weight:600}
+.chart{width:100%;height:auto;display:block}
+.chart text{font:11px var(--font);fill:var(--text-3)}
+.chart-legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--text-3);margin-top:6px}
+.chart-legend i{display:inline-block;width:12px;height:8px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+/* wip */
+.wip{display:grid;gap:14px}
+.wiprow .top{display:flex;justify-content:space-between;gap:8px;font-size:13.5px}
+.wiprow .top b{font-weight:600}
+.track{height:10px;border-radius:5px;background:var(--subtle);margin-top:6px;overflow:hidden}
+.track span{display:block;height:100%;border-radius:5px;background:var(--chart)}
+.track span.hot{background:var(--warn)}
+.callout{margin-top:14px;padding:10px 12px;border-radius:8px;background:var(--warn-soft);color:var(--warn-text);font-size:13.5px}
+
+/* outlook + orders */
+.outlook{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:14px}
+@media (max-width:720px){.outlook{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.obox{border:1px solid var(--border);border-radius:10px;padding:10px 12px;background:var(--surface);text-align:left}
+.obox[aria-pressed="true"]{border-color:var(--text);box-shadow:0 0 0 1px var(--text)}
+.obox b{font-size:20px;font-weight:600;display:block}
+.obox small{color:var(--text-3);font-size:12.5px}
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-bottom:12px}
+.toolbar input,.toolbar select{border:1px solid var(--border-strong);border-radius:8px;padding:7px 10px;background:var(--surface)}
+.toolbar input{min-width:200px;flex:1 1 200px;max-width:320px}
+.pips{display:inline-flex;gap:2px;margin-right:8px;vertical-align:middle}
+.pips i{width:12px;height:6px;border-radius:2px;background:var(--border)}
+.pips i.done{background:var(--chart)} .pips i.here{background:var(--text)}
+tr.expand td{white-space:normal;background:var(--subtle);color:var(--text-2);font-size:13px}
+.empty{padding:28px;text-align:center;color:var(--text-3)}
+
+.log{list-style:none;margin:0;padding:0}
+.log li{padding:10px 0;border-top:1px solid var(--border);font-size:13.5px;display:flex;gap:10px}
+.log li:first-child{border-top:0}
+.log time{color:var(--text-3);flex:none;width:48px}
+
+details.card{padding:14px 20px}
+details summary{cursor:pointer;font-weight:600}
+dl{display:grid;grid-template-columns:max-content 1fr;gap:6px 18px;margin:12px 0 0;font-size:13.5px}
+@media (max-width:640px){dl{grid-template-columns:1fr}dd{margin-bottom:6px}}
+dt{font-weight:500} dd{margin:0;color:var(--text-2)}
+.ev-on td{color:var(--bad-text);font-weight:500}
+
+/* modal + toast */
+.modal{position:fixed;inset:0;background:rgba(16,24,40,.5);display:grid;place-items:center;padding:16px;z-index:50}
+.modal[hidden]{display:none}
+.dialog{background:var(--surface);border-radius:14px;width:min(520px,100%);max-height:90vh;overflow:auto;box-shadow:0 20px 40px rgba(16,24,40,.2)}
+.dialog header{padding:18px 20px 0}
+.dialog h2{font-size:17px;font-weight:600}
+.dialog .body{padding:14px 20px;display:grid;gap:12px}
+.dialog label{display:grid;gap:4px;font-size:13px;font-weight:500;color:var(--text-2)}
+.dialog textarea,.dialog select{border:1px solid var(--border-strong);border-radius:8px;padding:8px 10px;background:var(--surface);width:100%}
+.dialog textarea{min-height:120px;resize:vertical}
+.blast{font-size:13px;padding:10px 12px;border-radius:8px;background:var(--subtle);color:var(--text-2)}
+.dialog footer{display:flex;justify-content:flex-end;gap:8px;padding:0 20px 18px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--primary);color:var(--on-primary);padding:10px 16px;border-radius:10px;font-weight:500;z-index:60}
+.toast[hidden]{display:none}
+@media (max-width:640px){.topbar-in{gap:8px}.topbar-in .btn{padding:6px 9px;font-size:13px}.topbar-in,.page{padding-left:14px;padding-right:14px}.datepick select{min-width:0}.logo small{display:none}.pagehead h1{font-size:20px}.summary .k{flex-basis:64px}}
+/*__CHAT_CSS__*/
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-in">
+    <div class="logo"><i>TP</i><div>ThreadPilot<small>Factory overview</small></div></div>
+    <div class="datepick" role="group" aria-label="Choose a morning">
+      <button id="prev" aria-label="Previous morning">&#8249;</button>
+      <select id="daysel" aria-label="Morning"></select>
+      <button id="next" aria-label="Next morning">&#8250;</button>
+    </div>
+    <button class="btn" id="play" aria-pressed="false">Replay</button>
+    <button class="btn" id="speak">Read aloud</button>
+    <button class="btn iconbtn" id="theme" aria-label="Switch between light and dark" title="Light / dark">&#9680;</button>
+  </div>
+</header>
+
+<main class="page">
+  <div class="pagehead">
+    <div><h1 id="title"></h1><p id="subtitle"></p></div>
+    <span class="badge sim" id="simbadge"></span>
+  </div>
+
+  <div class="grid">
+    <section class="card s8 summary">
+      <div class="card-h"><h2>Morning summary</h2><span class="muted">Generated 07:00</span></div>
+      <div class="card-b"><ul id="summary"></ul><div class="changes" id="changes"></div></div>
+    </section>
+
+    <section class="card s4">
+      <div class="card-h"><h2>Order health</h2><span class="muted" id="activeCount"></span></div>
+      <div class="card-b">
+        <div class="stack" id="stack" role="img"></div>
+        <div class="legend3" id="legend3"></div>
+        <div class="otd" id="otd"></div>
+      </div>
+    </section>
+
+    <div class="s12 kpis" id="kpis"></div>
+
+    <section class="card s7">
+      <div class="card-h"><h2>Needs your attention</h2><span class="muted" id="acount"></span></div>
+      <ul class="alist" id="attention"></ul>
+    </section>
+
+    <section class="card s5">
+      <div class="card-h"><h2>Customers</h2><span class="muted">select one to see its orders</span></div>
+      <div class="card-b tbl" style="padding-top:10px"><table id="customers"></table></div>
+    </section>
+
+    <section class="card s7">
+      <div class="card-h"><h2>Daily output</h2><div class="seg" id="stageSeg" role="group" aria-label="Stage"></div></div>
+      <div class="card-b">
+        <div class="chartsum" id="chartsum"></div>
+        <div id="chart"></div>
+        <div class="chart-legend">
+          <span><i style="background:var(--chart);height:3px"></i>Actual</span>
+          <span><i style="background:var(--band)"></i>Usual range</span>
+          <span><i style="background:var(--band-2);outline:1px dashed var(--text-3)"></i>Expected next 6 working days</span>
+          <span><i style="background:var(--bad);width:8px;height:8px;border-radius:50%"></i>Below usual</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="card s5">
+      <div class="card-h"><h2>Work in progress</h2><span class="muted">days of work waiting at each stage</span></div>
+      <div class="card-b"><div class="wip" id="wip"></div><div id="bottleneck"></div></div>
+    </section>
+
+    <section class="card s12" id="ordersCard">
+      <div class="card-h"><h2>Orders in progress</h2><span class="muted" id="ocount"></span></div>
+      <div class="card-b">
+        <div class="outlook" id="outlook"></div>
+        <div class="toolbar">
+          <input id="q" type="search" placeholder="Search order, customer or product" aria-label="Search orders">
+          <div class="seg" id="statusSeg" role="group" aria-label="Status"></div>
+          <select id="custSel" aria-label="Customer"></select>
+          <button class="btn ghost" id="clear">Clear filters</button>
+        </div>
+        <div class="tbl"><table id="orders"></table></div>
+        <div style="margin-top:10px;display:flex;justify-content:center"><button class="btn sm" id="more" hidden></button></div>
+      </div>
+    </section>
+
+    <section class="card s5">
+      <div class="card-h"><h2>Activity log</h2><span class="muted">confirmed actions</span></div>
+      <div class="card-b"><ul class="log" id="log"></ul></div>
+    </section>
+
+    <div class="s7" style="display:grid;gap:16px;align-content:start">
+      <details class="card"><summary>How these numbers are calculated</summary><dl id="defs"></dl></details>
+      <details class="card"><summary>Planted test events (hidden from the briefing)</summary>
+        <p class="muted" style="margin:10px 0">The simulator injected these problems. The briefing never reads this list and had to find them in the data. Highlighted rows affect the selected morning.</p>
+        <div class="tbl"><table class="mini" id="scenario"></table></div>
+      </details>
+    </div>
+  </div>
+</main>
+
+<div class="modal" id="modal" hidden><div class="dialog" role="dialog" aria-modal="true" aria-labelledby="mtitle">
+  <header><h2 id="mtitle"></h2><p class="muted" id="msub" style="margin-top:4px"></p></header>
+  <div class="body" id="mbody"></div>
+  <footer><button class="btn" id="mcancel">Cancel</button><button class="btn primary" id="mok"></button></footer>
+</div></div>
+<div class="toast" id="toast" role="status" hidden></div>
+<!--__CHAT_HTML__-->
+
+<script>
+const DATA = /*__DATA__*/null;
+const B = DATA.briefings;
+const STAGES = ["KNITTING","ASSEMBLY","WASHING","PACKING"];
+const LABEL = {late:"Late", at_risk:"At risk", on_track:"On track", critical:"Critical", high:"High", watch:"Watch"};
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cap = s => s.charAt(0) + s.slice(1).toLowerCase();
+const fmt = (s, o) => new Date(s + "T12:00:00Z").toLocaleDateString("en-GB", {timeZone:"UTC", ...o});
+const n = v => v == null ? "–" : Number(v).toLocaleString("en-GB");
+const short = t => t.length > 64 ? t.slice(0, 62) + "…" : t;
+
+let idx = B.length - 1, timer = null, stage = "TOTAL", limit = 12;
+const filters = {q:"", status:"all", customer:"", bucket:""};
+const log = [];
+
+/* ---------- header ---------- */
+function header(){
+  const b = B[idx];
+  $("#daysel").innerHTML = B.map((x, i) => `<option value="${i}" ${i === idx ? "selected" : ""}>${fmt(x.business_date,{weekday:"short",day:"numeric",month:"short",year:"numeric"})}</option>`).join("");
+  $("#prev").disabled = idx === 0; $("#next").disabled = idx === B.length - 1;
+  $("#title").textContent = `Good morning. Here is the factory on ${fmt(b.business_date,{weekday:"long",day:"numeric",month:"long"})}.`;
+  $("#subtitle").textContent = `Data up to ${fmt(b.covers,{weekday:"long",day:"numeric",month:"long"})}. The factory is closed on Sundays.`;
+  $("#simbadge").textContent = idx === 0 ? "Original dataset" : `Simulated day ${idx}`;
+}
+
+/* ---------- summary + health ---------- */
+function summary(){
+  const b = B[idx], keys = ["Yesterday", "Top issue", "Decide"];
+  const lines = [b.headline[0].replace(/^(Yesterday|Last working day) \([^)]*\): /, ""),
+                 b.headline[1], b.headline[2].replace(/^Decide today: /, "")];
+  $("#summary").innerHTML = lines.map((l, i) => `<li><span class="k">${keys[i]}</span><span>${esc(l)}</span></li>`).join("");
+  const nw = b.findings.filter(f => f.is_new), res = b.resolved_since_previous;
+  $("#changes").innerHTML = idx === 0 ? `<span class="pill neutral plain">First briefing: nothing to compare with</span>` :
+    nw.map(f => `<span class="pill new">New: ${esc(short(f.title))}</span>`).join("") +
+    res.slice(0, 3).map(r => `<span class="pill cleared">Cleared: ${esc(short(r.title))}</span>`).join("") +
+    (res.length > 3 ? `<span class="pill cleared plain">+${res.length - 3} more cleared</span>` : "") +
+    (!nw.length && !res.length ? `<span class="pill neutral plain">No change since yesterday</span>` : "");
+
+  const c = b.status_counts, total = c.on_track + c.at_risk + c.late;
+  $("#activeCount").textContent = `${total} orders in progress`;
+  const seg = [["on_track","--ok"],["at_risk","--warn"],["late","--bad"]];
+  $("#stack").innerHTML = seg.map(([k, v]) => `<span style="width:${100 * c[k] / total}%;background:var(${v})"></span>`).join("");
+  $("#stack").setAttribute("aria-label", `${c.on_track} on track, ${c.at_risk} at risk, ${c.late} late`);
+  $("#legend3").innerHTML = seg.map(([k, v]) => `<button data-status="${k}"><small><i style="background:var(${v})"></i>${LABEL[k]}</small><b>${c[k]}</b></button>`).join("");
+  const o = b.on_time_30d, p = b.on_time_prev_30d, d = o.pct != null && p.pct != null ? o.pct - p.pct : null;
+  $("#otd").innerHTML = `<div><div class="muted" style="font-size:13px">On-time delivery, last 30 days</div><b>${o.pct ?? "–"}%</b> <span class="muted">${o.on_time} of ${o.completed} orders</span></div>
+    ${d == null ? "" : `<span class="delta ${d < 0 ? "bad" : d > 0 ? "good" : "flat"}">${d > 0 ? "▲" : d < 0 ? "▼" : ""} ${Math.abs(d)} pts vs prior 30 days</span>`}`;
+}
+
+/* ---------- KPIs with sparklines across the mornings ---------- */
+function spark(vals, bad){
+  const v = vals.filter(x => x != null); if (v.length < 2) return "";
+  const lo = Math.min(...v), hi = Math.max(...v), W = 84, H = 30;
+  const pts = vals.map((x, i) => x == null ? null : `${(i * (W - 4) / (vals.length - 1) + 2).toFixed(1)},${(H - 3 - (hi === lo ? .5 : (x - lo) / (hi - lo)) * (H - 6)).toFixed(1)}`).filter(Boolean);
+  const last = pts[pts.length - 1].split(",");
+  const col = bad ? "--bad" : "--chart";
+  return `<svg class="spark" viewBox="0 0 ${W} ${H}" aria-hidden="true"><polyline points="${pts.join(" ")}" fill="none" stroke="var(${col})" stroke-width="1.6" stroke-linejoin="round"/><circle cx="${last[0]}" cy="${last[1]}" r="2.4" fill="var(${col})"/></svg>`;
+}
+let kpiItems = [];
+function kpis(){
+  const b = B[idx], hist = B.slice(Math.max(0, idx - 13), idx + 1);
+  const y = b.stages.TOTAL.yesterday;
+  kpiItems = [
+    {label:"Late orders", value:b.kpis.overdue, d:b.kpi_delta.overdue, upBad:true, series:hist.map(x => x.kpis.overdue), sub:"past their due date", go:{status:"late"}},
+    {label:"At risk", value:b.status_counts.at_risk, d:idx ? b.status_counts.at_risk - B[idx - 1].status_counts.at_risk : null, upBad:true, series:hist.map(x => x.status_counts.at_risk), sub:"may miss the due date", go:{status:"at_risk"}},
+    {label:"Due in 7 days", value:b.kpis.due_7d, d:b.kpi_delta.due_7d, upBad:true, series:hist.map(x => x.kpis.due_7d), sub:"deliveries this week", go:{bucket:"week"}},
+    {label:"Output yesterday", value:n(y.observed), d:y.pct_vs_mean, pct:true, upBad:false, series:hist.map(x => x.stages.TOTAL.yesterday.observed), sub:`pieces, usual ${n(Math.round(y.mean))}`, go:{chart:true}},
+    {label:"On-time delivery", value:(b.on_time_30d.pct ?? "–") + "%", d:b.on_time_30d.pct != null && b.on_time_prev_30d.pct != null ? b.on_time_30d.pct - b.on_time_prev_30d.pct : null, pts:true, upBad:false, series:hist.map(x => x.on_time_30d.pct), sub:"last 30 days", go:null},
+  ];
+  $("#kpis").innerHTML = kpiItems.map((k, i) => {
+    let dl = "";
+    if (k.d != null && k.d !== 0) {
+      const worse = (k.d > 0) === k.upBad;
+      dl = `<span class="delta ${worse ? "bad" : "good"}">${k.d > 0 ? "▲" : "▼"} ${Math.abs(k.d)}${k.pct ? "% vs usual" : k.pts ? " pts" : " vs yesterday"}</span>`;
+    } else if (k.d === 0) dl = `<span class="delta flat">no change</span>`;
+    const worsening = k.d != null && k.d !== 0 && ((k.d > 0) === k.upBad);
+    const tag = k.go ? "button" : "div";
+    return `<${tag} class="kpi" data-kpi="${i}"><span class="label">${k.label}</span>
+      <div class="row"><span class="value">${k.value}</span>${spark(k.series, worsening)}</div>
+      <div class="row"><span class="sub">${k.sub}</span>${dl}</div></${tag}>`;
+  }).join("");
+}
+
+/* ---------- attention ---------- */
+function attention(){
+  const b = B[idx];
+  $("#acount").textContent = b.more_findings ? `top ${b.findings.length} of ${b.findings.length + b.more_findings}` : `${b.findings.length} items`;
+  $("#attention").innerHTML = b.findings.length ? b.findings.map((f, i) => `
+    <li class="aitem">
+      <div class="atop"><span class="pill ${f.severity}">${LABEL[f.severity]}</span><h3>${esc(f.title)}</h3>${f.is_new ? `<span class="pill new plain">New</span>` : `<span class="muted" style="font-size:12.5px;white-space:nowrap">${f.open_days} days open</span>`}</div>
+      <div class="anext"><span class="step">Next step: ${esc(f.next_step)}</span>
+        <button class="btn sm" data-detail="${i}" aria-expanded="false">Details</button>
+        <button class="btn sm primary" data-act="${i}">${f.action === "chase" ? "Chase" : f.action === "feasibility" ? "Check feasibility" : "Add note"}</button></div>
+      <div class="adetail" id="det-${i}" hidden></div>
+    </li>`).join("") : `<li class="empty">Nothing needs attention this morning.</li>`;
+}
+function detail(i){
+  const f = B[idx].findings[i], cols = [...new Set(f.evidence.flatMap(e => Object.keys(e.values)))];
+  return `<p>${esc(f.detail)}</p><div class="tbl"><table class="mini"><thead><tr><th>Source</th>${cols.map(c => `<th>${esc(c.replace(/_/g, " "))}</th>`).join("")}</tr></thead><tbody>` +
+    f.evidence.map(e => `<tr><td>${esc(e.file)} line ${e.row}</td>${cols.map(c => `<td>${esc(e.values[c])}</td>`).join("")}</tr>`).join("") +
+    `</tbody></table></div><p class="muted" style="margin-top:8px;font-size:12.5px">Why this rank: ${esc(f.score_reason)}; ${esc(f.rank_reason)}.</p>`;
+}
+
+/* ---------- customers ---------- */
+function customers(){
+  const cs = B[idx].customers;
+  $("#customers").innerHTML = `<thead><tr><th>Customer</th><th class="num">Active</th><th>Status</th><th class="num">On time, 60 days</th></tr></thead><tbody>` +
+    cs.map(c => `<tr class="click" data-cust="${esc(c.customer)}" tabindex="0">
+      <td><span style="font-weight:500">${esc(c.customer)}</span>${c.stalled ? `<br><span class="flag">All orders stalled</span>` : ""}</td>
+      <td class="num">${c.active}</td>
+      <td><div class="segbar" title="${c.on_track} on track, ${c.at_risk} at risk, ${c.late} late">
+        ${c.active ? `<span style="width:${100 * c.on_track / c.active}%;background:var(--ok)"></span><span style="width:${100 * c.at_risk / c.active}%;background:var(--warn)"></span><span style="width:${100 * c.late / c.active}%;background:var(--bad)"></span>` : ""}</div>
+        <span class="muted" style="font-size:12px">${c.late ? c.late + " late" : ""}${c.late && c.at_risk ? ", " : ""}${c.at_risk ? c.at_risk + " at risk" : ""}${!c.late && !c.at_risk ? (c.active ? "all on track" : "no open orders") : ""}</span></td>
+      <td class="num">${c.otd_60d == null ? "–" : `<span style="font-weight:500;color:var(${c.otd_60d < 50 ? "--bad-text" : c.otd_60d < 80 ? "--warn-text" : "--ok-text"})">${c.otd_60d}%</span>`}</td></tr>`).join("") + `</tbody>`;
+}
+
+/* ---------- chart ---------- */
+function chart(){
+  $("#stageSeg").innerHTML = ["TOTAL", ...STAGES].map(s => `<button data-stage="${s}" aria-pressed="${s === stage}">${s === "TOTAL" ? "All stages" : cap(s)}</button>`).join("");
+  const st = B[idx].stages[stage], H = st.history, E = st.expected, all = [...H, ...E], y = st.yesterday;
+  const cmp = y.pct_vs_mean == null ? "not enough history" : y.status === "normal" ? "within the usual range" : `${Math.abs(y.pct_vs_mean)}% ${y.status} usual`;
+  $("#chartsum").innerHTML = `<b>${n(y.observed)}</b><span class="muted">pieces on ${fmt(B[idx].covers,{weekday:"short",day:"numeric",month:"short"})}</span>
+    <span class="pill ${y.status === "below" ? "late" : y.status === "above" ? "on_track" : "neutral"} plain">${cmp}</span>`;
+  const W = 640, Ht = 230, L = 44, R = 10, T = 10, Bt = 26;
+  const vals = all.flatMap(p => [p.value, p.high]).filter(v => v != null);
+  const raw = Math.max(...vals) * 1.05 || 100, mag = 10 ** Math.floor(Math.log10(raw / 4));
+  const step = [1, 2, 2.5, 5, 10].map(m => m * mag).find(st => st * 4 >= raw), max = step * 4;
+  const x = i => L + i * (W - L - R) / (all.length - 1), yy = v => T + (1 - v / max) * (Ht - T - Bt);
+  const band = (pts, off) => { const ok = pts.map((p, i) => [i + off, p]).filter(([, p]) => p.low != null);
+    return ok.length ? "M" + ok.map(([i, p]) => `${x(i)},${yy(p.high)}`).join("L") + "L" + [...ok].reverse().map(([i, p]) => `${x(i)},${yy(p.low)}`).join("L") + "Z" : ""; };
+  const grid = [0, .25, .5, .75, 1].map(f => { const v = Math.round(max * f);
+    return `<line x1="${L}" x2="${W - R}" y1="${yy(v)}" y2="${yy(v)}" stroke="var(--border)"/><text x="${L - 8}" y="${yy(v) + 4}" text-anchor="end">${v >= 1000 ? +(v / 1000).toFixed(1) + "k" : v}</text>`; }).join("");
+  const line = H.map((p, i) => p.value == null ? null : `${x(i)},${yy(p.value)}`).filter(Boolean).join("L");
+  const exp = E.map((p, i) => p.mean == null ? null : `${x(H.length + i)},${yy(p.mean)}`).filter(Boolean);
+  const pts = H.map((p, i) => { if (p.value == null) return ""; const low = p.low != null && p.value < p.low;
+    return `<circle cx="${x(i)}" cy="${yy(p.value)}" r="${low ? 4 : 2.5}" fill="var(${low ? "--bad" : "--chart"})"/>
+     <rect x="${x(i) - 12}" y="${T}" width="24" height="${Ht - T - Bt}" fill="transparent"><title>${fmt(p.date,{weekday:"short",day:"numeric",month:"short"})}: ${n(p.value)} pieces (usual ${p.mean != null ? n(Math.round(p.mean)) : "–"})</title></rect>`; }).join("");
+  const ticks = [0, Math.floor(H.length / 2), H.length - 1].map(i => `<text x="${x(i)}" y="${Ht - 8}" text-anchor="middle">${fmt(H[i].date,{day:"numeric",month:"short"})}</text>`).join("") +
+    `<text x="${x(all.length - 1)}" y="${Ht - 8}" text-anchor="end">next 6 days</text>`;
+  $("#chart").innerHTML = `<svg class="chart" viewBox="0 0 ${W} ${Ht}" role="img" aria-label="${stage === "TOTAL" ? "Total" : cap(stage)} daily output for ${H.length} working days, then expected values">
+    ${grid}<path d="${band(H, 0)}" fill="var(--band)"/><path d="${band(E, H.length)}" fill="var(--band-2)"/>
+    <line x1="${x(H.length - 1)}" x2="${x(H.length - 1)}" y1="${T}" y2="${Ht - Bt}" stroke="var(--border-strong)" stroke-dasharray="3 3"/>
+    <path d="M${line}" fill="none" stroke="var(--chart)" stroke-width="2.2" stroke-linejoin="round"/>
+    ${exp.length ? `<path d="M${exp.join("L")}" fill="none" stroke="var(--text-3)" stroke-width="1.6" stroke-dasharray="5 4"/>` : ""}
+    ${pts}${ticks}</svg>`;
+}
+
+/* ---------- WIP ---------- */
+function wip(){
+  const p = B[idx].pipeline, max = Math.max(...p.map(s => s.days_of_work || 0), 1);
+  const hot = p.reduce((a, s) => (s.days_of_work || 0) > (a.days_of_work || 0) ? s : a);
+  $("#wip").innerHTML = p.map(s => `<div class="wiprow"><div class="top"><span><b>${cap(s.stage)}</b> <span class="muted">${s.orders} orders, ${n(s.pieces)} pcs${s.late ? `, <span style="color:var(--bad-text)">${s.late} late</span>` : ""}</span></span>
+    <span><b>${s.days_of_work ?? "–"}</b> <span class="muted">days</span></span></div>
+    <div class="track"><span class="${s === hot ? "hot" : ""}" style="width:${100 * (s.days_of_work || 0) / max}%"></span></div></div>`).join("");
+  $("#bottleneck").innerHTML = hot.days_of_work ? `<div class="callout"><b>${cap(hot.stage)}</b> is the bottleneck: ${n(hot.pieces)} pieces waiting, about ${hot.days_of_work} days at the usual ${n(hot.usual_per_day)} pieces a day.</div>` : "";
+}
+
+/* ---------- orders ---------- */
+function orders(){
+  const b = B[idx];
+  $("#outlook").innerHTML = b.outlook.map(o => `<button class="obox" data-bucket="${o.key}" aria-pressed="${filters.bucket === o.key}">
+    <small>${esc(o.label)}</small><b>${o.orders}</b><small>${n(o.pieces)} pcs${o.key !== "late" && o.at_risk ? `, <span style="color:var(--warn-text)">${o.at_risk} at risk</span>` : ""}</small></button>`).join("");
+  $("#statusSeg").innerHTML = ["all","late","at_risk","on_track"].map(s => `<button data-st="${s}" aria-pressed="${filters.status === s}">${s === "all" ? "All" : LABEL[s]}</button>`).join("");
+  const custs = [...new Set(b.orders.map(o => o.customer))].sort();
+  $("#custSel").innerHTML = `<option value="">All customers</option>` + custs.map(c => `<option ${c === filters.customer ? "selected" : ""}>${esc(c)}</option>`).join("");
+  if ($("#q") !== document.activeElement) $("#q").value = filters.q;
+  const inBucket = o => !filters.bucket || (filters.bucket === "late" ? o.days_to_due < 0 : filters.bucket === "week" ? o.days_to_due >= 0 && o.days_to_due <= 7 : filters.bucket === "next" ? o.days_to_due >= 8 && o.days_to_due <= 14 : o.days_to_due > 14);
+  const q = filters.q.toLowerCase();
+  const list = b.orders.filter(o => (filters.status === "all" || o.status === filters.status) && (!filters.customer || o.customer === filters.customer) && inBucket(o)
+    && (!q || `${o.order_id} ${o.customer} ${o.product}`.toLowerCase().includes(q)));
+  $("#ocount").textContent = `${list.length} of ${b.orders.length} shown`;
+  const shown = list.slice(0, limit);
+  $("#orders").innerHTML = `<thead><tr><th>Order</th><th>Customer</th><th>Stage</th><th>Due</th><th>Status</th><th>Why</th><th></th></tr></thead><tbody>` +
+    (shown.length ? shown.map(o => {
+      const si = STAGES.indexOf(o.stage);
+      const due = o.days_to_due < 0 ? `<span style="color:var(--bad-text);font-weight:500">${-o.days_to_due}d late</span>` : o.days_to_due === 0 ? "Today" : `${fmt(o.due_date,{day:"numeric",month:"short"})} <span class="muted">(${o.days_to_due}d)</span>`;
+      return `<tr class="click" data-oid="${o.order_id}" tabindex="0" aria-expanded="false"><td><span style="font-weight:600">${o.order_id}</span></td>
+        <td>${esc(o.customer)}<br><span class="muted">${n(o.pieces)} ${esc(o.product.toLowerCase())}</span></td>
+        <td><span class="pips">${STAGES.map((_, j) => `<i class="${j < si ? "done" : j === si ? "here" : ""}"></i>`).join("")}</span>${cap(o.stage)}</td>
+        <td>${due}</td><td><span class="pill ${o.status}">${LABEL[o.status]}</span></td>
+        <td style="white-space:normal;min-width:180px;color:var(--text-2);font-size:13px">${esc(o.reasons[0] || (o.idle_days ? `idle ${o.idle_days} working days, waiting its turn` : "moving normally"))}</td>
+        <td><button class="btn sm" data-chase="${o.order_id}">Chase</button></td></tr>
+        <tr class="expand" id="x-${o.order_id}" hidden><td colspan="7">${o.reasons.length ? esc(o.reasons.join("; ")) + ". " : ""}Projected finish ${fmt(o.projected_finish,{day:"numeric",month:"short"})}. Last activity ${o.idle_days} working days ago. Source: orders.csv line ${o.row}.</td></tr>`;
+    }).join("") : `<tr><td colspan="7" class="empty">No orders match these filters. Clear the filters to see all ${b.orders.length}.</td></tr>`) + `</tbody>`;
+  const m = $("#more"); m.hidden = list.length <= limit; m.textContent = `Show all ${list.length} orders`;
+}
+
+/* ---------- log, definitions, scenario ---------- */
+function renderLog(){
+  $("#log").innerHTML = log.length ? log.map(l => `<li><time>${l.time}</time><span><span style="font-weight:500">${esc(l.what)}</span><br><span class="muted">${esc(l.detail)}</span></span></li>`).join("")
+    : `<li class="muted">No actions yet. Chase-ups and notes you confirm appear here, with the time.</li>`;
+}
+function defs(){
+  const b = B[idx];
+  $("#defs").innerHTML = Object.entries(b.definitions).map(([k, v]) => `<dt>${esc(cap(k.replace(/_/g, " ")))}</dt><dd>${esc(v)}</dd>`).join("") +
+    `<dt>Days per stage</dt><dd>${b.assumptions.working_days_per_stage} working days, the median over completed orders</dd>`;
+  const cv = b.covers;
+  $("#scenario").innerHTML = `<thead><tr><th>Event</th><th>When</th><th>What</th></tr></thead><tbody>` +
+    DATA.scenario.map(e => { const f = e.start || e.date, t = e.end || e.date, on = f <= cv && t >= cv;
+      return `<tr class="${on ? "ev-on" : ""}"><td>${esc(e.id)}</td><td>${esc(f)}${t !== f ? " to " + esc(t) : ""}</td><td style="white-space:normal">${esc(e.note)}</td></tr>`; }).join("") + `</tbody>`;
+}
+
+/* ---------- actions: confirm first, log after ---------- */
+let pendingAction = null;
+function openAction(kind, target, context){
+  const o = B[idx].orders.find(x => x.order_id === target);
+  pendingAction = {kind, target};
+  if (kind === "chase") {
+    const about = o ? `${o.order_id} (${o.customer}, ${n(o.pieces)} ${o.product.toLowerCase()}), currently at ${cap(o.stage)}, due ${fmt(o.due_date,{day:"numeric",month:"short"})}` : context;
+    $("#mtitle").textContent = o ? `Chase ${o.order_id}` : "Send a chase-up";
+    $("#msub").textContent = o ? `${o.customer}, ${LABEL[o.status].toLowerCase()}` : context;
+    $("#mbody").innerHTML = `<label>Send to<select id="mto"><option>Production planner</option><option>${o ? cap(o.stage) : "Stage"} supervisor</option><option>Account manager</option></select></label>
+      <label>Message<textarea id="mtext">Hi, can you give me an update on ${esc(about)}? ${o && o.reasons.length ? "Flagged this morning: " + esc(o.reasons.join("; ")) + ". " : ""}Please reply with a firm finish date by 12:00 today. Thanks.</textarea></label>
+      <div class="blast"><b>What happens:</b> in this demo the message is logged below and nothing is sent. In production it goes to one person on the chosen channel. Worst case: one unwanted message to one colleague, which this confirmation step prevents.</div>`;
+    $("#mok").textContent = "Confirm and send";
+  } else if (kind === "feasibility") {
+    $("#mtitle").textContent = "Check feasibility"; $("#msub").textContent = context;
+    $("#mbody").innerHTML = `<div class="blast">This asks the co-pilot's feasibility tool for an estimate using current load, usual stage output and workshop capacity. The answer is an estimate with stated assumptions, not a yes. Nothing is changed.</div>`;
+    $("#mok").textContent = "Request estimate";
+  } else {
+    $("#mtitle").textContent = "Add a note"; $("#msub").textContent = context;
+    $("#mbody").innerHTML = `<label>Note<textarea id="mtext" placeholder="What did you decide or ask for?"></textarea></label>
+      <div class="blast"><b>What happens:</b> the note is saved to the activity log with the time. It changes no order data.</div>`;
+    $("#mok").textContent = "Save note";
+  }
+  $("#modal").hidden = false; setTimeout(() => ($("#mtext") || $("#mok")).focus(), 30);
+}
+function closeModal(){ $("#modal").hidden = true; pendingAction = null; }
+$("#mcancel").onclick = closeModal;
+$("#modal").onclick = e => { if (e.target.id === "modal") closeModal(); };
+$("#mok").onclick = () => {
+  const a = pendingAction; if (!a) return;
+  const time = new Date().toLocaleTimeString("en-GB", {hour:"2-digit", minute:"2-digit"});
+  const text = ($("#mtext")?.value || "").trim();
+  if (a.kind === "chase") log.unshift({time, what:`Chase-up sent about ${a.target}`, detail:`To ${$("#mto").value}: ${text.slice(0, 120)}${text.length > 120 ? "…" : ""}`});
+  else if (a.kind === "feasibility") log.unshift({time, what:"Feasibility estimate requested", detail:a.target});
+  else log.unshift({time, what:"Note added", detail:`${a.target}: ${text || "(empty note)"}`});
+  closeModal(); renderLog(); toast(a.kind === "chase" ? "Chase-up logged" : a.kind === "feasibility" ? "Estimate requested" : "Note saved");
+};
+function toast(msg){ const t = $("#toast"); t.textContent = msg; t.hidden = false; clearTimeout(t._h); t._h = setTimeout(() => t.hidden = true, 2200); }
+
+/* ---------- events ---------- */
+function toOrders(f){ Object.assign(filters, {status:"all", bucket:"", customer:"", q:""}, f); limit = 50; orders(); $("#ordersCard").scrollIntoView({behavior:"smooth"}); }
+document.addEventListener("click", e => {
+  const t = e.target.closest("[data-detail],[data-act],[data-cust],[data-stage],[data-bucket],[data-st],[data-status],[data-chase],[data-kpi],tr[data-oid]");
+  if (!t) return;
+  const b = B[idx];
+  if (t.dataset.detail) { const box = $("#det-" + t.dataset.detail), open = box.hidden; if (open) box.innerHTML = detail(+t.dataset.detail); box.hidden = !open; t.setAttribute("aria-expanded", open); t.textContent = open ? "Hide details" : "Details"; }
+  else if (t.dataset.act) { const f = b.findings[+t.dataset.act];
+    if (f.action === "feasibility" && f.order_ids.length === 1 && window.ThreadPilotChat) window.ThreadPilotChat.askFeasibility(f.order_ids[0]);
+    else openAction(f.action, f.action === "chase" && f.order_ids.length === 1 ? f.order_ids[0] : short(f.title), f.title); }
+  else if (t.dataset.chase) { e.stopPropagation(); openAction("chase", t.dataset.chase); }
+  else if (t.dataset.kpi) { const g = kpiItems[+t.dataset.kpi].go; if (!g) return;
+    if (g.chart) { stage = "TOTAL"; chart(); $("#chart").scrollIntoView({behavior:"smooth", block:"center"}); } else toOrders(g); }
+  else if (t.dataset.cust) toOrders({customer:t.dataset.cust});
+  else if (t.dataset.stage) { stage = t.dataset.stage; chart(); }
+  else if (t.dataset.bucket) { filters.bucket = filters.bucket === t.dataset.bucket ? "" : t.dataset.bucket; limit = 50; orders(); }
+  else if (t.dataset.st) { filters.status = t.dataset.st; orders(); }
+  else if (t.dataset.status) toOrders({status:t.dataset.status});
+  else if (t.dataset.oid) { const x = $("#x-" + t.dataset.oid); x.hidden = !x.hidden; t.setAttribute("aria-expanded", !x.hidden); }
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "Escape" && !$("#modal").hidden) return closeModal();
+  if (e.key === "Enter" && e.target.matches("tr.click")) return e.target.click();
+  if (e.target.matches("input,textarea,select") || !$("#modal").hidden) return;
+  if (e.key === "ArrowLeft") { stop(); go(idx - 1); }
+  if (e.key === "ArrowRight") { stop(); go(idx + 1); }
+});
+$("#q").oninput = e => { filters.q = e.target.value; orders(); };
+$("#custSel").onchange = e => { filters.customer = e.target.value; orders(); };
+$("#clear").onclick = () => { Object.assign(filters, {q:"", status:"all", customer:"", bucket:""}); limit = 12; orders(); };
+$("#more").onclick = () => { limit = 999; orders(); };
+$("#daysel").onchange = e => { stop(); go(+e.target.value); };
+$("#prev").onclick = () => { stop(); go(idx - 1); };
+$("#next").onclick = () => { stop(); go(idx + 1); };
+function stop(){ clearInterval(timer); timer = null; $("#play").setAttribute("aria-pressed", "false"); $("#play").textContent = "Replay"; }
+$("#play").onclick = () => { if (timer) return stop(); go(0); $("#play").setAttribute("aria-pressed", "true"); $("#play").textContent = "Stop";
+  timer = setInterval(() => idx >= B.length - 1 ? stop() : go(idx + 1), 3500); };
+$("#speak").onclick = () => {
+  if (!("speechSynthesis" in window)) return toast("Voice is not supported in this browser");
+  speechSynthesis.cancel();
+  const b = B[idx], u = new SpeechSynthesisUtterance(`Good morning. ${fmt(b.business_date,{weekday:"long",day:"numeric",month:"long"})}. ${b.headline.join(" ")} ${b.status_counts.late} orders are late and ${b.status_counts.at_risk} are at risk.`);
+  u.lang = "en-GB"; speechSynthesis.speak(u);
+};
+$("#theme").onclick = () => { const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  r.dataset.theme = dark ? "light" : "dark"; };
+
+function go(i){ idx = Math.max(0, Math.min(B.length - 1, i)); render(); }
+function render(){ header(); summary(); kpis(); attention(); customers(); chart(); wip(); orders(); renderLog(); defs(); if (window.chatHook) window.chatHook(); }
+render();
+</script>
+<script>
+/*__CHAT_JS__*/
+</script>
+</body>
+</html>

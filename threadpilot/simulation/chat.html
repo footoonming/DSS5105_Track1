@@ -1,0 +1,25 @@
+<button class="chat-fab" id="chatFab" aria-controls="chatPanel" aria-expanded="false" aria-label="Ask ThreadPilot">
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15a2 2 0 0 1-2 2H8l-5 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+  <span>Ask ThreadPilot</span><span class="chat-badge" id="chatBadge" hidden></span>
+</button>
+<aside class="chat" id="chatPanel" aria-label="Ask ThreadPilot" hidden>
+  <header class="chat-h">
+    <div class="chat-title"><strong>Ask ThreadPilot</strong><small id="chatMode"></small></div>
+    <div class="chat-tools">
+      <button class="btn sm ghost" id="chatWatchBtn" aria-expanded="false">Watches (0)</button>
+      <button class="btn sm ghost" id="chatToolsBtn" aria-expanded="false">Tools</button>
+      <button class="btn sm ghost" id="chatSpeak" aria-pressed="false" title="Read replies aloud">Voice</button>
+      <button class="btn sm ghost" id="chatClear" title="Start a new conversation">New</button>
+      <button class="btn sm ghost" id="chatClose" aria-label="Close chat">&#10005;</button>
+    </div>
+  </header>
+  <div class="chat-drop" id="chatWatches" hidden></div>
+  <div class="chat-drop" id="chatTools" hidden></div>
+  <div class="chat-log" id="chatLog" role="log" aria-live="polite"></div>
+  <div class="chat-suggest" id="chatSuggest" aria-label="Suggested questions"></div>
+  <form class="chat-in" id="chatForm" autocomplete="off">
+    <button type="button" class="btn iconbtn" id="chatMic" aria-label="Speak your question" hidden>&#127908;</button>
+    <input id="chatInput" type="text" placeholder="Ask about an order, customer or stage" aria-label="Your question" maxlength="300">
+    <button class="btn primary" type="submit">Send</button>
+  </form>
+</aside>

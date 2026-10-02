@@ -1,0 +1,62 @@
+services:
+  mysql:
+    image: mysql:8.4
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:?Set MYSQL_ROOT_PASSWORD in .env}
+      MYSQL_DATABASE: ${MYSQL_DATABASE:-threadpilot}
+      MYSQL_ROOT_HOST: "%"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    ports:
+      - "127.0.0.1:${MYSQL_PORT:-3306}:3306"
+    healthcheck:
+      test: ["CMD-SHELL", "MYSQL_PWD=$$MYSQL_ROOT_PASSWORD mysqladmin ping -h localhost --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 30
+  provision:
+    build: .
+    env_file: .env
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+    command: ["python", "-m", "scripts.provision_mysql"]
+    depends_on:
+      mysql:
+        condition: service_healthy
+    restart: "no"
+  backend:
+    build: .
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENAI_BASE_URL: ${OPENAI_BASE_URL:-https://api.openai.com/v1}
+      OPENAI_MODEL: ${OPENAI_MODEL:-gpt-4.1}
+      INTENT_API_STYLE: ${INTENT_API_STYLE:-responses}
+      OPENAI_TIMEOUT_SECONDS: ${OPENAI_TIMEOUT_SECONDS:-60}
+      DATA_API_TOKEN: ${DATA_API_TOKEN:?Set DATA_API_TOKEN}
+      BUSINESS_NOW: ${BUSINESS_NOW:-live}
+      SYNC_ENABLED: ${SYNC_ENABLED:-false}
+      SYNC_INTERVAL_MINUTES: ${SYNC_INTERVAL_MINUTES:-5}
+      SYNC_FILES: '${SYNC_FILES:-[]}'
+      SQL_MAX_ROWS: ${SQL_MAX_ROWS:-100}
+      SQL_TIMEOUT_MS: ${SQL_TIMEOUT_MS:-5000}
+      SQL_AGENT_STEPS: ${SQL_AGENT_STEPS:-16}
+      CHASE_WEBHOOK_URL: ${CHASE_WEBHOOK_URL:-}
+      CHASE_WEBHOOK_TOKEN: ${CHASE_WEBHOOK_TOKEN:-}
+      REPLY_INGEST_TOKEN: ${REPLY_INGEST_TOKEN:-}
+      DATABASE_URL: mysql+pymysql://${MYSQL_APP_USER:-threadpilot_app}:${MYSQL_APP_PASSWORD}@mysql:3306/${MYSQL_DATABASE:-threadpilot}?charset=utf8mb4
+      AI_DATABASE_URL: mysql+pymysql://${MYSQL_AI_USER:-threadpilot_ai}:${MYSQL_AI_PASSWORD}@mysql:3306/${MYSQL_DATABASE:-threadpilot}?charset=utf8mb4
+      WORKFLOW_DB: /srv/threadpilot/backend/runtime/workflow.sqlite3
+      RAW_DATA_DIR: /srv/threadpilot/data/raw
+    ports:
+      - "127.0.0.1:${API_PORT:-8000}:8000"
+    volumes:
+      - ./data/raw:/srv/threadpilot/data/raw:ro
+      - workflow_data:/srv/threadpilot/backend/runtime
+    depends_on:
+      provision:
+        condition: service_completed_successfully
+    restart: unless-stopped
+volumes:
+  mysql_data:
+  workflow_data:

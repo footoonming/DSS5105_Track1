@@ -1,0 +1,4341 @@
+{
+  "business_date": "2026-04-10",
+  "covers": "2026-04-09",
+  "headline": [
+    "Yesterday (Thu 09 Apr): 2,781 pieces across four stages; Packing below normal.",
+    "New today: Packing output was 42.7% below normal yesterday.",
+    "Decide today: 11 overdue, 8 due this week, 2 new orders to confirm."
+  ],
+  "kpis": {
+    "active": 39,
+    "overdue": 11,
+    "due_7d": 8,
+    "idle_5d": 20,
+    "completed_yday": 0,
+    "new_yday": 2,
+    "output_yday": 2781
+  },
+  "kpi_delta": {
+    "active": 2,
+    "overdue": 2,
+    "due_7d": -1,
+    "idle_5d": 3,
+    "completed_yday": -1,
+    "new_yday": 2,
+    "output_yday": 225
+  },
+  "findings": [
+    {
+      "key": "stage_below:PACKING",
+      "type": "stage_below_normal",
+      "stage": "PACKING",
+      "title": "Packing output was 42.7% below normal yesterday",
+      "detail": "382 pieces on Thu 09 Apr against a normal of 667 (band 601-733, 8 same-weekday samples). Washing was also below normal in the last two working days, so this line may be short of work rather than slow.",
+      "score": 80,
+      "score_reason": "40 + percentage below the same-weekday mean (max 40)",
+      "order_ids": [],
+      "evidence": [
+        {
+          "file": "production_log.csv",
+          "row": 397,
+          "values": {
+            "date": "2026-04-09",
+            "stage": "PACKING",
+            "pieces_completed": 382
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 369,
+          "values": {
+            "date": "2026-04-02",
+            "stage": "PACKING",
+            "pieces_completed": 581
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 341,
+          "values": {
+            "date": "2026-03-26",
+            "stage": "PACKING",
+            "pieces_completed": 673
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 313,
+          "values": {
+            "date": "2026-03-19",
+            "stage": "PACKING",
+            "pieces_completed": 708
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 285,
+          "values": {
+            "date": "2026-03-12",
+            "stage": "PACKING",
+            "pieces_completed": 679
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 257,
+          "values": {
+            "date": "2026-03-05",
+            "stage": "PACKING",
+            "pieces_completed": 676
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 229,
+          "values": {
+            "date": "2026-02-26",
+            "stage": "PACKING",
+            "pieces_completed": 711
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 201,
+          "values": {
+            "date": "2026-02-19",
+            "stage": "PACKING",
+            "pieces_completed": 697
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 173,
+          "values": {
+            "date": "2026-02-12",
+            "stage": "PACKING",
+            "pieces_completed": 609
+          }
+        }
+      ],
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 90,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "critical",
+      "next_step": "Check with the stage supervisor",
+      "action": "note"
+    },
+    {
+      "key": "customer_stalled:TrendCart",
+      "type": "customer_stalled",
+      "customer": "TrendCart",
+      "title": "All 6 active TrendCart orders have stopped moving",
+      "detail": "Each has been idle at least 3 working days (ORD-120 5d, ORD-020 5d, ORD-096 7d, ORD-005 14d, ORD-017 5d, ORD-082 9d). Later-due orders at the same stages are still moving, so the queue does not explain it; a shared cause (trims, approvals, payment) is more likely.",
+      "score": 82,
+      "score_reason": "70 + 2 per stalled order",
+      "order_ids": [
+        "ORD-120",
+        "ORD-020",
+        "ORD-096",
+        "ORD-005",
+        "ORD-017",
+        "ORD-082"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 76,
+          "values": {
+            "order_id": "ORD-120",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-04-03",
+            "due_date": "2026-03-17"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 90,
+          "values": {
+            "order_id": "ORD-020",
+            "current_stage": "PACKING",
+            "last_activity_date": "2026-04-03",
+            "due_date": "2026-03-31"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 104,
+          "values": {
+            "order_id": "ORD-096",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-04-01",
+            "due_date": "2026-04-17"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 105,
+          "values": {
+            "order_id": "ORD-005",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-24",
+            "due_date": "2026-04-20"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-04-03",
+            "due_date": "2026-04-10"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 120,
+          "values": {
+            "order_id": "ORD-082",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-05-01"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 3,
+      "rank_score": 74,
+      "rank_reason": "open 3 mornings (-8)",
+      "severity": "high",
+      "next_step": "Call the customer's account manager",
+      "action": "chase"
+    },
+    {
+      "key": "quiet",
+      "type": "quiet_orders",
+      "title": "9 orders have gone quiet while later-due orders moved past them",
+      "detail": "Longest idle: ORD-081 Harbor Knits (9d), ORD-015 UrbanThread (9d), ORD-063 Loom & Leaf (9d).",
+      "score": 85,
+      "score_reason": "55 + 5 per quiet order (max 85)",
+      "order_ids": [
+        "ORD-081",
+        "ORD-015",
+        "ORD-063",
+        "ORD-053",
+        "ORD-073",
+        "ORD-036",
+        "ORD-024",
+        "ORD-035",
+        "ORD-008"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 102,
+          "values": {
+            "order_id": "ORD-081",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-13"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 113,
+          "values": {
+            "order_id": "ORD-015",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-16"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 119,
+          "values": {
+            "order_id": "ORD-063",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-29"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 107,
+          "values": {
+            "order_id": "ORD-053",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-10"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 108,
+          "values": {
+            "order_id": "ORD-073",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-20"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 109,
+          "values": {
+            "order_id": "ORD-036",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-26"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 116,
+          "values": {
+            "order_id": "ORD-024",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-04-01",
+            "due_date": "2026-04-15"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 117,
+          "values": {
+            "order_id": "ORD-035",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-04-01",
+            "due_date": "2026-04-29"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-04-02",
+            "due_date": "2026-04-09"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 4,
+      "rank_score": 73,
+      "rank_reason": "open 4 mornings (-12)",
+      "severity": "high",
+      "next_step": "Chase the quiet orders",
+      "action": "chase"
+    },
+    {
+      "key": "overdue",
+      "type": "overdue",
+      "title": "11 active orders are past their due date",
+      "detail": "Most overdue: ORD-120 (24d, Assembly), ORD-020 (10d, Packing), ORD-055 (10d, Packing).",
+      "score": 90,
+      "score_reason": "50 + 4 per overdue order (max 90)",
+      "order_ids": [
+        "ORD-120",
+        "ORD-020",
+        "ORD-055",
+        "ORD-029",
+        "ORD-108",
+        "ORD-103",
+        "ORD-099",
+        "ORD-061",
+        "ORD-062",
+        "ORD-045",
+        "ORD-008"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 76,
+          "values": {
+            "order_id": "ORD-120",
+            "due_date": "2026-03-17",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 90,
+          "values": {
+            "order_id": "ORD-020",
+            "due_date": "2026-03-31",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 100,
+          "values": {
+            "order_id": "ORD-055",
+            "due_date": "2026-03-31",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 92,
+          "values": {
+            "order_id": "ORD-029",
+            "due_date": "2026-04-01",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 101,
+          "values": {
+            "order_id": "ORD-108",
+            "due_date": "2026-04-03",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 91,
+          "values": {
+            "order_id": "ORD-103",
+            "due_date": "2026-04-04",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 89,
+          "values": {
+            "order_id": "ORD-099",
+            "due_date": "2026-04-05",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 97,
+          "values": {
+            "order_id": "ORD-061",
+            "due_date": "2026-04-05",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 110,
+          "values": {
+            "order_id": "ORD-062",
+            "due_date": "2026-04-08",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 106,
+          "values": {
+            "order_id": "ORD-045",
+            "due_date": "2026-04-09",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "due_date": "2026-04-09",
+            "current_stage": "ASSEMBLY"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 10,
+      "rank_score": 70,
+      "rank_reason": "open 10 mornings (-20)",
+      "severity": "high",
+      "next_step": "Ask the planner for revised ship dates",
+      "action": "chase"
+    },
+    {
+      "key": "new:ORD-130",
+      "type": "new_order_decision",
+      "order_id": "ORD-130",
+      "title": "New order ORD-130: 1,500 hoodies for Maple & Co in 12 days",
+      "detail": "Large or short-lead order. Run a feasibility check before confirming the date.",
+      "score": 50,
+      "score_reason": "fixed 50 for large (>=1,000) or short-lead (<=14 days) orders",
+      "order_ids": [
+        "ORD-130"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 131,
+          "values": {
+            "order_id": "ORD-130",
+            "pieces": 1500,
+            "order_date": "2026-04-09",
+            "due_date": "2026-04-21"
+          }
+        }
+      ],
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 60,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "watch",
+      "next_step": "Run a feasibility check before confirming",
+      "action": "feasibility"
+    }
+  ],
+  "more_findings": 5,
+  "all_findings": [
+    {
+      "key": "stage_below:PACKING",
+      "type": "stage_below_normal",
+      "stage": "PACKING",
+      "title": "Packing output was 42.7% below normal yesterday",
+      "detail": "382 pieces on Thu 09 Apr against a normal of 667 (band 601-733, 8 same-weekday samples). Washing was also below normal in the last two working days, so this line may be short of work rather than slow.",
+      "score": 80,
+      "score_reason": "40 + percentage below the same-weekday mean (max 40)",
+      "order_ids": [],
+      "evidence": [
+        {
+          "file": "production_log.csv",
+          "row": 397,
+          "values": {
+            "date": "2026-04-09",
+            "stage": "PACKING",
+            "pieces_completed": 382
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 369,
+          "values": {
+            "date": "2026-04-02",
+            "stage": "PACKING",
+            "pieces_completed": 581
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 341,
+          "values": {
+            "date": "2026-03-26",
+            "stage": "PACKING",
+            "pieces_completed": 673
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 313,
+          "values": {
+            "date": "2026-03-19",
+            "stage": "PACKING",
+            "pieces_completed": 708
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 285,
+          "values": {
+            "date": "2026-03-12",
+            "stage": "PACKING",
+            "pieces_completed": 679
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 257,
+          "values": {
+            "date": "2026-03-05",
+            "stage": "PACKING",
+            "pieces_completed": 676
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 229,
+          "values": {
+            "date": "2026-02-26",
+            "stage": "PACKING",
+            "pieces_completed": 711
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 201,
+          "values": {
+            "date": "2026-02-19",
+            "stage": "PACKING",
+            "pieces_completed": 697
+          }
+        },
+        {
+          "file": "production_log.csv",
+          "row": 173,
+          "values": {
+            "date": "2026-02-12",
+            "stage": "PACKING",
+            "pieces_completed": 609
+          }
+        }
+      ],
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 90,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "critical",
+      "next_step": "Check with the stage supervisor",
+      "action": "note"
+    },
+    {
+      "key": "customer_stalled:TrendCart",
+      "type": "customer_stalled",
+      "customer": "TrendCart",
+      "title": "All 6 active TrendCart orders have stopped moving",
+      "detail": "Each has been idle at least 3 working days (ORD-120 5d, ORD-020 5d, ORD-096 7d, ORD-005 14d, ORD-017 5d, ORD-082 9d). Later-due orders at the same stages are still moving, so the queue does not explain it; a shared cause (trims, approvals, payment) is more likely.",
+      "score": 82,
+      "score_reason": "70 + 2 per stalled order",
+      "order_ids": [
+        "ORD-120",
+        "ORD-020",
+        "ORD-096",
+        "ORD-005",
+        "ORD-017",
+        "ORD-082"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 76,
+          "values": {
+            "order_id": "ORD-120",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-04-03",
+            "due_date": "2026-03-17"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 90,
+          "values": {
+            "order_id": "ORD-020",
+            "current_stage": "PACKING",
+            "last_activity_date": "2026-04-03",
+            "due_date": "2026-03-31"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 104,
+          "values": {
+            "order_id": "ORD-096",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-04-01",
+            "due_date": "2026-04-17"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 105,
+          "values": {
+            "order_id": "ORD-005",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-24",
+            "due_date": "2026-04-20"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-04-03",
+            "due_date": "2026-04-10"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 120,
+          "values": {
+            "order_id": "ORD-082",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-05-01"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 3,
+      "rank_score": 74,
+      "rank_reason": "open 3 mornings (-8)",
+      "severity": "high",
+      "next_step": "Call the customer's account manager",
+      "action": "chase"
+    },
+    {
+      "key": "quiet",
+      "type": "quiet_orders",
+      "title": "9 orders have gone quiet while later-due orders moved past them",
+      "detail": "Longest idle: ORD-081 Harbor Knits (9d), ORD-015 UrbanThread (9d), ORD-063 Loom & Leaf (9d).",
+      "score": 85,
+      "score_reason": "55 + 5 per quiet order (max 85)",
+      "order_ids": [
+        "ORD-081",
+        "ORD-015",
+        "ORD-063",
+        "ORD-053",
+        "ORD-073",
+        "ORD-036",
+        "ORD-024",
+        "ORD-035",
+        "ORD-008"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 102,
+          "values": {
+            "order_id": "ORD-081",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-13"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 113,
+          "values": {
+            "order_id": "ORD-015",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-16"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 119,
+          "values": {
+            "order_id": "ORD-063",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-29"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 107,
+          "values": {
+            "order_id": "ORD-053",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-10"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 108,
+          "values": {
+            "order_id": "ORD-073",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-20"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 109,
+          "values": {
+            "order_id": "ORD-036",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-26"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 116,
+          "values": {
+            "order_id": "ORD-024",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-04-01",
+            "due_date": "2026-04-15"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 117,
+          "values": {
+            "order_id": "ORD-035",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-04-01",
+            "due_date": "2026-04-29"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-04-02",
+            "due_date": "2026-04-09"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 4,
+      "rank_score": 73,
+      "rank_reason": "open 4 mornings (-12)",
+      "severity": "high",
+      "next_step": "Chase the quiet orders",
+      "action": "chase"
+    },
+    {
+      "key": "overdue",
+      "type": "overdue",
+      "title": "11 active orders are past their due date",
+      "detail": "Most overdue: ORD-120 (24d, Assembly), ORD-020 (10d, Packing), ORD-055 (10d, Packing).",
+      "score": 90,
+      "score_reason": "50 + 4 per overdue order (max 90)",
+      "order_ids": [
+        "ORD-120",
+        "ORD-020",
+        "ORD-055",
+        "ORD-029",
+        "ORD-108",
+        "ORD-103",
+        "ORD-099",
+        "ORD-061",
+        "ORD-062",
+        "ORD-045",
+        "ORD-008"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 76,
+          "values": {
+            "order_id": "ORD-120",
+            "due_date": "2026-03-17",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 90,
+          "values": {
+            "order_id": "ORD-020",
+            "due_date": "2026-03-31",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 100,
+          "values": {
+            "order_id": "ORD-055",
+            "due_date": "2026-03-31",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 92,
+          "values": {
+            "order_id": "ORD-029",
+            "due_date": "2026-04-01",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 101,
+          "values": {
+            "order_id": "ORD-108",
+            "due_date": "2026-04-03",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 91,
+          "values": {
+            "order_id": "ORD-103",
+            "due_date": "2026-04-04",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 89,
+          "values": {
+            "order_id": "ORD-099",
+            "due_date": "2026-04-05",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 97,
+          "values": {
+            "order_id": "ORD-061",
+            "due_date": "2026-04-05",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 110,
+          "values": {
+            "order_id": "ORD-062",
+            "due_date": "2026-04-08",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 106,
+          "values": {
+            "order_id": "ORD-045",
+            "due_date": "2026-04-09",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "due_date": "2026-04-09",
+            "current_stage": "ASSEMBLY"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 10,
+      "rank_score": 70,
+      "rank_reason": "open 10 mornings (-20)",
+      "severity": "high",
+      "next_step": "Ask the planner for revised ship dates",
+      "action": "chase"
+    },
+    {
+      "key": "new:ORD-130",
+      "type": "new_order_decision",
+      "order_id": "ORD-130",
+      "title": "New order ORD-130: 1,500 hoodies for Maple & Co in 12 days",
+      "detail": "Large or short-lead order. Run a feasibility check before confirming the date.",
+      "score": 50,
+      "score_reason": "fixed 50 for large (>=1,000) or short-lead (<=14 days) orders",
+      "order_ids": [
+        "ORD-130"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 131,
+          "values": {
+            "order_id": "ORD-130",
+            "pieces": 1500,
+            "order_date": "2026-04-09",
+            "due_date": "2026-04-21"
+          }
+        }
+      ],
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 60,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "watch",
+      "next_step": "Run a feasibility check before confirming",
+      "action": "feasibility"
+    },
+    {
+      "key": "due_soon_at_risk",
+      "type": "due_soon_at_risk",
+      "title": "8 orders due within 7 days are projected to finish late",
+      "detail": "ORD-109 due 2026-04-13, projected 2026-04-22, ORD-081 due 2026-04-13, projected 2026-04-29, ORD-096 due 2026-04-17, projected 2026-05-05, ORD-053 due 2026-04-10, projected 2026-04-29.",
+      "score": 79,
+      "score_reason": "55 + 3 per order",
+      "order_ids": [
+        "ORD-109",
+        "ORD-081",
+        "ORD-096",
+        "ORD-053",
+        "ORD-015",
+        "ORD-017",
+        "ORD-024",
+        "ORD-122"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 93,
+          "values": {
+            "order_id": "ORD-109",
+            "due_date": "2026-04-13",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 102,
+          "values": {
+            "order_id": "ORD-081",
+            "due_date": "2026-04-13",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 104,
+          "values": {
+            "order_id": "ORD-096",
+            "due_date": "2026-04-17",
+            "current_stage": "KNITTING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 107,
+          "values": {
+            "order_id": "ORD-053",
+            "due_date": "2026-04-10",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 113,
+          "values": {
+            "order_id": "ORD-015",
+            "due_date": "2026-04-16",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "due_date": "2026-04-10",
+            "current_stage": "KNITTING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 116,
+          "values": {
+            "order_id": "ORD-024",
+            "due_date": "2026-04-15",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 123,
+          "values": {
+            "order_id": "ORD-122",
+            "due_date": "2026-04-16",
+            "current_stage": "ASSEMBLY"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 10,
+      "rank_score": 59,
+      "rank_reason": "open 10 mornings (-20)",
+      "severity": "watch",
+      "next_step": "Warn the customers or add capacity",
+      "action": "chase"
+    },
+    {
+      "key": "wip:PACKING",
+      "type": "wip_pileup",
+      "stage": "PACKING",
+      "title": "4 orders (4,300 pieces) are waiting at Packing",
+      "detail": "About 6.4 days of normal Packing output.",
+      "score": 41,
+      "score_reason": "35 + days of queued work (max 25)",
+      "order_ids": [
+        "ORD-020",
+        "ORD-029",
+        "ORD-061",
+        "ORD-055"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 90,
+          "values": {
+            "order_id": "ORD-020",
+            "current_stage": "PACKING",
+            "pieces": 1200
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 92,
+          "values": {
+            "order_id": "ORD-029",
+            "current_stage": "PACKING",
+            "pieces": 1500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 97,
+          "values": {
+            "order_id": "ORD-061",
+            "current_stage": "PACKING",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 100,
+          "values": {
+            "order_id": "ORD-055",
+            "current_stage": "PACKING",
+            "pieces": 800
+          }
+        }
+      ],
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 51,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "watch",
+      "next_step": "Consider overtime or moving work to a workshop",
+      "action": "note"
+    },
+    {
+      "key": "wip:ASSEMBLY",
+      "type": "wip_pileup",
+      "stage": "ASSEMBLY",
+      "title": "16 orders (15,400 pieces) are waiting at Assembly",
+      "detail": "About 21.8 days of normal Assembly output.",
+      "score": 56,
+      "score_reason": "35 + days of queued work (max 25)",
+      "order_ids": [
+        "ORD-120",
+        "ORD-103",
+        "ORD-081",
+        "ORD-053",
+        "ORD-073",
+        "ORD-062",
+        "ORD-066",
+        "ORD-008",
+        "ORD-015",
+        "ORD-010",
+        "ORD-024",
+        "ORD-040",
+        "ORD-095",
+        "ORD-121",
+        "ORD-122",
+        "ORD-128"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 76,
+          "values": {
+            "order_id": "ORD-120",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 91,
+          "values": {
+            "order_id": "ORD-103",
+            "current_stage": "ASSEMBLY",
+            "pieces": 2000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 102,
+          "values": {
+            "order_id": "ORD-081",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 107,
+          "values": {
+            "order_id": "ORD-053",
+            "current_stage": "ASSEMBLY",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 108,
+          "values": {
+            "order_id": "ORD-073",
+            "current_stage": "ASSEMBLY",
+            "pieces": 400
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 110,
+          "values": {
+            "order_id": "ORD-062",
+            "current_stage": "ASSEMBLY",
+            "pieces": 2000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 111,
+          "values": {
+            "order_id": "ORD-066",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "current_stage": "ASSEMBLY",
+            "pieces": 600
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 113,
+          "values": {
+            "order_id": "ORD-015",
+            "current_stage": "ASSEMBLY",
+            "pieces": 300
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 115,
+          "values": {
+            "order_id": "ORD-010",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 116,
+          "values": {
+            "order_id": "ORD-024",
+            "current_stage": "ASSEMBLY",
+            "pieces": 300
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 118,
+          "values": {
+            "order_id": "ORD-040",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1200
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 121,
+          "values": {
+            "order_id": "ORD-095",
+            "current_stage": "ASSEMBLY",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 122,
+          "values": {
+            "order_id": "ORD-121",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1200
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 123,
+          "values": {
+            "order_id": "ORD-122",
+            "current_stage": "ASSEMBLY",
+            "pieces": 600
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 129,
+          "values": {
+            "order_id": "ORD-128",
+            "current_stage": "ASSEMBLY",
+            "pieces": 200
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 10,
+      "rank_score": 36,
+      "rank_reason": "open 10 mornings (-20)",
+      "severity": "watch",
+      "next_step": "Consider overtime or moving work to a workshop",
+      "action": "note"
+    },
+    {
+      "key": "wip:KNITTING",
+      "type": "wip_pileup",
+      "stage": "KNITTING",
+      "title": "14 orders (10,600 pieces) are waiting at Knitting",
+      "detail": "About 11.6 days of normal Knitting output.",
+      "score": 46,
+      "score_reason": "35 + days of queued work (max 25)",
+      "order_ids": [
+        "ORD-096",
+        "ORD-005",
+        "ORD-036",
+        "ORD-017",
+        "ORD-035",
+        "ORD-063",
+        "ORD-082",
+        "ORD-123",
+        "ORD-124",
+        "ORD-125",
+        "ORD-126",
+        "ORD-127",
+        "ORD-129",
+        "ORD-130"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 104,
+          "values": {
+            "order_id": "ORD-096",
+            "current_stage": "KNITTING",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 105,
+          "values": {
+            "order_id": "ORD-005",
+            "current_stage": "KNITTING",
+            "pieces": 500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 109,
+          "values": {
+            "order_id": "ORD-036",
+            "current_stage": "KNITTING",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "current_stage": "KNITTING",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 117,
+          "values": {
+            "order_id": "ORD-035",
+            "current_stage": "KNITTING",
+            "pieces": 300
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 119,
+          "values": {
+            "order_id": "ORD-063",
+            "current_stage": "KNITTING",
+            "pieces": 100
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 120,
+          "values": {
+            "order_id": "ORD-082",
+            "current_stage": "KNITTING",
+            "pieces": 600
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 124,
+          "values": {
+            "order_id": "ORD-123",
+            "current_stage": "KNITTING",
+            "pieces": 500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 125,
+          "values": {
+            "order_id": "ORD-124",
+            "current_stage": "KNITTING",
+            "pieces": 1200
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 126,
+          "values": {
+            "order_id": "ORD-125",
+            "current_stage": "KNITTING",
+            "pieces": 500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 127,
+          "values": {
+            "order_id": "ORD-126",
+            "current_stage": "KNITTING",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 128,
+          "values": {
+            "order_id": "ORD-127",
+            "current_stage": "KNITTING",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 130,
+          "values": {
+            "order_id": "ORD-129",
+            "current_stage": "KNITTING",
+            "pieces": 600
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 131,
+          "values": {
+            "order_id": "ORD-130",
+            "current_stage": "KNITTING",
+            "pieces": 1500
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 10,
+      "rank_score": 26,
+      "rank_reason": "open 10 mornings (-20)",
+      "severity": "watch",
+      "next_step": "Consider overtime or moving work to a workshop",
+      "action": "note"
+    },
+    {
+      "key": "wip:WASHING",
+      "type": "wip_pileup",
+      "stage": "WASHING",
+      "title": "5 orders (4,750 pieces) are waiting at Washing",
+      "detail": "About 6.7 days of normal Washing output.",
+      "score": 41,
+      "score_reason": "35 + days of queued work (max 25)",
+      "order_ids": [
+        "ORD-099",
+        "ORD-109",
+        "ORD-108",
+        "ORD-041",
+        "ORD-045"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 89,
+          "values": {
+            "order_id": "ORD-099",
+            "current_stage": "WASHING",
+            "pieces": 1500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 93,
+          "values": {
+            "order_id": "ORD-109",
+            "current_stage": "WASHING",
+            "pieces": 500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 101,
+          "values": {
+            "order_id": "ORD-108",
+            "current_stage": "WASHING",
+            "pieces": 2000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 103,
+          "values": {
+            "order_id": "ORD-041",
+            "current_stage": "WASHING",
+            "pieces": 600
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 106,
+          "values": {
+            "order_id": "ORD-045",
+            "current_stage": "WASHING",
+            "pieces": 150
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 10,
+      "rank_score": 21,
+      "rank_reason": "open 10 mornings (-20)",
+      "severity": "watch",
+      "next_step": "Consider overtime or moving work to a workshop",
+      "action": "note"
+    }
+  ],
+  "resolved_since_previous": [
+    {
+      "key": "stage_below:WASHING",
+      "title": "Washing output was 59.5% below normal yesterday"
+    }
+  ],
+  "stages": {
+    "KNITTING": {
+      "history": [
+        {
+          "date": "2026-03-20",
+          "value": 867,
+          "low": 755.3,
+          "high": 1012.2,
+          "mean": 883.8,
+          "row": 314
+        },
+        {
+          "date": "2026-03-21",
+          "value": 871,
+          "low": 755.9,
+          "high": 1042.4,
+          "mean": 899.1,
+          "row": 318
+        },
+        {
+          "date": "2026-03-23",
+          "value": 891,
+          "low": 758.0,
+          "high": 1005.5,
+          "mean": 881.8,
+          "row": 326
+        },
+        {
+          "date": "2026-03-24",
+          "value": 992,
+          "low": 808.1,
+          "high": 1011.4,
+          "mean": 909.8,
+          "row": 330
+        },
+        {
+          "date": "2026-03-25",
+          "value": 915,
+          "low": 773.8,
+          "high": 953.5,
+          "mean": 863.6,
+          "row": 334
+        },
+        {
+          "date": "2026-03-26",
+          "value": 1033,
+          "low": 787.5,
+          "high": 979.3,
+          "mean": 883.4,
+          "row": 338
+        },
+        {
+          "date": "2026-03-27",
+          "value": 882,
+          "low": 754.2,
+          "high": 1011.5,
+          "mean": 882.9,
+          "row": 342
+        },
+        {
+          "date": "2026-03-28",
+          "value": 1031,
+          "low": 779.8,
+          "high": 1039.7,
+          "mean": 909.8,
+          "row": 346
+        },
+        {
+          "date": "2026-03-30",
+          "value": 829,
+          "low": 757.3,
+          "high": 988.7,
+          "mean": 873,
+          "row": 354
+        },
+        {
+          "date": "2026-03-31",
+          "value": 905,
+          "low": 806.6,
+          "high": 1021.2,
+          "mean": 913.9,
+          "row": 358
+        },
+        {
+          "date": "2026-04-01",
+          "value": 790,
+          "low": 792.7,
+          "high": 963.1,
+          "mean": 877.9,
+          "row": 362
+        },
+        {
+          "date": "2026-04-02",
+          "value": 857,
+          "low": 808.6,
+          "high": 1018.7,
+          "mean": 913.6,
+          "row": 366
+        },
+        {
+          "date": "2026-04-03",
+          "value": 876,
+          "low": 751.0,
+          "high": 1001.0,
+          "mean": 876,
+          "row": 370
+        },
+        {
+          "date": "2026-04-04",
+          "value": 934,
+          "low": 799.0,
+          "high": 1069.0,
+          "mean": 934,
+          "row": 374
+        },
+        {
+          "date": "2026-04-06",
+          "value": 771,
+          "low": 778.5,
+          "high": 983.5,
+          "mean": 881,
+          "row": 382
+        },
+        {
+          "date": "2026-04-07",
+          "value": 981,
+          "low": 818.1,
+          "high": 1022.4,
+          "mean": 920.2,
+          "row": 386
+        },
+        {
+          "date": "2026-04-08",
+          "value": 837,
+          "low": 772.3,
+          "high": 964.0,
+          "mean": 868.1,
+          "row": 390
+        },
+        {
+          "date": "2026-04-09",
+          "value": 948,
+          "low": 803.9,
+          "high": 1018.6,
+          "mean": 911.2,
+          "row": 394
+        }
+      ],
+      "expected": [
+        {
+          "date": "2026-04-10",
+          "mean": 887.9,
+          "low": 774.9,
+          "high": 1000.8
+        },
+        {
+          "date": "2026-04-11",
+          "mean": 940.5,
+          "low": 808.7,
+          "high": 1072.3
+        },
+        {
+          "date": "2026-04-13",
+          "mean": 853.6,
+          "low": 759.4,
+          "high": 947.9
+        },
+        {
+          "date": "2026-04-14",
+          "mean": 922,
+          "low": 817.8,
+          "high": 1026.2
+        },
+        {
+          "date": "2026-04-15",
+          "mean": 872.6,
+          "low": 782.4,
+          "high": 962.9
+        },
+        {
+          "date": "2026-04-16",
+          "mean": 921.5,
+          "low": 816.2,
+          "high": 1026.8
+        }
+      ],
+      "yesterday": {
+        "observed": 948,
+        "mean": 911.2,
+        "low": 803.9,
+        "high": 1018.6,
+        "pct_vs_mean": 4.0,
+        "status": "normal",
+        "samples": 8,
+        "evidence": [
+          {
+            "file": "production_log.csv",
+            "row": 394,
+            "values": {
+              "date": "2026-04-09",
+              "stage": "KNITTING",
+              "pieces_completed": 948
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 366,
+            "values": {
+              "date": "2026-04-02",
+              "stage": "KNITTING",
+              "pieces_completed": 857
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 338,
+            "values": {
+              "date": "2026-03-26",
+              "stage": "KNITTING",
+              "pieces_completed": 1033
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 310,
+            "values": {
+              "date": "2026-03-19",
+              "stage": "KNITTING",
+              "pieces_completed": 956
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 282,
+            "values": {
+              "date": "2026-03-12",
+              "stage": "KNITTING",
+              "pieces_completed": 837
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 254,
+            "values": {
+              "date": "2026-03-05",
+              "stage": "KNITTING",
+              "pieces_completed": 868
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 226,
+            "values": {
+              "date": "2026-02-26",
+              "stage": "KNITTING",
+              "pieces_completed": 1009
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 198,
+            "values": {
+              "date": "2026-02-19",
+              "stage": "KNITTING",
+              "pieces_completed": 864
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 170,
+            "values": {
+              "date": "2026-02-12",
+              "stage": "KNITTING",
+              "pieces_completed": 866
+            }
+          }
+        ]
+      }
+    },
+    "ASSEMBLY": {
+      "history": [
+        {
+          "date": "2026-03-20",
+          "value": 762,
+          "low": 658.6,
+          "high": 843.2,
+          "mean": 750.9,
+          "row": 315
+        },
+        {
+          "date": "2026-03-21",
+          "value": 746,
+          "low": 667.6,
+          "high": 913.2,
+          "mean": 790.4,
+          "row": 319
+        },
+        {
+          "date": "2026-03-23",
+          "value": 733,
+          "low": 709.1,
+          "high": 858.6,
+          "mean": 783.9,
+          "row": 327
+        },
+        {
+          "date": "2026-03-24",
+          "value": 779,
+          "low": 675.8,
+          "high": 798.2,
+          "mean": 737,
+          "row": 331
+        },
+        {
+          "date": "2026-03-25",
+          "value": 394,
+          "low": 680.1,
+          "high": 926.9,
+          "mean": 803.5,
+          "row": 335
+        },
+        {
+          "date": "2026-03-26",
+          "value": 464,
+          "low": 686.9,
+          "high": 859.1,
+          "mean": 773,
+          "row": 339
+        },
+        {
+          "date": "2026-03-27",
+          "value": 399,
+          "low": 668.8,
+          "high": 846.7,
+          "mean": 757.8,
+          "row": 343
+        },
+        {
+          "date": "2026-03-28",
+          "value": 445,
+          "low": 684.7,
+          "high": 910.0,
+          "mean": 797.4,
+          "row": 347
+        },
+        {
+          "date": "2026-03-30",
+          "value": 396,
+          "low": 708.5,
+          "high": 858.7,
+          "mean": 783.6,
+          "row": 355
+        },
+        {
+          "date": "2026-03-31",
+          "value": 455,
+          "low": 682.6,
+          "high": 807.9,
+          "mean": 745.2,
+          "row": 359
+        },
+        {
+          "date": "2026-04-01",
+          "value": 438,
+          "low": 514.3,
+          "high": 968.7,
+          "mean": 741.5,
+          "row": 363
+        },
+        {
+          "date": "2026-04-02",
+          "value": 498,
+          "low": 567.4,
+          "high": 918.8,
+          "mean": 743.1,
+          "row": 367
+        },
+        {
+          "date": "2026-04-03",
+          "value": 414,
+          "low": 522.1,
+          "high": 869.4,
+          "mean": 695.8,
+          "row": 371
+        },
+        {
+          "date": "2026-04-04",
+          "value": 806,
+          "low": 548.2,
+          "high": 966.3,
+          "mean": 757.2,
+          "row": 375
+        },
+        {
+          "date": "2026-04-06",
+          "value": 713,
+          "low": 528.2,
+          "high": 926.3,
+          "mean": 727.2,
+          "row": 383
+        },
+        {
+          "date": "2026-04-07",
+          "value": 726,
+          "low": 552.3,
+          "high": 850.2,
+          "mean": 701.2,
+          "row": 387
+        },
+        {
+          "date": "2026-04-08",
+          "value": 789,
+          "low": 428.7,
+          "high": 969.6,
+          "mean": 699.1,
+          "row": 391
+        },
+        {
+          "date": "2026-04-09",
+          "value": 754,
+          "low": 496.6,
+          "high": 917.9,
+          "mean": 707.2,
+          "row": 395
+        }
+      ],
+      "expected": [
+        {
+          "date": "2026-04-10",
+          "mean": 655.5,
+          "low": 435.5,
+          "high": 875.5
+        },
+        {
+          "date": "2026-04-11",
+          "mean": 743.2,
+          "low": 551.7,
+          "high": 934.8
+        },
+        {
+          "date": "2026-04-13",
+          "mean": 722.1,
+          "low": 523.6,
+          "high": 920.7
+        },
+        {
+          "date": "2026-04-14",
+          "mean": 705,
+          "low": 555.6,
+          "high": 854.4
+        },
+        {
+          "date": "2026-04-15",
+          "mean": 710,
+          "low": 435.9,
+          "high": 984.1
+        },
+        {
+          "date": "2026-04-16",
+          "mean": 694.1,
+          "low": 498.8,
+          "high": 889.4
+        }
+      ],
+      "yesterday": {
+        "observed": 754,
+        "mean": 707.2,
+        "low": 496.6,
+        "high": 917.9,
+        "pct_vs_mean": 6.6,
+        "status": "normal",
+        "samples": 8,
+        "evidence": [
+          {
+            "file": "production_log.csv",
+            "row": 395,
+            "values": {
+              "date": "2026-04-09",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 754
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 367,
+            "values": {
+              "date": "2026-04-02",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 498
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 339,
+            "values": {
+              "date": "2026-03-26",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 464
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 311,
+            "values": {
+              "date": "2026-03-19",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 868
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 283,
+            "values": {
+              "date": "2026-03-12",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 755
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 255,
+            "values": {
+              "date": "2026-03-05",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 762
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 227,
+            "values": {
+              "date": "2026-02-26",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 725
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 199,
+            "values": {
+              "date": "2026-02-19",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 727
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 171,
+            "values": {
+              "date": "2026-02-12",
+              "stage": "ASSEMBLY",
+              "pieces_completed": 859
+            }
+          }
+        ]
+      }
+    },
+    "WASHING": {
+      "history": [
+        {
+          "date": "2026-03-20",
+          "value": 628,
+          "low": 633.7,
+          "high": 827.8,
+          "mean": 730.8,
+          "row": 316
+        },
+        {
+          "date": "2026-03-21",
+          "value": 721,
+          "low": 599.2,
+          "high": 819.8,
+          "mean": 709.5,
+          "row": 320
+        },
+        {
+          "date": "2026-03-23",
+          "value": 757,
+          "low": 602.5,
+          "high": 783.8,
+          "mean": 693.1,
+          "row": 328
+        },
+        {
+          "date": "2026-03-24",
+          "value": 741,
+          "low": 639.0,
+          "high": 780.5,
+          "mean": 709.8,
+          "row": 332
+        },
+        {
+          "date": "2026-03-25",
+          "value": 801,
+          "low": 661.7,
+          "high": 771.3,
+          "mean": 716.5,
+          "row": 336
+        },
+        {
+          "date": "2026-03-26",
+          "value": 801,
+          "low": 623.3,
+          "high": 766.2,
+          "mean": 694.8,
+          "row": 340
+        },
+        {
+          "date": "2026-03-27",
+          "value": 793,
+          "low": 625.7,
+          "high": 830.6,
+          "mean": 728.1,
+          "row": 344
+        },
+        {
+          "date": "2026-03-28",
+          "value": 624,
+          "low": 611.6,
+          "high": 823.6,
+          "mean": 717.6,
+          "row": 348
+        },
+        {
+          "date": "2026-03-30",
+          "value": 605,
+          "low": 607.3,
+          "high": 798.2,
+          "mean": 702.8,
+          "row": 356
+        },
+        {
+          "date": "2026-03-31",
+          "value": 732,
+          "low": 639.1,
+          "high": 778.4,
+          "mean": 708.8,
+          "row": 360
+        },
+        {
+          "date": "2026-04-01",
+          "value": 734,
+          "low": 665.4,
+          "high": 796.3,
+          "mean": 730.9,
+          "row": 364
+        },
+        {
+          "date": "2026-04-02",
+          "value": 772,
+          "low": 616.3,
+          "high": 793.9,
+          "mean": 705.1,
+          "row": 368
+        },
+        {
+          "date": "2026-04-03",
+          "value": 779,
+          "low": 625.3,
+          "high": 835.2,
+          "mean": 730.2,
+          "row": 372
+        },
+        {
+          "date": "2026-04-04",
+          "value": 752,
+          "low": 590.9,
+          "high": 822.6,
+          "mean": 706.8,
+          "row": 376
+        },
+        {
+          "date": "2026-04-06",
+          "value": 661,
+          "low": 600.5,
+          "high": 800.5,
+          "mean": 700.5,
+          "row": 384
+        },
+        {
+          "date": "2026-04-07",
+          "value": 277,
+          "low": 639.8,
+          "high": 780.7,
+          "mean": 710.2,
+          "row": 388
+        },
+        {
+          "date": "2026-04-08",
+          "value": 297,
+          "low": 668.2,
+          "high": 798.0,
+          "mean": 733.1,
+          "row": 392
+        },
+        {
+          "date": "2026-04-09",
+          "value": 697,
+          "low": 616.1,
+          "high": 794.9,
+          "mean": 705.5,
+          "row": 396
+        }
+      ],
+      "expected": [
+        {
+          "date": "2026-04-10",
+          "mean": 728.9,
+          "low": 625.5,
+          "high": 832.2
+        },
+        {
+          "date": "2026-04-11",
+          "mean": 717.2,
+          "low": 601.8,
+          "high": 832.7
+        },
+        {
+          "date": "2026-04-13",
+          "mean": 686.9,
+          "low": 593.8,
+          "high": 779.9
+        },
+        {
+          "date": "2026-04-14",
+          "mean": 648.1,
+          "low": 429.2,
+          "high": 867.0
+        },
+        {
+          "date": "2026-04-15",
+          "mean": 689.6,
+          "low": 463.2,
+          "high": 916.0
+        },
+        {
+          "date": "2026-04-16",
+          "mean": 698.6,
+          "low": 613.2,
+          "high": 784.0
+        }
+      ],
+      "yesterday": {
+        "observed": 697,
+        "mean": 705.5,
+        "low": 616.1,
+        "high": 794.9,
+        "pct_vs_mean": -1.2,
+        "status": "normal",
+        "samples": 8,
+        "evidence": [
+          {
+            "file": "production_log.csv",
+            "row": 396,
+            "values": {
+              "date": "2026-04-09",
+              "stage": "WASHING",
+              "pieces_completed": 697
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 368,
+            "values": {
+              "date": "2026-04-02",
+              "stage": "WASHING",
+              "pieces_completed": 772
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 340,
+            "values": {
+              "date": "2026-03-26",
+              "stage": "WASHING",
+              "pieces_completed": 801
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 312,
+            "values": {
+              "date": "2026-03-19",
+              "stage": "WASHING",
+              "pieces_completed": 701
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 284,
+            "values": {
+              "date": "2026-03-12",
+              "stage": "WASHING",
+              "pieces_completed": 671
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 256,
+            "values": {
+              "date": "2026-03-05",
+              "stage": "WASHING",
+              "pieces_completed": 680
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 228,
+            "values": {
+              "date": "2026-02-26",
+              "stage": "WASHING",
+              "pieces_completed": 649
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 200,
+            "values": {
+              "date": "2026-02-19",
+              "stage": "WASHING",
+              "pieces_completed": 618
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 172,
+            "values": {
+              "date": "2026-02-12",
+              "stage": "WASHING",
+              "pieces_completed": 752
+            }
+          }
+        ]
+      }
+    },
+    "PACKING": {
+      "history": [
+        {
+          "date": "2026-03-20",
+          "value": 627,
+          "low": 574.6,
+          "high": 774.9,
+          "mean": 674.8,
+          "row": 317
+        },
+        {
+          "date": "2026-03-21",
+          "value": 561,
+          "low": 555.3,
+          "high": 741.0,
+          "mean": 648.1,
+          "row": 321
+        },
+        {
+          "date": "2026-03-23",
+          "value": 667,
+          "low": 599.9,
+          "high": 745.6,
+          "mean": 672.8,
+          "row": 329
+        },
+        {
+          "date": "2026-03-24",
+          "value": 671,
+          "low": 566.5,
+          "high": 751.0,
+          "mean": 658.8,
+          "row": 333
+        },
+        {
+          "date": "2026-03-25",
+          "value": 658,
+          "low": 596.1,
+          "high": 766.4,
+          "mean": 681.2,
+          "row": 337
+        },
+        {
+          "date": "2026-03-26",
+          "value": 673,
+          "low": 594.6,
+          "high": 728.6,
+          "mean": 661.6,
+          "row": 341
+        },
+        {
+          "date": "2026-03-27",
+          "value": 580,
+          "low": 567.9,
+          "high": 773.6,
+          "mean": 670.8,
+          "row": 345
+        },
+        {
+          "date": "2026-03-28",
+          "value": 734,
+          "low": 533.8,
+          "high": 728.9,
+          "mean": 631.4,
+          "row": 349
+        },
+        {
+          "date": "2026-03-30",
+          "value": 625,
+          "low": 600.5,
+          "high": 728.0,
+          "mean": 664.2,
+          "row": 357
+        },
+        {
+          "date": "2026-03-31",
+          "value": 657,
+          "low": 582.0,
+          "high": 753.5,
+          "mean": 667.8,
+          "row": 361
+        },
+        {
+          "date": "2026-04-01",
+          "value": 649,
+          "low": 593.1,
+          "high": 747.4,
+          "mean": 670.2,
+          "row": 365
+        },
+        {
+          "date": "2026-04-02",
+          "value": 581,
+          "low": 603.6,
+          "high": 731.4,
+          "mean": 667.5,
+          "row": 369
+        },
+        {
+          "date": "2026-04-03",
+          "value": 620,
+          "low": 547.3,
+          "high": 755.0,
+          "mean": 651.1,
+          "row": 373
+        },
+        {
+          "date": "2026-04-04",
+          "value": 634,
+          "low": 550.6,
+          "high": 753.9,
+          "mean": 652.2,
+          "row": 377
+        },
+        {
+          "date": "2026-04-06",
+          "value": 640,
+          "low": 615.3,
+          "high": 722.2,
+          "mean": 668.8,
+          "row": 385
+        },
+        {
+          "date": "2026-04-07",
+          "value": 471,
+          "low": 579.6,
+          "high": 739.4,
+          "mean": 659.5,
+          "row": 389
+        },
+        {
+          "date": "2026-04-08",
+          "value": 633,
+          "low": 589.4,
+          "high": 733.1,
+          "mean": 661.2,
+          "row": 393
+        },
+        {
+          "date": "2026-04-09",
+          "value": 382,
+          "low": 600.6,
+          "high": 732.9,
+          "mean": 666.8,
+          "row": 397
+        }
+      ],
+      "expected": [
+        {
+          "date": "2026-04-10",
+          "mean": 642.5,
+          "low": 540.1,
+          "high": 744.9
+        },
+        {
+          "date": "2026-04-11",
+          "mean": 645.4,
+          "low": 545.7,
+          "high": 745.0
+        },
+        {
+          "date": "2026-04-13",
+          "mean": 666,
+          "low": 610.7,
+          "high": 721.3
+        },
+        {
+          "date": "2026-04-14",
+          "mean": 626.6,
+          "low": 515.3,
+          "high": 737.9
+        },
+        {
+          "date": "2026-04-15",
+          "mean": 661.2,
+          "low": 589.4,
+          "high": 733.1
+        },
+        {
+          "date": "2026-04-16",
+          "mean": 638.4,
+          "low": 482.1,
+          "high": 794.7
+        }
+      ],
+      "yesterday": {
+        "observed": 382,
+        "mean": 666.8,
+        "low": 600.6,
+        "high": 732.9,
+        "pct_vs_mean": -42.7,
+        "status": "below",
+        "samples": 8,
+        "evidence": [
+          {
+            "file": "production_log.csv",
+            "row": 397,
+            "values": {
+              "date": "2026-04-09",
+              "stage": "PACKING",
+              "pieces_completed": 382
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 369,
+            "values": {
+              "date": "2026-04-02",
+              "stage": "PACKING",
+              "pieces_completed": 581
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 341,
+            "values": {
+              "date": "2026-03-26",
+              "stage": "PACKING",
+              "pieces_completed": 673
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 313,
+            "values": {
+              "date": "2026-03-19",
+              "stage": "PACKING",
+              "pieces_completed": 708
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 285,
+            "values": {
+              "date": "2026-03-12",
+              "stage": "PACKING",
+              "pieces_completed": 679
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 257,
+            "values": {
+              "date": "2026-03-05",
+              "stage": "PACKING",
+              "pieces_completed": 676
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 229,
+            "values": {
+              "date": "2026-02-26",
+              "stage": "PACKING",
+              "pieces_completed": 711
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 201,
+            "values": {
+              "date": "2026-02-19",
+              "stage": "PACKING",
+              "pieces_completed": 697
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 173,
+            "values": {
+              "date": "2026-02-12",
+              "stage": "PACKING",
+              "pieces_completed": 609
+            }
+          }
+        ]
+      }
+    },
+    "TOTAL": {
+      "history": [
+        {
+          "date": "2026-03-20",
+          "value": 2884,
+          "low": 2761.4,
+          "high": 3318.9,
+          "mean": 3040.1,
+          "row": 314
+        },
+        {
+          "date": "2026-03-21",
+          "value": 2899,
+          "low": 2723.1,
+          "high": 3371.1,
+          "mean": 3047.1,
+          "row": 318
+        },
+        {
+          "date": "2026-03-23",
+          "value": 3048,
+          "low": 2845.4,
+          "high": 3217.6,
+          "mean": 3031.5,
+          "row": 326
+        },
+        {
+          "date": "2026-03-24",
+          "value": 3183,
+          "low": 2864.5,
+          "high": 3166.0,
+          "mean": 3015.2,
+          "row": 330
+        },
+        {
+          "date": "2026-03-25",
+          "value": 2768,
+          "low": 2807.9,
+          "high": 3321.8,
+          "mean": 3064.9,
+          "row": 334
+        },
+        {
+          "date": "2026-03-26",
+          "value": 2971,
+          "low": 2838.3,
+          "high": 3187.2,
+          "mean": 3012.8,
+          "row": 338
+        },
+        {
+          "date": "2026-03-27",
+          "value": 2654,
+          "low": 2760.0,
+          "high": 3319.0,
+          "mean": 3039.5,
+          "row": 342
+        },
+        {
+          "date": "2026-03-28",
+          "value": 2834,
+          "low": 2744.1,
+          "high": 3368.1,
+          "mean": 3056.1,
+          "row": 346
+        },
+        {
+          "date": "2026-03-30",
+          "value": 2455,
+          "low": 2842.5,
+          "high": 3204.7,
+          "mean": 3023.6,
+          "row": 354
+        },
+        {
+          "date": "2026-03-31",
+          "value": 2749,
+          "low": 2871.2,
+          "high": 3200.0,
+          "mean": 3035.6,
+          "row": 358
+        },
+        {
+          "date": "2026-04-01",
+          "value": 2611,
+          "low": 2728.2,
+          "high": 3312.8,
+          "mean": 3020.5,
+          "row": 362
+        },
+        {
+          "date": "2026-04-02",
+          "value": 2708,
+          "low": 2877.9,
+          "high": 3180.8,
+          "mean": 3029.4,
+          "row": 366
+        },
+        {
+          "date": "2026-04-03",
+          "value": 2689,
+          "low": 2675.8,
+          "high": 3230.4,
+          "mean": 2953.1,
+          "row": 370
+        },
+        {
+          "date": "2026-04-04",
+          "value": 3126,
+          "low": 2730.1,
+          "high": 3370.4,
+          "mean": 3050.2,
+          "row": 374
+        },
+        {
+          "date": "2026-04-06",
+          "value": 2785,
+          "low": 2649.3,
+          "high": 3305.7,
+          "mean": 2977.5,
+          "row": 382
+        },
+        {
+          "date": "2026-04-07",
+          "value": 2455,
+          "low": 2780.6,
+          "high": 3201.9,
+          "mean": 2991.2,
+          "row": 386
+        },
+        {
+          "date": "2026-04-08",
+          "value": 2556,
+          "low": 2609.9,
+          "high": 3313.4,
+          "mean": 2961.6,
+          "row": 390
+        },
+        {
+          "date": "2026-04-09",
+          "value": 2781,
+          "low": 2773.2,
+          "high": 3208.3,
+          "mean": 2990.8,
+          "row": 394
+        }
+      ],
+      "expected": [
+        {
+          "date": "2026-04-10",
+          "mean": 2914.8,
+          "low": 2610.3,
+          "high": 3219.2
+        },
+        {
+          "date": "2026-04-11",
+          "mean": 3046.4,
+          "low": 2728.8,
+          "high": 3364.0
+        },
+        {
+          "date": "2026-04-13",
+          "mean": 2928.6,
+          "low": 2609.7,
+          "high": 3247.5
+        },
+        {
+          "date": "2026-04-14",
+          "mean": 2901.8,
+          "low": 2588.5,
+          "high": 3215.0
+        },
+        {
+          "date": "2026-04-15",
+          "mean": 2933.5,
+          "low": 2534.7,
+          "high": 3332.3
+        },
+        {
+          "date": "2026-04-16",
+          "mean": 2952.6,
+          "low": 2720.5,
+          "high": 3184.8
+        }
+      ],
+      "yesterday": {
+        "observed": 2781,
+        "mean": 2990.8,
+        "low": 2773.2,
+        "high": 3208.3,
+        "pct_vs_mean": -7.0,
+        "status": "normal",
+        "samples": 8,
+        "evidence": [
+          {
+            "file": "production_log.csv",
+            "row": 394,
+            "values": {
+              "date": "2026-04-09",
+              "stage": "TOTAL",
+              "pieces_completed": 2781
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 366,
+            "values": {
+              "date": "2026-04-02",
+              "stage": "TOTAL",
+              "pieces_completed": 2708
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 338,
+            "values": {
+              "date": "2026-03-26",
+              "stage": "TOTAL",
+              "pieces_completed": 2971
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 310,
+            "values": {
+              "date": "2026-03-19",
+              "stage": "TOTAL",
+              "pieces_completed": 3233
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 282,
+            "values": {
+              "date": "2026-03-12",
+              "stage": "TOTAL",
+              "pieces_completed": 2942
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 254,
+            "values": {
+              "date": "2026-03-05",
+              "stage": "TOTAL",
+              "pieces_completed": 2986
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 226,
+            "values": {
+              "date": "2026-02-26",
+              "stage": "TOTAL",
+              "pieces_completed": 3094
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 198,
+            "values": {
+              "date": "2026-02-19",
+              "stage": "TOTAL",
+              "pieces_completed": 2906
+            }
+          },
+          {
+            "file": "production_log.csv",
+            "row": 170,
+            "values": {
+              "date": "2026-02-12",
+              "stage": "TOTAL",
+              "pieces_completed": 3086
+            }
+          }
+        ]
+      }
+    }
+  },
+  "relevant_orders": [
+    {
+      "order_id": "ORD-120",
+      "customer": "TrendCart",
+      "product": "Vest",
+      "pieces": 1500,
+      "current_stage": "ASSEMBLY",
+      "due_date": "2026-03-17",
+      "days_to_due": -24,
+      "idle_days": 5,
+      "projected_finish": "2026-04-29",
+      "projected_late": true,
+      "priority": 95,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 60
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        },
+        {
+          "reason": "idle 5 working days",
+          "points": 15
+        }
+      ],
+      "_row": 76
+    },
+    {
+      "order_id": "ORD-020",
+      "customer": "TrendCart",
+      "product": "Vest",
+      "pieces": 1200,
+      "current_stage": "PACKING",
+      "due_date": "2026-03-31",
+      "days_to_due": -10,
+      "idle_days": 5,
+      "projected_finish": "2026-04-16",
+      "projected_late": true,
+      "priority": 95,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 60
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        },
+        {
+          "reason": "idle 5 working days",
+          "points": 15
+        }
+      ],
+      "_row": 90
+    },
+    {
+      "order_id": "ORD-055",
+      "customer": "Cotton Club",
+      "product": "Crewneck sweater",
+      "pieces": 800,
+      "current_stage": "PACKING",
+      "due_date": "2026-03-31",
+      "days_to_due": -10,
+      "idle_days": 0,
+      "projected_finish": "2026-04-16",
+      "projected_late": true,
+      "priority": 80,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 60
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        }
+      ],
+      "_row": 100
+    },
+    {
+      "order_id": "ORD-029",
+      "customer": "Northwind Apparel",
+      "product": "Beanie",
+      "pieces": 1500,
+      "current_stage": "PACKING",
+      "due_date": "2026-04-01",
+      "days_to_due": -9,
+      "idle_days": 0,
+      "projected_finish": "2026-04-16",
+      "projected_late": true,
+      "priority": 78,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 58
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        }
+      ],
+      "_row": 92
+    },
+    {
+      "order_id": "ORD-045",
+      "customer": "Cotton Club",
+      "product": "Vest",
+      "pieces": 150,
+      "current_stage": "WASHING",
+      "due_date": "2026-04-09",
+      "days_to_due": -1,
+      "idle_days": 9,
+      "projected_finish": "2026-04-22",
+      "projected_late": true,
+      "priority": 77,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 42
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        },
+        {
+          "reason": "idle 9 working days",
+          "points": 15
+        }
+      ],
+      "_row": 106
+    },
+    {
+      "order_id": "ORD-008",
+      "customer": "Loom & Leaf",
+      "product": "Polo shirt",
+      "pieces": 600,
+      "current_stage": "ASSEMBLY",
+      "due_date": "2026-04-09",
+      "days_to_due": -1,
+      "idle_days": 6,
+      "projected_finish": "2026-04-29",
+      "projected_late": true,
+      "priority": 77,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 42
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        },
+        {
+          "reason": "idle 6 working days",
+          "points": 15
+        }
+      ],
+      "_row": 112
+    },
+    {
+      "order_id": "ORD-108",
+      "customer": "Harbor Knits",
+      "product": "Scarf",
+      "pieces": 2000,
+      "current_stage": "WASHING",
+      "due_date": "2026-04-03",
+      "days_to_due": -7,
+      "idle_days": 0,
+      "projected_finish": "2026-04-22",
+      "projected_late": true,
+      "priority": 74,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 54
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        }
+      ],
+      "_row": 101
+    },
+    {
+      "order_id": "ORD-103",
+      "customer": "Bright Basics",
+      "product": "Scarf",
+      "pieces": 2000,
+      "current_stage": "ASSEMBLY",
+      "due_date": "2026-04-04",
+      "days_to_due": -6,
+      "idle_days": 0,
+      "projected_finish": "2026-04-29",
+      "projected_late": true,
+      "priority": 72,
+      "priority_parts": [
+        {
+          "reason": "overdue",
+          "points": 52
+        },
+        {
+          "reason": "projected late",
+          "points": 20
+        }
+      ],
+      "_row": 91
+    }
+  ],
+  "status_counts": {
+    "on_track": 13,
+    "at_risk": 15,
+    "late": 11
+  },
+  "arrivals": {
+    "window_days": 45,
+    "orders": 61,
+    "pieces_per_working_day": 1228.2,
+    "leads": [
+      12,
+      14,
+      15,
+      15,
+      16,
+      16,
+      17,
+      17,
+      17,
+      17,
+      17,
+      17,
+      18,
+      18,
+      19,
+      19,
+      19,
+      19,
+      19,
+      20,
+      20,
+      20,
+      21,
+      21,
+      22,
+      22,
+      23,
+      23,
+      24,
+      24,
+      26,
+      26,
+      27,
+      27,
+      27,
+      28,
+      29,
+      29,
+      29,
+      29,
+      30,
+      30,
+      30,
+      30,
+      30,
+      31,
+      31,
+      32,
+      32,
+      33,
+      33,
+      33,
+      34,
+      34,
+      34,
+      34,
+      35,
+      35,
+      35,
+      35,
+      35
+    ]
+  },
+  "on_time_30d": {
+    "completed": 31,
+    "on_time": 15,
+    "pct": 48,
+    "orders": [
+      {
+        "order_id": "ORD-104",
+        "customer": "UrbanThread",
+        "completed_date": "2026-03-11",
+        "days_late": -17,
+        "row": 73
+      },
+      {
+        "order_id": "ORD-075",
+        "customer": "UrbanThread",
+        "completed_date": "2026-03-11",
+        "days_late": -17,
+        "row": 75
+      },
+      {
+        "order_id": "ORD-058",
+        "customer": "Maple & Co",
+        "completed_date": "2026-03-12",
+        "days_late": 20,
+        "row": 49
+      },
+      {
+        "order_id": "ORD-011",
+        "customer": "Maple & Co",
+        "completed_date": "2026-03-12",
+        "days_late": -2,
+        "row": 61
+      },
+      {
+        "order_id": "ORD-048",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-03-13",
+        "days_late": -12,
+        "row": 68
+      },
+      {
+        "order_id": "ORD-033",
+        "customer": "Bright Basics",
+        "completed_date": "2026-03-15",
+        "days_late": -3,
+        "row": 80
+      },
+      {
+        "order_id": "ORD-027",
+        "customer": "Loom & Leaf",
+        "completed_date": "2026-03-16",
+        "days_late": -3,
+        "row": 77
+      },
+      {
+        "order_id": "ORD-032",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-03-17",
+        "days_late": 3,
+        "row": 62
+      },
+      {
+        "order_id": "ORD-013",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-03-17",
+        "days_late": 14,
+        "row": 66
+      },
+      {
+        "order_id": "ORD-088",
+        "customer": "Harbor Knits",
+        "completed_date": "2026-03-18",
+        "days_late": -3,
+        "row": 84
+      },
+      {
+        "order_id": "ORD-034",
+        "customer": "Harbor Knits",
+        "completed_date": "2026-03-19",
+        "days_late": 7,
+        "row": 67
+      },
+      {
+        "order_id": "ORD-092",
+        "customer": "Maple & Co",
+        "completed_date": "2026-03-19",
+        "days_late": 4,
+        "row": 72
+      },
+      {
+        "order_id": "ORD-037",
+        "customer": "Cotton Club",
+        "completed_date": "2026-03-20",
+        "days_late": 2,
+        "row": 70
+      },
+      {
+        "order_id": "ORD-111",
+        "customer": "Cotton Club",
+        "completed_date": "2026-03-22",
+        "days_late": 6,
+        "row": 57
+      },
+      {
+        "order_id": "ORD-014",
+        "customer": "TrendCart",
+        "completed_date": "2026-03-23",
+        "days_late": 23,
+        "row": 44
+      },
+      {
+        "order_id": "ORD-079",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-03-23",
+        "days_late": -7,
+        "row": 71
+      },
+      {
+        "order_id": "ORD-112",
+        "customer": "Harbor Knits",
+        "completed_date": "2026-03-24",
+        "days_late": -4,
+        "row": 95
+      },
+      {
+        "order_id": "ORD-031",
+        "customer": "Maple & Co",
+        "completed_date": "2026-03-26",
+        "days_late": -5,
+        "row": 79
+      },
+      {
+        "order_id": "ORD-113",
+        "customer": "Bright Basics",
+        "completed_date": "2026-03-26",
+        "days_late": 4,
+        "row": 82
+      },
+      {
+        "order_id": "ORD-044",
+        "customer": "Cotton Club",
+        "completed_date": "2026-03-26",
+        "days_late": -11,
+        "row": 87
+      },
+      {
+        "order_id": "ORD-060",
+        "customer": "Maple & Co",
+        "completed_date": "2026-03-27",
+        "days_late": -5,
+        "row": 96
+      },
+      {
+        "order_id": "ORD-030",
+        "customer": "TrendCart",
+        "completed_date": "2026-03-28",
+        "days_late": 1,
+        "row": 78
+      },
+      {
+        "order_id": "ORD-084",
+        "customer": "Maple & Co",
+        "completed_date": "2026-03-28",
+        "days_late": -4,
+        "row": 98
+      },
+      {
+        "order_id": "ORD-054",
+        "customer": "TrendCart",
+        "completed_date": "2026-03-29",
+        "days_late": 23,
+        "row": 69
+      },
+      {
+        "order_id": "ORD-019",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-03-29",
+        "days_late": 0,
+        "row": 83
+      },
+      {
+        "order_id": "ORD-069",
+        "customer": "Harbor Knits",
+        "completed_date": "2026-03-30",
+        "days_late": -10,
+        "row": 94
+      },
+      {
+        "order_id": "ORD-114",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-04-02",
+        "days_late": 10,
+        "row": 85
+      },
+      {
+        "order_id": "ORD-107",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-04-04",
+        "days_late": 19,
+        "row": 81
+      },
+      {
+        "order_id": "ORD-083",
+        "customer": "Maple & Co",
+        "completed_date": "2026-04-06",
+        "days_late": 14,
+        "row": 88
+      },
+      {
+        "order_id": "ORD-093",
+        "customer": "Maple & Co",
+        "completed_date": "2026-04-07",
+        "days_late": 9,
+        "row": 99
+      },
+      {
+        "order_id": "ORD-002",
+        "customer": "Cotton Club",
+        "completed_date": "2026-04-08",
+        "days_late": 10,
+        "row": 86
+      }
+    ]
+  },
+  "on_time_prev_30d": {
+    "completed": 40,
+    "on_time": 25,
+    "pct": 62
+  },
+  "customers": [
+    {
+      "customer": "TrendCart",
+      "active": 6,
+      "late": 2,
+      "at_risk": 4,
+      "on_track": 0,
+      "pieces": 5600,
+      "next_due": "2026-04-10",
+      "otd_60d": 25,
+      "stalled": true
+    },
+    {
+      "customer": "Loom & Leaf",
+      "active": 8,
+      "late": 1,
+      "at_risk": 4,
+      "on_track": 3,
+      "pieces": 4700,
+      "next_due": "2026-04-15",
+      "otd_60d": 83,
+      "stalled": false
+    },
+    {
+      "customer": "Harbor Knits",
+      "active": 7,
+      "late": 2,
+      "at_risk": 2,
+      "on_track": 3,
+      "pieces": 7600,
+      "next_due": "2026-04-13",
+      "otd_60d": 62,
+      "stalled": false
+    },
+    {
+      "customer": "Northwind Apparel",
+      "active": 5,
+      "late": 2,
+      "at_risk": 1,
+      "on_track": 2,
+      "pieces": 4700,
+      "next_due": "2026-04-24",
+      "otd_60d": 56,
+      "stalled": false
+    },
+    {
+      "customer": "Bright Basics",
+      "active": 3,
+      "late": 2,
+      "at_risk": 0,
+      "on_track": 1,
+      "pieces": 4800,
+      "next_due": "2026-04-26",
+      "otd_60d": 57,
+      "stalled": false
+    },
+    {
+      "customer": "UrbanThread",
+      "active": 5,
+      "late": 0,
+      "at_risk": 3,
+      "on_track": 2,
+      "pieces": 3600,
+      "next_due": "2026-04-10",
+      "otd_60d": 100,
+      "stalled": false
+    },
+    {
+      "customer": "Cotton Club",
+      "active": 3,
+      "late": 2,
+      "at_risk": 0,
+      "on_track": 1,
+      "pieces": 1950,
+      "next_due": "2026-04-25",
+      "otd_60d": 60,
+      "stalled": false
+    },
+    {
+      "customer": "Maple & Co",
+      "active": 2,
+      "late": 0,
+      "at_risk": 1,
+      "on_track": 1,
+      "pieces": 2100,
+      "next_due": "2026-04-16",
+      "otd_60d": 41,
+      "stalled": false
+    }
+  ],
+  "pipeline": [
+    {
+      "stage": "KNITTING",
+      "orders": 14,
+      "pieces": 10600,
+      "late": 0,
+      "usual_per_day": 911,
+      "days_of_work": 11.6,
+      "yesterday": 948,
+      "status": "normal"
+    },
+    {
+      "stage": "ASSEMBLY",
+      "orders": 16,
+      "pieces": 15400,
+      "late": 4,
+      "usual_per_day": 707,
+      "days_of_work": 21.8,
+      "yesterday": 754,
+      "status": "normal"
+    },
+    {
+      "stage": "WASHING",
+      "orders": 5,
+      "pieces": 4750,
+      "late": 3,
+      "usual_per_day": 706,
+      "days_of_work": 6.7,
+      "yesterday": 697,
+      "status": "normal"
+    },
+    {
+      "stage": "PACKING",
+      "orders": 4,
+      "pieces": 4300,
+      "late": 4,
+      "usual_per_day": 667,
+      "days_of_work": 6.4,
+      "yesterday": 382,
+      "status": "below"
+    }
+  ],
+  "outlook": [
+    {
+      "key": "late",
+      "label": "Already late",
+      "orders": 11,
+      "pieces": 14050,
+      "at_risk": 0,
+      "late": 11
+    },
+    {
+      "key": "week",
+      "label": "Due in 0-7 days",
+      "orders": 8,
+      "pieces": 5800,
+      "at_risk": 8,
+      "late": 0
+    },
+    {
+      "key": "next",
+      "label": "Due in 8-14 days",
+      "orders": 7,
+      "pieces": 5600,
+      "at_risk": 2,
+      "late": 0
+    },
+    {
+      "key": "later",
+      "label": "Due later",
+      "orders": 13,
+      "pieces": 9600,
+      "at_risk": 5,
+      "late": 0
+    }
+  ],
+  "orders": [
+    {
+      "order_id": "ORD-120",
+      "customer": "TrendCart",
+      "product": "Vest",
+      "pieces": 1500,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-03-17",
+      "days_to_due": -24,
+      "idle_days": 5,
+      "projected_finish": "2026-04-29",
+      "status": "late",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-02-27",
+      "reasons": [
+        "24 days past due"
+      ],
+      "priority": 95,
+      "row": 76
+    },
+    {
+      "order_id": "ORD-020",
+      "customer": "TrendCart",
+      "product": "Vest",
+      "pieces": 1200,
+      "stage": "PACKING",
+      "due_date": "2026-03-31",
+      "days_to_due": -10,
+      "idle_days": 5,
+      "projected_finish": "2026-04-16",
+      "status": "late",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-03-08",
+      "reasons": [
+        "10 days past due"
+      ],
+      "priority": 95,
+      "row": 90
+    },
+    {
+      "order_id": "ORD-055",
+      "customer": "Cotton Club",
+      "product": "Crewneck sweater",
+      "pieces": 800,
+      "stage": "PACKING",
+      "due_date": "2026-03-31",
+      "days_to_due": -10,
+      "idle_days": 0,
+      "projected_finish": "2026-04-16",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-15",
+      "reasons": [
+        "10 days past due"
+      ],
+      "priority": 80,
+      "row": 100
+    },
+    {
+      "order_id": "ORD-029",
+      "customer": "Northwind Apparel",
+      "product": "Beanie",
+      "pieces": 1500,
+      "stage": "PACKING",
+      "due_date": "2026-04-01",
+      "days_to_due": -9,
+      "idle_days": 0,
+      "projected_finish": "2026-04-16",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-10",
+      "reasons": [
+        "9 days past due"
+      ],
+      "priority": 78,
+      "row": 92
+    },
+    {
+      "order_id": "ORD-045",
+      "customer": "Cotton Club",
+      "product": "Vest",
+      "pieces": 150,
+      "stage": "WASHING",
+      "due_date": "2026-04-09",
+      "days_to_due": -1,
+      "idle_days": 9,
+      "projected_finish": "2026-04-22",
+      "status": "late",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-21",
+      "reasons": [
+        "1 days past due"
+      ],
+      "priority": 77,
+      "row": 106
+    },
+    {
+      "order_id": "ORD-008",
+      "customer": "Loom & Leaf",
+      "product": "Polo shirt",
+      "pieces": 600,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-09",
+      "days_to_due": -1,
+      "idle_days": 6,
+      "projected_finish": "2026-04-29",
+      "status": "late",
+      "last_activity": "2026-04-02",
+      "order_date": "2026-03-23",
+      "reasons": [
+        "1 days past due"
+      ],
+      "priority": 77,
+      "row": 112
+    },
+    {
+      "order_id": "ORD-108",
+      "customer": "Harbor Knits",
+      "product": "Scarf",
+      "pieces": 2000,
+      "stage": "WASHING",
+      "due_date": "2026-04-03",
+      "days_to_due": -7,
+      "idle_days": 0,
+      "projected_finish": "2026-04-22",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-17",
+      "reasons": [
+        "7 days past due"
+      ],
+      "priority": 74,
+      "row": 101
+    },
+    {
+      "order_id": "ORD-103",
+      "customer": "Bright Basics",
+      "product": "Scarf",
+      "pieces": 2000,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-04",
+      "days_to_due": -6,
+      "idle_days": 0,
+      "projected_finish": "2026-04-29",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-09",
+      "reasons": [
+        "6 days past due"
+      ],
+      "priority": 72,
+      "row": 91
+    },
+    {
+      "order_id": "ORD-099",
+      "customer": "Northwind Apparel",
+      "product": "Polo shirt",
+      "pieces": 1500,
+      "stage": "WASHING",
+      "due_date": "2026-04-05",
+      "days_to_due": -5,
+      "idle_days": 0,
+      "projected_finish": "2026-04-22",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-07",
+      "reasons": [
+        "5 days past due"
+      ],
+      "priority": 70,
+      "row": 89
+    },
+    {
+      "order_id": "ORD-061",
+      "customer": "Harbor Knits",
+      "product": "Scarf",
+      "pieces": 800,
+      "stage": "PACKING",
+      "due_date": "2026-04-05",
+      "days_to_due": -5,
+      "idle_days": 0,
+      "projected_finish": "2026-04-16",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-12",
+      "reasons": [
+        "5 days past due"
+      ],
+      "priority": 70,
+      "row": 97
+    },
+    {
+      "order_id": "ORD-053",
+      "customer": "UrbanThread",
+      "product": "Polo shirt",
+      "pieces": 800,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-10",
+      "days_to_due": 0,
+      "idle_days": 8,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-03-31",
+      "order_date": "2026-03-21",
+      "reasons": [
+        "projected to finish 29 Apr, after the 10 Apr due date",
+        "idle 8 working days while later-due orders moved"
+      ],
+      "priority": 65,
+      "row": 107
+    },
+    {
+      "order_id": "ORD-017",
+      "customer": "TrendCart",
+      "product": "Cardigan",
+      "pieces": 800,
+      "stage": "KNITTING",
+      "due_date": "2026-04-10",
+      "days_to_due": 0,
+      "idle_days": 5,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-03-23",
+      "reasons": [
+        "projected to finish 5 May, after the 10 Apr due date",
+        "idle 5 working days while later-due orders moved"
+      ],
+      "priority": 65,
+      "row": 114
+    },
+    {
+      "order_id": "ORD-109",
+      "customer": "Harbor Knits",
+      "product": "Vest",
+      "pieces": 500,
+      "stage": "WASHING",
+      "due_date": "2026-04-13",
+      "days_to_due": 3,
+      "idle_days": 9,
+      "projected_finish": "2026-04-22",
+      "status": "at_risk",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-10",
+      "reasons": [
+        "projected to finish 22 Apr, after the 13 Apr due date"
+      ],
+      "priority": 65,
+      "row": 93
+    },
+    {
+      "order_id": "ORD-081",
+      "customer": "Harbor Knits",
+      "product": "Crewneck sweater",
+      "pieces": 1500,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-13",
+      "days_to_due": 3,
+      "idle_days": 9,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-18",
+      "reasons": [
+        "projected to finish 29 Apr, after the 13 Apr due date",
+        "idle 9 working days while later-due orders moved"
+      ],
+      "priority": 65,
+      "row": 102
+    },
+    {
+      "order_id": "ORD-024",
+      "customer": "Loom & Leaf",
+      "product": "Vest",
+      "pieces": 300,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-15",
+      "days_to_due": 5,
+      "idle_days": 7,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-04-01",
+      "order_date": "2026-03-24",
+      "reasons": [
+        "projected to finish 29 Apr, after the 15 Apr due date",
+        "idle 7 working days while later-due orders moved"
+      ],
+      "priority": 65,
+      "row": 116
+    },
+    {
+      "order_id": "ORD-015",
+      "customer": "UrbanThread",
+      "product": "Vest",
+      "pieces": 300,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-16",
+      "days_to_due": 6,
+      "idle_days": 9,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-23",
+      "reasons": [
+        "projected to finish 29 Apr, after the 16 Apr due date",
+        "idle 9 working days while later-due orders moved"
+      ],
+      "priority": 65,
+      "row": 113
+    },
+    {
+      "order_id": "ORD-096",
+      "customer": "TrendCart",
+      "product": "Beanie",
+      "pieces": 1000,
+      "stage": "KNITTING",
+      "due_date": "2026-04-17",
+      "days_to_due": 7,
+      "idle_days": 7,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-04-01",
+      "order_date": "2026-03-19",
+      "reasons": [
+        "projected to finish 5 May, after the 17 Apr due date",
+        "idle 7 working days while later-due orders moved"
+      ],
+      "priority": 65,
+      "row": 104
+    },
+    {
+      "order_id": "ORD-062",
+      "customer": "Bright Basics",
+      "product": "Scarf",
+      "pieces": 2000,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-08",
+      "days_to_due": -2,
+      "idle_days": 0,
+      "projected_finish": "2026-04-29",
+      "status": "late",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-22",
+      "reasons": [
+        "2 days past due"
+      ],
+      "priority": 64,
+      "row": 110
+    },
+    {
+      "order_id": "ORD-122",
+      "customer": "Maple & Co",
+      "product": "Cardigan",
+      "pieces": 600,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-16",
+      "days_to_due": 6,
+      "idle_days": 3,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-04-06",
+      "order_date": "2026-04-02",
+      "reasons": [
+        "projected to finish 29 Apr, after the 16 Apr due date"
+      ],
+      "priority": 50,
+      "row": 123
+    },
+    {
+      "order_id": "ORD-005",
+      "customer": "TrendCart",
+      "product": "Scarf",
+      "pieces": 500,
+      "stage": "KNITTING",
+      "due_date": "2026-04-20",
+      "days_to_due": 10,
+      "idle_days": 14,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-03-24",
+      "order_date": "2026-03-21",
+      "reasons": [
+        "idle 14 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 105
+    },
+    {
+      "order_id": "ORD-073",
+      "customer": "Loom & Leaf",
+      "product": "Hoodie",
+      "pieces": 400,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-20",
+      "days_to_due": 10,
+      "idle_days": 8,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-03-31",
+      "order_date": "2026-03-21",
+      "reasons": [
+        "idle 8 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 108
+    },
+    {
+      "order_id": "ORD-041",
+      "customer": "Harbor Knits",
+      "product": "Beanie",
+      "pieces": 600,
+      "stage": "WASHING",
+      "due_date": "2026-04-21",
+      "days_to_due": 11,
+      "idle_days": 7,
+      "projected_finish": "2026-04-22",
+      "status": "on_track",
+      "last_activity": "2026-04-01",
+      "order_date": "2026-03-19",
+      "reasons": [],
+      "priority": 35,
+      "row": 103
+    },
+    {
+      "order_id": "ORD-036",
+      "customer": "UrbanThread",
+      "product": "Scarf",
+      "pieces": 1000,
+      "stage": "KNITTING",
+      "due_date": "2026-04-26",
+      "days_to_due": 16,
+      "idle_days": 8,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-03-31",
+      "order_date": "2026-03-22",
+      "reasons": [
+        "idle 8 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 109
+    },
+    {
+      "order_id": "ORD-066",
+      "customer": "Northwind Apparel",
+      "product": "Polo shirt",
+      "pieces": 1000,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-26",
+      "days_to_due": 16,
+      "idle_days": 9,
+      "projected_finish": "2026-04-29",
+      "status": "on_track",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-22",
+      "reasons": [],
+      "priority": 35,
+      "row": 111
+    },
+    {
+      "order_id": "ORD-035",
+      "customer": "Loom & Leaf",
+      "product": "Beanie",
+      "pieces": 300,
+      "stage": "KNITTING",
+      "due_date": "2026-04-29",
+      "days_to_due": 19,
+      "idle_days": 7,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-04-01",
+      "order_date": "2026-03-25",
+      "reasons": [
+        "idle 7 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 117
+    },
+    {
+      "order_id": "ORD-063",
+      "customer": "Loom & Leaf",
+      "product": "Cardigan",
+      "pieces": 100,
+      "stage": "KNITTING",
+      "due_date": "2026-04-29",
+      "days_to_due": 19,
+      "idle_days": 9,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-27",
+      "reasons": [
+        "idle 9 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 119
+    },
+    {
+      "order_id": "ORD-082",
+      "customer": "TrendCart",
+      "product": "Beanie",
+      "pieces": 600,
+      "stage": "KNITTING",
+      "due_date": "2026-05-01",
+      "days_to_due": 21,
+      "idle_days": 9,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-27",
+      "reasons": [
+        "idle 9 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 120
+    },
+    {
+      "order_id": "ORD-123",
+      "customer": "Northwind Apparel",
+      "product": "Vest",
+      "pieces": 500,
+      "stage": "KNITTING",
+      "due_date": "2026-05-03",
+      "days_to_due": 23,
+      "idle_days": 5,
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-04-03",
+      "reasons": [
+        "idle 5 working days while later-due orders moved"
+      ],
+      "priority": 35,
+      "row": 124
+    },
+    {
+      "order_id": "ORD-040",
+      "customer": "Loom & Leaf",
+      "product": "Hoodie",
+      "pieces": 1200,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-21",
+      "days_to_due": 11,
+      "idle_days": 3,
+      "projected_finish": "2026-04-29",
+      "status": "on_track",
+      "last_activity": "2026-04-06",
+      "order_date": "2026-03-25",
+      "reasons": [],
+      "priority": 20,
+      "row": 118
+    },
+    {
+      "order_id": "ORD-130",
+      "customer": "Maple & Co",
+      "product": "Hoodie",
+      "pieces": 1500,
+      "stage": "KNITTING",
+      "due_date": "2026-04-21",
+      "days_to_due": 11,
+      "idle_days": 0,
+      "projected_finish": "2026-05-05",
+      "status": "on_track",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-04-09",
+      "reasons": [],
+      "priority": 20,
+      "row": 131
+    },
+    {
+      "order_id": "ORD-121",
+      "customer": "Harbor Knits",
+      "product": "Scarf",
+      "pieces": 1200,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-22",
+      "days_to_due": 12,
+      "idle_days": 1,
+      "projected_finish": "2026-04-29",
+      "status": "on_track",
+      "last_activity": "2026-04-08",
+      "order_date": "2026-04-01",
+      "reasons": [],
+      "priority": 20,
+      "row": 122
+    },
+    {
+      "order_id": "ORD-128",
+      "customer": "Northwind Apparel",
+      "product": "Hoodie",
+      "pieces": 200,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-24",
+      "days_to_due": 14,
+      "idle_days": 2,
+      "projected_finish": "2026-04-29",
+      "status": "on_track",
+      "last_activity": "2026-04-07",
+      "order_date": "2026-04-07",
+      "reasons": [],
+      "priority": 20,
+      "row": 129
+    },
+    {
+      "order_id": "ORD-010",
+      "customer": "Cotton Club",
+      "product": "Cardigan",
+      "pieces": 1000,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-25",
+      "days_to_due": 15,
+      "idle_days": 1,
+      "projected_finish": "2026-04-29",
+      "status": "on_track",
+      "last_activity": "2026-04-08",
+      "order_date": "2026-03-24",
+      "reasons": [],
+      "priority": 20,
+      "row": 115
+    },
+    {
+      "order_id": "ORD-095",
+      "customer": "Bright Basics",
+      "product": "Hoodie",
+      "pieces": 800,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-26",
+      "days_to_due": 16,
+      "idle_days": 0,
+      "projected_finish": "2026-04-29",
+      "status": "on_track",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-03-27",
+      "reasons": [],
+      "priority": 20,
+      "row": 121
+    },
+    {
+      "order_id": "ORD-126",
+      "customer": "UrbanThread",
+      "product": "Hoodie",
+      "pieces": 1000,
+      "stage": "KNITTING",
+      "due_date": "2026-05-06",
+      "days_to_due": 26,
+      "idle_days": 2,
+      "projected_finish": "2026-05-05",
+      "status": "on_track",
+      "last_activity": "2026-04-07",
+      "order_date": "2026-04-07",
+      "reasons": [],
+      "priority": 0,
+      "row": 127
+    },
+    {
+      "order_id": "ORD-129",
+      "customer": "Loom & Leaf",
+      "product": "Hoodie",
+      "pieces": 600,
+      "stage": "KNITTING",
+      "due_date": "2026-05-07",
+      "days_to_due": 27,
+      "idle_days": 0,
+      "projected_finish": "2026-05-05",
+      "status": "on_track",
+      "last_activity": "2026-04-09",
+      "order_date": "2026-04-09",
+      "reasons": [],
+      "priority": 0,
+      "row": 130
+    },
+    {
+      "order_id": "ORD-124",
+      "customer": "Loom & Leaf",
+      "product": "Hoodie",
+      "pieces": 1200,
+      "stage": "KNITTING",
+      "due_date": "2026-05-09",
+      "days_to_due": 29,
+      "idle_days": 4,
+      "projected_finish": "2026-05-05",
+      "status": "on_track",
+      "last_activity": "2026-04-04",
+      "order_date": "2026-04-04",
+      "reasons": [],
+      "priority": 0,
+      "row": 125
+    },
+    {
+      "order_id": "ORD-125",
+      "customer": "UrbanThread",
+      "product": "Scarf",
+      "pieces": 500,
+      "stage": "KNITTING",
+      "due_date": "2026-05-09",
+      "days_to_due": 29,
+      "idle_days": 3,
+      "projected_finish": "2026-05-05",
+      "status": "on_track",
+      "last_activity": "2026-04-06",
+      "order_date": "2026-04-06",
+      "reasons": [],
+      "priority": 0,
+      "row": 126
+    },
+    {
+      "order_id": "ORD-127",
+      "customer": "Harbor Knits",
+      "product": "Cardigan",
+      "pieces": 1000,
+      "stage": "KNITTING",
+      "due_date": "2026-05-11",
+      "days_to_due": 31,
+      "idle_days": 2,
+      "projected_finish": "2026-05-05",
+      "status": "on_track",
+      "last_activity": "2026-04-07",
+      "order_date": "2026-04-07",
+      "reasons": [],
+      "priority": 0,
+      "row": 128
+    }
+  ],
+  "assumptions": {
+    "working_days_per_stage": 5.25
+  },
+  "definitions": {
+    "working_day": "Monday to Saturday; the factory is closed on Sundays",
+    "yesterday": "last working day before the business date",
+    "normal": "mean of the previous 8 same-weekday working days; band = mean +/- max(1.5 x SD, 5% of mean); needs at least 3 samples",
+    "idle_days": "working days since last_activity_date",
+    "projected_finish": "remaining stages x median working days per stage over completed orders (rough estimate, not a commitment)",
+    "order_status": "late = past due date; at risk = due within 7 days and projected to finish after it, or idle 5+ working days while later-due orders at the same stage moved; otherwise on track",
+    "on_time_delivery": "share of orders completed in the last 30 days with days_late <= 0",
+    "ranking": "score (see score_reason) +10 if new since the previous briefing, -4 per extra morning already reported (max -20) unless it got worse; top 5 shown, rest counted"
+  }
+}
