@@ -5,6 +5,8 @@
 This folder is the ThreadPilot project. **The full documentation is in the [repository README](../README.md)**:
 what it does, quick start, configuration, keeping the data current from Excel, the API, tests, and how to share it.
 
+With the system running, the app is at <http://127.0.0.1:8000> and the morning dashboard at <http://127.0.0.1:8000/dashboard>.
+
 The commands used most, run from this folder:
 
 ```bash

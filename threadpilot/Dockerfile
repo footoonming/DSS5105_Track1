@@ -5,6 +5,7 @@ COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 COPY backend ./backend
 COPY frontend ./frontend
+COPY demo ./demo
 COPY data/dictionary ./data/dictionary
 COPY data/migrations ./data/migrations
 COPY data/orders.csv data/production_log.csv data/workshops.csv ./data/

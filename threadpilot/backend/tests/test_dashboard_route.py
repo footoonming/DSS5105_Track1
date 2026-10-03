@@ -22,4 +22,8 @@ def test_dashboard_stays_out_of_the_api_schema(client):
 def test_cover_button_opens_the_dashboard(client):
     app_js = client.get('/app.js').text
     assert 'href="/dashboard">Enter today’s dashboard' in app_js
-    assert "link('dashboard','Open dashboard')" in app_js      # the app's own dashboard view is still reachable
+    assert "location.replace('/dashboard')" not in app_js           # the team's Dashboard tab is not redirected
+    assert "['/dashboard','☀','Morning Briefing']" in app_js          # the sidebar has a Morning Briefing tab
+    assert "r.startsWith('/')?r:'#/'+r" in app_js                     # ...which links to the page, not to a #/ route
+    page = client.get('/dashboard/briefing_demo.html').text
+    assert 'id="liveLink" href="/#/dashboard"' in page               # the briefing's Live app button opens the team's app

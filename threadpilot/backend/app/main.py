@@ -10,7 +10,7 @@ from typing import Any
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse, Response
+from fastapi.responses import JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 from openai import AsyncOpenAI
 
@@ -23,6 +23,7 @@ from pydantic import ValidationError
 
 ROOT = Path(__file__).resolve().parents[1]
 FRONTEND = ROOT.parent / 'frontend'
+DEMO = ROOT.parent / 'demo'
 DATA = ROOT.parent / 'data'
 load_dotenv(ROOT / '.env', override=False)
 
@@ -103,6 +104,12 @@ def create_app() -> FastAPI:
     from .api import data_api, sync_api, snapshot_api, ai_api
     for router in (data_api.router, sync_api.router, snapshot_api.router, ai_api.router):
         app.include_router(router)
+    if DEMO.is_dir():  # the morning-briefing dashboard (simulated days), at /dashboard; kept out of the API schema
+        @app.get('/dashboard', include_in_schema=False)
+        @app.get('/dashboard/', include_in_schema=False)
+        async def dashboard() -> RedirectResponse:
+            return RedirectResponse('/dashboard/briefing_demo.html')
+        app.mount('/dashboard', StaticFiles(directory=DEMO), name='dashboard')
     app.mount('/', StaticFiles(directory=FRONTEND, html=True), name='frontend')
     return app
 

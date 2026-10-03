@@ -227,6 +227,7 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
     </div>
     <button class="btn" id="play" aria-pressed="false">Replay</button>
     <button class="btn" id="speak">Read aloud</button>
+    <a class="btn" id="liveLink" href="/#/dashboard" hidden>Live app</a>
     <button class="btn" id="settingsBtn">Settings</button>
     <button class="btn iconbtn" id="theme" aria-label="Switch between light and dark" title="Light / dark">&#9680;</button>
   </div>
@@ -630,6 +631,7 @@ $("#theme").onclick = () => { const r = document.documentElement, dark = r.datas
   r.dataset.theme = dark ? "light" : "dark"; };
 
 function go(i){ idx = Math.max(0, Math.min(B.length - 1, i)); render(); }
+if (location.protocol.startsWith("http")) $("#liveLink").hidden = false;   // served by the backend: link back to the live app
 function render(){ header(); summary(); kpis(); attention(); customers(); chart(); wip(); orders(); renderLog(); defs(); if (window.chatHook) window.chatHook(); if (window.panelsHook) window.panelsHook(); }
 render();
 </script>

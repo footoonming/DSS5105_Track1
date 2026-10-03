@@ -291,8 +291,9 @@ real-world accuracy.
 ## The dashboard
 
 The demo page ([`demo/briefing_demo.html`](threadpilot/demo/briefing_demo.html)) opens straight from the file, and the
-backend also serves it at `/dashboard`: the cover page's **Enter today’s dashboard** button opens it, and its **Live app**
-button goes back. It is designed for a manager
+backend also serves it at `/dashboard`: the cover page's **Enter today’s dashboard** button opens it, the app's left menu
+has a **Morning Briefing** tab for it, and its **Live app** button opens the full app (Dashboard, Orders, Exceptions, Risk
+Orders, Feasibility, AI Co-Pilot, Messages & Watches, Activity Log, Settings). It is designed for a manager
 reading on a phone between meetings:
 
 * **Morning summary** in three lines, with what is new or cleared since yesterday.
