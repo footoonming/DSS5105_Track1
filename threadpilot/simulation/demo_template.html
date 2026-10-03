@@ -213,6 +213,7 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
 .toast[hidden]{display:none}
 @media (max-width:640px){.topbar-in{gap:8px}.topbar-in .btn{padding:6px 9px;font-size:13px}.topbar-in,.page{padding-left:14px;padding-right:14px}.datepick select{min-width:0}.logo small{display:none}.pagehead h1{font-size:20px}.summary .k{flex-basis:64px}}
 /*__CHAT_CSS__*/
+/*__PANELS_CSS__*/
 </style>
 </head>
 <body>
@@ -226,6 +227,7 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
     </div>
     <button class="btn" id="play" aria-pressed="false">Replay</button>
     <button class="btn" id="speak">Read aloud</button>
+    <button class="btn" id="settingsBtn">Settings</button>
     <button class="btn iconbtn" id="theme" aria-label="Switch between light and dark" title="Light / dark">&#9680;</button>
   </div>
 </header>
@@ -233,7 +235,7 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
 <main class="page">
   <div class="pagehead">
     <div><h1 id="title"></h1><p id="subtitle"></p></div>
-    <span class="badge sim" id="simbadge"></span>
+    <span style="display:flex;gap:8px;flex-wrap:wrap"><span class="badge" id="refreshNote"></span><span class="badge sim" id="simbadge"></span></span>
   </div>
 
   <div class="grid">
@@ -252,6 +254,8 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
     </section>
 
     <div class="s12 kpis" id="kpis"></div>
+
+    <section class="card s12" id="riskCard" aria-label="At risk"></section>
 
     <section class="card s7">
       <div class="card-h"><h2>Needs your attention</h2><span class="muted" id="acount"></span></div>
@@ -297,6 +301,9 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
       </div>
     </section>
 
+    <section class="card s5" id="forecastCard" aria-label="Expected orders"></section>
+    <section class="card s7" id="memoCard" aria-label="Memos"></section>
+
     <section class="card s5">
       <div class="card-h"><h2>Activity log</h2><span class="muted">confirmed actions</span></div>
       <div class="card-b"><ul class="log" id="log"></ul></div>
@@ -319,6 +326,7 @@ dt{font-weight:500} dd{margin:0;color:var(--text-2)}
 </div></div>
 <div class="toast" id="toast" role="status" hidden></div>
 <!--__CHAT_HTML__-->
+<!--__PANELS_HTML__-->
 
 <script>
 const DATA = /*__DATA__*/null;
@@ -487,7 +495,7 @@ function wip(){
   $("#wip").innerHTML = p.map(s => `<div class="wiprow"><div class="top"><span><b>${cap(s.stage)}</b> <span class="muted">${s.orders} orders, ${n(s.pieces)} pcs${s.late ? `, <span style="color:var(--bad-text)">${s.late} late</span>` : ""}</span></span>
     <span><b>${s.days_of_work ?? "–"}</b> <span class="muted">days</span></span></div>
     <div class="track"><span class="${s === hot ? "hot" : ""}" style="width:${100 * (s.days_of_work || 0) / max}%"></span></div></div>`).join("");
-  $("#bottleneck").innerHTML = hot.days_of_work ? `<div class="callout"><b>${cap(hot.stage)}</b> is the bottleneck: ${n(hot.pieces)} pieces waiting, about ${hot.days_of_work} days at the usual ${n(hot.usual_per_day)} pieces a day.</div>` : "";
+  $("#bottleneck").innerHTML = hot.days_of_work ? `<div class="callout"><b>${cap(hot.stage)}</b> is the bottleneck: ${n(hot.pieces)} pieces waiting, about ${hot.days_of_work} days at an estimated ${n(hot.capacity_per_day)} pieces a day.</div>` : "";
 }
 
 /* ---------- orders ---------- */
@@ -509,13 +517,13 @@ function orders(){
     (shown.length ? shown.map(o => {
       const si = STAGES.indexOf(o.stage);
       const due = o.days_to_due < 0 ? `<span style="color:var(--bad-text);font-weight:500">${-o.days_to_due}d late</span>` : o.days_to_due === 0 ? "Today" : `${fmt(o.due_date,{day:"numeric",month:"short"})} <span class="muted">(${o.days_to_due}d)</span>`;
-      return `<tr class="click" data-oid="${o.order_id}" tabindex="0" aria-expanded="false"><td><span style="font-weight:600">${o.order_id}</span></td>
+      return `<tr class="click" data-oid="${esc(o.order_id)}" tabindex="0" aria-expanded="false"><td><span style="font-weight:600">${esc(o.order_id)}</span></td>
         <td>${esc(o.customer)}<br><span class="muted">${n(o.pieces)} ${esc(o.product.toLowerCase())}</span></td>
         <td><span class="pips">${STAGES.map((_, j) => `<i class="${j < si ? "done" : j === si ? "here" : ""}"></i>`).join("")}</span>${cap(o.stage)}</td>
-        <td>${due}</td><td><span class="pill ${o.status}">${LABEL[o.status]}</span></td>
+        <td>${due}${window.TPPanels ? window.TPPanels.dueBadge(o.order_id) : ""}</td><td><span class="pill ${o.status}">${LABEL[o.status]}</span>${window.TPPanels ? window.TPPanels.riskBadge(o) : ""}</td>
         <td style="white-space:normal;min-width:180px;color:var(--text-2);font-size:13px">${esc(o.reasons[0] || (o.idle_days ? `idle ${o.idle_days} working days, waiting its turn` : "moving normally"))}</td>
-        <td><button class="btn sm" data-chase="${o.order_id}">Chase</button></td></tr>
-        <tr class="expand" id="x-${o.order_id}" hidden><td colspan="7">${o.reasons.length ? esc(o.reasons.join("; ")) + ". " : ""}Projected finish ${fmt(o.projected_finish,{day:"numeric",month:"short"})}. Last activity ${o.idle_days} working days ago. Source: orders.csv line ${o.row}.</td></tr>`;
+        <td><button class="btn sm" data-chase="${esc(o.order_id)}">Actions</button></td></tr>
+        <tr class="expand" id="x-${esc(o.order_id)}" hidden><td colspan="7">${o.reasons.length ? esc(o.reasons.join("; ")) + ". " : ""}Projected finish ${fmt(o.projected_finish,{day:"numeric",month:"short"})}. Last activity ${o.idle_days} working days ago. Source: orders.csv line ${o.row}.</td></tr>`;
     }).join("") : `<tr><td colspan="7" class="empty">No orders match these filters. Clear the filters to see all ${b.orders.length}.</td></tr>`) + `</tbody>`;
   const m = $("#more"); m.hidden = list.length <= limit; m.textContent = `Show all ${list.length} orders`;
 }
@@ -583,8 +591,9 @@ document.addEventListener("click", e => {
   if (t.dataset.detail) { const box = $("#det-" + t.dataset.detail), open = box.hidden; if (open) box.innerHTML = detail(+t.dataset.detail); box.hidden = !open; t.setAttribute("aria-expanded", open); t.textContent = open ? "Hide details" : "Details"; }
   else if (t.dataset.act) { const f = b.findings[+t.dataset.act];
     if (f.action === "feasibility" && f.order_ids.length === 1 && window.ThreadPilotChat) window.ThreadPilotChat.askFeasibility(f.order_ids[0]);
+    else if (f.action === "chase" && f.order_ids.length === 1 && window.TPPanels) window.TPPanels.openActions(f.order_ids[0]);
     else openAction(f.action, f.action === "chase" && f.order_ids.length === 1 ? f.order_ids[0] : short(f.title), f.title); }
-  else if (t.dataset.chase) { e.stopPropagation(); openAction("chase", t.dataset.chase); }
+  else if (t.dataset.chase) { e.stopPropagation(); if (window.TPPanels) window.TPPanels.openActions(t.dataset.chase); else openAction("chase", t.dataset.chase); }
   else if (t.dataset.kpi) { const g = kpiItems[+t.dataset.kpi].go; if (!g) return;
     if (g.chart) { stage = "TOTAL"; chart(); $("#chart").scrollIntoView({behavior:"smooth", block:"center"}); } else toOrders(g); }
   else if (t.dataset.cust) toOrders({customer:t.dataset.cust});
@@ -592,7 +601,7 @@ document.addEventListener("click", e => {
   else if (t.dataset.bucket) { filters.bucket = filters.bucket === t.dataset.bucket ? "" : t.dataset.bucket; limit = 50; orders(); }
   else if (t.dataset.st) { filters.status = t.dataset.st; orders(); }
   else if (t.dataset.status) toOrders({status:t.dataset.status});
-  else if (t.dataset.oid) { const x = $("#x-" + t.dataset.oid); x.hidden = !x.hidden; t.setAttribute("aria-expanded", !x.hidden); }
+  else if (t.dataset.oid) { const x = document.getElementById("x-" + t.dataset.oid); x.hidden = !x.hidden; t.setAttribute("aria-expanded", !x.hidden); }
 });
 document.addEventListener("keydown", e => {
   if (e.key === "Escape" && !$("#modal").hidden) return closeModal();
@@ -621,11 +630,14 @@ $("#theme").onclick = () => { const r = document.documentElement, dark = r.datas
   r.dataset.theme = dark ? "light" : "dark"; };
 
 function go(i){ idx = Math.max(0, Math.min(B.length - 1, i)); render(); }
-function render(){ header(); summary(); kpis(); attention(); customers(); chart(); wip(); orders(); renderLog(); defs(); if (window.chatHook) window.chatHook(); }
+function render(){ header(); summary(); kpis(); attention(); customers(); chart(); wip(); orders(); renderLog(); defs(); if (window.chatHook) window.chatHook(); if (window.panelsHook) window.panelsHook(); }
 render();
 </script>
 <script>
 /*__CHAT_JS__*/
+</script>
+<script>
+/*__PANELS_JS__*/
 </script>
 </body>
 </html>

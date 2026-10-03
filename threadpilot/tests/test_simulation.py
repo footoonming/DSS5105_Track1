@@ -6,7 +6,8 @@ from datetime import date
 
 import pytest
 
-from simulation.briefing import build, stage_normal, prev_working
+from simulation.briefing import build, prev_working
+from simulation.render_demo import embed_json
 from simulation.simulate import BASE_DIR, ORDER_COLUMNS, simulate
 
 
@@ -83,3 +84,9 @@ def test_planted_washing_breakdown_is_found(tmp_path):
     simulate(date(2026, 4, 8), out=tmp_path)
     keys = [f["key"] for f in build(tmp_path)["all_findings"]]
     assert "stage_below:WASHING" in keys
+
+
+def test_embedded_data_cannot_close_the_script_tag():
+    data = {"customer": "</script><script>alert(1)</script>", "n": 1}
+    out = embed_json(data)
+    assert "</script>" not in out and json.loads(out) == data

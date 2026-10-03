@@ -1,66 +1,17 @@
 """Checks for the dashboard chat assistant. They run the real page in a headless browser and compare answers
 with numbers computed here, in Python, straight from the briefing JSON.
 
-    pip install pytest playwright && playwright install chromium
+    pip install -r requirements-dev.txt && python -m playwright install chromium
     pytest tests/test_chat.py
 
 These cases were written by the author of the assistant, so they show it behaves as designed. They are not an
 independent accuracy measure: for that, add questions written by someone who has not seen the code.
 """
-import json
 import re
-import subprocess
-import sys
-from datetime import date, timedelta
-from pathlib import Path
+from datetime import date
 
 import pytest
-
-sync_api = pytest.importorskip("playwright.sync_api")
-ROOT = Path(__file__).resolve().parents[1]
-BASE = date(2026, 4, 1)
-
-
-def d(i): return BASE + timedelta(days=i)
-def short(dt): return f"{dt:%a}, {dt.day} {dt:%b}"
-def workdays(a, b): return sum((a + timedelta(days=k)).weekday() != 6 for k in range((b - a).days + 1))
-def plural(k, w): return f"{k} {w}{'' if k == 1 else 's'}"
-
-
-@pytest.fixture(scope="module")
-def site(tmp_path_factory):
-    out = tmp_path_factory.mktemp("site")
-    subprocess.run([sys.executable, "-m", "simulation.render_demo", "--days", "14", "--briefings", str(out / "b"),
-                    "--html", str(out / "demo.html")], cwd=ROOT, check=True, capture_output=True)
-    briefs = [json.loads(p.read_text()) for p in sorted((out / "b").glob("*.json"))]
-    return out / "demo.html", briefs
-
-
-@pytest.fixture(scope="module")
-def B(site): return site[1]
-
-
-@pytest.fixture(scope="module")
-def page(site):
-    with sync_api.sync_playwright() as p:
-        try:
-            browser = p.chromium.launch()
-        except Exception as e:  # no browser installed
-            pytest.skip(f"headless browser not available: {e}")
-        pg = browser.new_page()
-        pg.goto(site[0].as_uri())
-        yield pg
-        browser.close()
-
-
-def ask(page, i, *qs):
-    """Go to morning i, start a fresh conversation, ask the questions in order, return the responses."""
-    return page.evaluate("""([i, qs]) => { go(i); ThreadPilotChat.reset();
-        return qs.map(q => JSON.parse(JSON.stringify(ThreadPilotChat.respond(q)))); }""", [i, list(qs)])
-
-
-def text(r): return " ".join(r["lines"])
-def order(B, i, oid): return next(o for o in B[i]["orders"] if o["order_id"] == oid)
+from dashboard_helpers import ROOT, ask, d, order, plural, short, text, workdays
 
 
 # ---------- retrieval and judgement ----------
@@ -302,3 +253,74 @@ def test_dates_do_not_depend_on_the_browser(page):
         finally { Date.prototype.toLocaleDateString = orig; } }""")
     assert out[:4] == ["Fri, 10 Apr", "Thursday 9 April", "Thu, 9 Apr 2026", "9 Apr"]
     assert "by Fri, 10 Apr" in out[4]
+
+
+# =====================================================================================================================
+# Risk, expedite, forecast and targets in the chat
+# =====================================================================================================================
+def test_risk_questions_match_the_briefing(page, B):
+    r, = ask(page, 8, "Which orders are high risk?")
+    k = B[8]["risk_counts"]["high"]
+    assert r["intent"] == "risk_list" and plural(k, "order") in text(r) and r["detail"].count("orders.csv line") == k
+    s, = ask(page, 8, "What is the risk this morning?")
+    rc = B[8]["risk_counts"]
+    assert f"{rc['overdue']} overdue, {rc['high']} high, {rc['medium']} medium, {rc['low']} low" in text(s)
+
+
+def test_expedite_answer_quotes_the_briefings_recommendation(page, B):
+    r, = ask(page, 8, "Should we expedite ORD-120?")
+    e = order(B, 8, "ORD-120")["expedite"]
+    assert r["intent"] == "expedite" and e["label"] in text(r)
+    if e["recommendation"] != "investigate":
+        assert f"cut ORD-120's lateness by {e['gain']} working days" in text(r) and f"net {e['net']}" in text(r)
+    assert any(c["q"] == "__panel:ORD-120" for c in r["chips"]) and "not a promise" in text(r)
+
+
+def test_expedite_without_an_order_asks_which(page):
+    a, b = ask(page, 8, "Expedite it", "ORD-120")
+    assert a["intent"] == "clarify_order" and a["asks"] and b["intent"] == "expedite"
+
+
+def test_nothing_to_expedite_when_the_order_is_on_track(page, B):
+    found = next(((i, o) for i, b in enumerate(B) for o in b["orders"] if o["status"] == "on_track"), None)
+    if not found:
+        pytest.skip("no on-track order in this fortnight of simulated data")
+    i, o = found
+    r, = ask(page, i, f"Should we expedite {o['order_id']}?")
+    assert "nothing to gain" in text(r)
+
+
+def test_forecast_answer_matches_the_briefing(page, B):
+    r, = ask(page, 8, "What orders do we expect in the next two weeks?")
+    f = B[8]["forecast"]
+    assert r["intent"] == "forecast" and f"About {round(f['expected_orders'])} orders ({f['orders_low']} to {f['orders_high']})" in text(r)
+    assert "repeating the last period" in text(r)       # the honest benchmark is part of the answer
+
+
+def test_demand_beyond_two_weeks_is_still_refused(page):
+    r, = ask(page, 8, "Forecast demand for next quarter")
+    assert r["intent"] == "no_data" and "two weeks" in text(r)
+
+
+def test_target_questions_use_the_settings(page, B):
+    page.evaluate("go(8); ThreadPilotChat.reset(); TPPanels.settings().targets = {}")
+    none, = ask(page, 8, "Is packing hitting its target?")
+    assert "No stage targets" in text(none)
+    page.evaluate("TPPanels.settings().targets = {PACKING: 99999, KNITTING: 1}")
+    r, = ask(page, 8, "Are any stages missing their target?")
+    page.evaluate("TPPanels.settings().targets = {}")
+    assert "Packing has missed its target" in text(r) and "Knitting" not in text(r)
+
+
+# =====================================================================================================================
+# Regressions found in code review
+# =====================================================================================================================
+def test_everyday_words_do_not_trigger_refusals(page):
+    shift, worth = ask(page, 8, "What caused the shift in packing output?", "Is it worth prioritising ORD-120?")
+    assert shift["intent"] == "stage_output" and not shift["refused"]
+    assert worth["intent"] == "expedite"
+
+
+def test_pieces_come_from_the_number_that_counts_pieces(page):
+    r, = ask(page, 8, "Can we take 2 orders of 400 hoodies by Friday?")
+    assert r["intent"] == "feasibility" and r["tools"][0]["args"]["pieces"] == 400

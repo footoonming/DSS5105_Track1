@@ -30,6 +30,10 @@ of "normal" or "at risk" is in one inspectable place.
 | `draft_chase` | Action | order_id | draft message plus a confirmation card | "Chase it up" | send anything unconfirmed | asks which order |
 | `add_note` | Action | order_id, text | confirmation card; log entry on confirm | "Add a note to ORD-120" | change any order data | asks for the text |
 | `create_watch` | Action | order, stage or reminder text, date | confirmation card; standing check on confirm | "Tell me if ORD-058 hasn't moved by Thursday" | watch what the briefing data cannot show | asks for order or date |
+| `list_by_risk` | Judgement | level | orders at that risk level, with how late at best | "Which orders are high risk?" | promise an outcome | empty list |
+| `assess_expedite` | Judgement | order_id | recommendation, gain, cost, net, the orders slowed | "Should we expedite ORD-120?" | expedite anything; judge a stalled order | null for an unknown order; "nothing to gain" if not late or at risk |
+| `get_forecast` | Retrieval | none | expected orders, customers, products and the test result | "What orders do we expect next week?" | forecast beyond two weeks, prices or revenue | says so when there is too little history |
+| `get_target_status` | Judgement | none | per stage: target, yesterday, working days missed in a row | "Are any stages missing their target?" | set targets (Settings does) | says no targets are set |
 | `explain_no_data` | Refusal | topic | plain statement of what is not held | revenue, price, profit, worker, demand questions | estimate any of them | none |
 
 **Blast radius of the action tools.** Each action shows a confirmation card with the worst case and logs after
@@ -40,7 +44,7 @@ Watches panel. Nothing here can delete or change order data.
 ## Definitions the tools use
 
 * **Normal output** (`get_stage_output`): mean of the previous 8 same-weekday working days, band = mean ± max(1.5 × SD, 5% of mean). Sundays are closed.
-* **Late** = past due date. **At risk** = due within 7 days and projected to finish after it, or idle 5+ working days while later-due orders at the same stage moved. Otherwise on track.
+* **Late** = past due date. **At risk** = risk level high or medium; **on track** = low. Risk, confidence and the expedite rule are defined in `docs/prediction_validation.md`.
 * **Feasibility** (`check_feasibility`), per stage: days needed = work ahead of the order ÷ usual daily output, plus one working day of handoff for each later stage; the slowest stage sets the finish.
   * *Earlier date*: only in-progress orders due on or before the requested date go first, and nothing new arrives.
   * *Later date*: every in-progress order goes first, plus new orders expected to arrive due before this one. The arrival rate and the usual lead times come from the orders placed in the last 45 days.
@@ -49,23 +53,26 @@ Watches panel. Nothing here can delete or change order data.
 
 ## Validation of the feasibility estimate
 
-The estimate was tested against the simulator by injecting a real extra order and recording when it actually finished
-(14 cases: five start dates, 400 to 1,500 pieces, deadlines 16 to 75 days out).
+Tested against the simulator by injecting a real extra order and recording when it actually finished: 14 cases (five start dates, 400 to 1,500
+pieces, deadlines 16 to 75 days out). **The real finish fell inside the estimated range in 14 of 14 cases.** Verdicts: "unlikely" 5 times (all 5
+finished late) and "possible only if prioritised" 9 times (2 finished late, 7 on time). No case produced "likely" or "tight", so **those two verdicts
+are untested**.
 
-* **First version** (existing orders only): the actual finish was inside its range in 5 of the 7 cases with deadlines up to 40 days out, and in none of the 7 cases with 60 to 75 day deadlines. For 6 of those 7 it said "likely" or "tight" for orders that finished in late July or later, because new orders with earlier due dates kept overtaking them. That is why the arrival model was added.
-* **Current version**: the actual finish fell inside the estimated range in 14 of 14 cases, and in 14 of 14 the order finished after its due date, matching the "unlikely" / "possible only if prioritised" verdicts.
-* **Limits of that evidence.** The simulator is not a real factory, and it was built by the same team. Every tested case was rated unlikely or only-if-prioritised, because the factory in this data carries about 50 working days of packing work; **no case rated "likely" or "tight" has been validated**. Treat those two verdicts as untested.
+Two earlier versions were wrong and were fixed. The first ignored new orders overtaking a far-away order and was wrong for all long deadlines. The
+second trusted the production log's capacity; the log shows only about 59% of what ships (`docs/prediction_validation.md`, section 1), so capacity is
+now calibrated from completions. The simulator is not a real factory and was built by the same team, so this shows internal consistency, not real-world accuracy.
 
 ## Automated checks
 
-`tests/test_chat.py` drives the real page in a headless browser: 41 checks covering retrieval numbers (compared with
-the briefing JSON), tracing to rows, multi-turn memory, ambiguity ("which TrendCart order?"), refusals (revenue,
-price, profit, workers, demand, cost), no invented causes, feasibility with missing or varied dates, confirmed
-actions and logging, watches that fire from later data, and the drawer itself. They were written by the author of the
-assistant, so they show it behaves as designed. They are **not** an independent accuracy measure. For the
-evaluation set the brief asks for, add at least 30 questions written by someone who has not seen the code, include at
-least 5 ambiguous, unanswerable or hallucination-bait questions and 5 feasibility or action requests, and report
-first-pass accuracy.
+`tests/test_chat.py` (50 checks) and `tests/test_panels.py` (13 checks) drive the real page in a headless browser: retrieval numbers
+compared with the briefing JSON, tracing to rows, multi-turn memory, ambiguity, refusals (and no false refusals), no invented causes,
+feasibility, risk, expedite, forecast and target answers, confirmed actions, watches that fire from later data, escaping, keyboard focus,
+and the settings, memo and follow-up panels. `tests/test_prediction.py` (20 checks) tests the projection engine against hand-calculated
+cases and the briefing's risk, expedite, forecast and capacity fields; `tests/test_simulation.py` (11 checks) covers the simulator and briefing.
+They were written by the author of the code, so they show
+it behaves as designed. They are **not** an independent accuracy measure: for the evaluation set the brief asks for, add at least 30 questions
+written by someone who has not seen the code, including at least 5 ambiguous, unanswerable or hallucination-bait questions and 5 feasibility or action
+requests, and report first-pass accuracy.
 
 ## Using a real backend (optional, untested against your API)
 

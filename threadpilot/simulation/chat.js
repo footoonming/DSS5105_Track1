@@ -66,10 +66,13 @@ function parsePieces(ql) {
   let s = ql.replace(/\bord[-\s]?\d+\b/g, " ").replace(/\b20\d\d-\d\d-\d\d\b/g, " ").replace(/\b\d{1,2}(?:st|nd|rd|th)\b/g, " ")
     .replace(/\b(?:by|on|before)\s+(?:the\s+)?\d{1,2}\b/g, " ").replace(/\bin \d+ (?:days?|weeks?)\b/g, " ")
     .replace(new RegExp("\\b\\d{1,2}\\s+(?:of\\s+)?" + MONRE + "\\b", "g"), " ").replace(new RegExp("\\b" + MONRE + "\\s+\\d{1,2}\\b", "g"), " ");
-  const m = s.match(/\b(\d{1,3}(?:,\d{3})+|\d+)(\s*k\b)?/);
-  if (!m) return null;
-  const v = parseInt(m[1].replace(/,/g, ""), 10) * (m[2] ? 1000 : 1);
-  return v > 0 ? v : null;
+  // several numbers ("2 orders of 400 hoodies"): skip ones that count something other than pieces
+  const NOT_PIECES = /^(orders?|days?|weeks?|months?|customers?|times?|stages?|workers?|people|hours?|lines?|shifts?)$/;
+  for (const m of s.matchAll(/\b(\d{1,3}(?:,\d{3})+|\d+)(\s*k\b)?(?:\s+([a-z]+))?/g)) {
+    const v = parseInt(m[1].replace(/,/g, ""), 10) * (m[2] ? 1000 : 1);
+    if (v > 0 && !NOT_PIECES.test(m[3] || "")) return v;
+  }
+  return null;
 }
 const orderIds = ql => [...ql.matchAll(/\bord[-\s]?(\d{1,3})\b/g)].map(m => "ORD-" + m[1].padStart(3, "0"));
 const stageOf = ql => /knit/.test(ql) ? "KNITTING" : /assembl/.test(ql) ? "ASSEMBLY" : /wash/.test(ql) ? "WASHING" : /pack/.test(ql) ? "PACKING" : null;
@@ -138,7 +141,7 @@ const T = {
     run: () => ({now: cur().on_time_30d, prev: cur().on_time_prev_30d})},
   check_feasibility: {...spec("Judgement", "Can a new order of N pieces be done by a date? Returns a range and the assumptions behind it.", "Promise a date; it is an estimate, never a yes. It also ignores overtime and workshop outsourcing.", "Asks for pieces or a date when missing; says the date has passed if it has."),
     run: a => { const b = cur(), start = b.business_date, W = workDaysIncl(start, a.due), arr = b.arrivals, CAP = 200;
-      const act = b.orders.filter(o => o.order_id !== a.exclude), usual = Object.fromEntries(b.pipeline.map(p => [p.stage, p.usual_per_day]));
+      const act = b.orders.filter(o => o.order_id !== a.exclude), usual = Object.fromEntries(b.pipeline.map(p => [p.stage, p.capacity_per_day]));
       if (ST.some(s => !usual[s])) return {error: "There is not enough production history to estimate capacity."};
       // share of newly arriving orders that would be due before this one (and so go ahead of it), from the usual lead times
       const share = x => x <= 0 ? 0 : arr.leads.filter(l => l < x).length / Math.max(1, arr.leads.length);
@@ -151,10 +154,19 @@ const T = {
           const add = rate * share((D(a.due) - D(d)) / 864e5); work += add; inflow += add; if (u * k >= work) { daysCautious = k + handoff; break; } }
         return {stage: s, usual: u, aheadBest, aheadCautious, inflow: Math.round(inflow), daysBest: (aheadBest + a.pieces) / u + handoff, daysCautious}; });
       const top = k => rows.reduce((m, r) => r[k] > m[k] ? r : m), tb = top("daysBest"), tc = top("daysCautious");
-      const best = Math.ceil(tb.daysBest), cautious = Number.isFinite(tc.daysCautious) ? Math.ceil(tc.daysCautious) : null;
+      const own = sum(ST, s => Math.ceil(a.pieces / (0.6 * usual[s])));   // one order uses at most 60% of a stage's day, so it needs this many days of its own
+      const best = Math.max(own, Math.ceil(tb.daysBest)), cautious = Number.isFinite(tc.daysCautious) ? Math.max(own, Math.ceil(tc.daysCautious)) : null;
       const verdict = cautious != null && cautious <= W * FEAS_SLACK ? "likely" : cautious != null && cautious <= W ? "tight" : best <= W ? "only_if_prioritised" : "unlikely";
       return {pieces: a.pieces, due: a.due, start, W, rows, best, cautious, bestDate: kthWork(start, best), cautiousDate: cautious == null ? null : kthWork(start, cautious), cap: CAP,
               bottleneck: (cautious == null ? tc : tc).stage, bottleneckAhead: tc.aheadCautious, bottleneckUsual: tc.usual, rate, verdict}; }},
+  list_by_risk: {...spec("Judgement", "Which orders are at high, medium or low risk of missing their due date, and how late they are likely to be.", "Promise an outcome: it is a projection under the stated assumptions.", "Empty list when nothing matches."),
+    run: a => cur().orders.filter(o => o.risk && o.risk.level === a.level).sort((p, q) => (q.risk.late_days_best || 0) - (p.risk.late_days_best || 0))},
+  assess_expedite: {...spec("Judgement", "Whether expediting one overdue or at-risk order is worth it: how much less late it becomes, the delay added to other orders, and a recommendation.", "Expedite anything (it only reports). A stalled order gets 'find the blocker first'.", "Returns null for an unknown order; nothing to assess if it is neither overdue nor at risk."),
+    run: a => { const o = cur().orders.find(x => x.order_id === a.order_id); return o ? {order: o, expedite: o.expedite} : null; }},
+  get_forecast: {...spec("Retrieval", "Orders, customers and products to expect in the next two weeks, with a range and how the method did on past data.", "Forecast beyond two weeks, or anything about prices or revenue.", "Says so when there is not enough order history."),
+    run: () => cur().forecast},
+  get_target_status: {...spec("Judgement", "Whether each stage met its target yesterday, and how many working days in a row it has missed it.", "Set targets (the manager sets them in Settings).", "Says so when no targets are set."),
+    run: () => window.TPPanels ? window.TPPanels.targetStatus() : []},
   draft_chase: {...spec("Action", "Drafts a chase-up message for one order. Nothing is sent without a confirmation.", "Send anything on its own. Worst case after confirmation: one message to one colleague.", "Asks which order when the target is unclear."),
     run: a => ({order: cur().orders.find(o => o.order_id === a.order_id)})},
   add_note: {...spec("Action", "Adds a note to the activity log for one order, after confirmation.", "Change any order data.", "Asks for the note text when it is missing."),
@@ -213,7 +225,7 @@ function orderAnswer(id, call) {
     : `${head} is on track: due ${day(o.due_date)} (${o.days_to_due} days), at ${cap(o.stage)}.`;
   const l2 = `${o.idle_days ? `Last activity ${pl(o.idle_days, "working day")} ago` : "It moved yesterday"}; projected finish ${day(o.projected_finish)}.`;
   return R("order_status", [l1, l2], {detail: orderRows([o]), sources: [`orders.csv line ${o.row} (${o.order_id})`],
-    chips: [chip("Why?", `Why is ${o.order_id} ${o.status === "late" ? "late" : "flagged"}?`), chip(`Chase ${o.order_id}`), chip("Watch it for 2 days", `Tell me if ${o.order_id} hasn't moved by ${kthWork(today(), 3)}`)]});
+    chips: [chip("Why?", `Why is ${o.order_id} ${o.status === "late" ? "late" : "flagged"}?`), chip(`Chase ${o.order_id}`), ...(o.expedite ? [chip("Expedite?", `Should we expedite ${o.order_id}?`)] : []), chip("Watch it for 2 days", `Tell me if ${o.order_id} hasn't moved by ${kthWork(today(), 3)}`)]});
 }
 function traceAnswer(id, call) {
   const t = call("trace_order", {order_id: id}); if (!t) return notFound(id);
@@ -225,7 +237,7 @@ function traceAnswer(id, call) {
   return R("trace_order", [l1, l2, l3].filter(Boolean), {
     detail: kv([["Source row", `orders.csv line ${o.row}`], ["Customer", esc(o.customer)], ["Quantity", `${n(o.pieces)} ${esc(o.product.toLowerCase())}`], ["Ordered", esc(day(o.order_date))],
       ["Due", `${esc(day(o.due_date))} (${o.days_to_due < 0 ? -o.days_to_due + " days late" : o.days_to_due + " days"})`], ["Current stage", esc(cap(o.stage))],
-      ["Last activity", `${esc(day(o.last_activity))} (${o.idle_days} working days idle)`], ["Projected finish", esc(day(o.projected_finish))], ["Priority score", String(o.priority)]]),
+      ["Last activity", `${esc(day(o.last_activity))} (${o.idle_days} working days idle)`], ["Projected finish", esc(day(o.projected_finish))], ["Risk", `${esc(RISK_LABEL[o.risk.level])}, confidence ${esc(o.risk.confidence)}`], ["Priority score", String(o.priority)]]),
     sources: [`orders.csv line ${o.row} (${o.order_id})`, `Queue at ${cap(o.stage)}: in-progress orders at that stage in orders.csv`],
     chips: [chip(`Chase ${o.order_id}`), chip(`Show the ${cap(o.stage)} queue`, `Which orders are waiting at ${o.stage.toLowerCase()}?`)]});
 }
@@ -293,9 +305,9 @@ function stagesBelowAnswer(ql, call) {   // "how was output yesterday" with no s
 function pipelineAnswer(call) {
   const p = call("get_pipeline", {}), hot = p.reduce((m, s) => (s.days_of_work || 0) > (m.days_of_work || 0) ? s : m);
   if (!hot.days_of_work) return R("pipeline", ["There is not enough history to size the queues."]);
-  return R("pipeline", [`${cap(hot.stage)} is the bottleneck: ${n(hot.pieces)} pieces queued, about ${hot.days_of_work} days of work at its usual ${n(hot.usual_per_day)} a day.`,
+  return R("pipeline", [`${cap(hot.stage)} is the bottleneck: ${n(hot.pieces)} pieces queued, about ${hot.days_of_work} days of work at an estimated ${n(hot.capacity_per_day)} pieces a day.`,
       `${pl(hot.orders, "order")} are waiting there${hot.late ? `, ${hot.late} already late` : ""}.`], {
-    detail: tbl(["Stage", "Orders", "Pieces", "Usual per day", "Days of work"], p.map(s => [esc(cap(s.stage)), s.orders, n(s.pieces), n(s.usual_per_day), s.days_of_work ?? "–"])),
+    detail: tbl(["Stage", "Orders", "Pieces", "Capacity per day (estimated)", "Days of work"], p.map(s => [esc(cap(s.stage)), s.orders, n(s.pieces), n(s.capacity_per_day), s.days_of_work ?? "–"])),
     sources: ["orders.csv: pieces of in-progress orders at each stage; production_log.csv: usual output"], chips: [chip(`Which orders are waiting at ${cap(hot.stage)}?`, `Which orders are waiting at ${hot.stage.toLowerCase()}?`)]});
 }
 function onTimeAnswer(call) {
@@ -308,6 +320,59 @@ function onTimeAnswer(call) {
     sources: [`${now.completed} completed rows in orders.csv (completed_date in the last 30 days)`]});
 }
 
+/* ---------- risk, expedite, forecast, targets ---------- */
+const RISK_LABEL = {overdue: "overdue", high: "high risk", medium: "medium risk", low: "low risk"};
+const riskRows = xs => tbl(["Order", "Customer", "Due", "Risk", "Confidence", "Working days late at best", "Source"], xs.map(o => [
+  `<b>${esc(o.order_id)}</b>`, esc(o.customer), o.days_to_due < 0 ? `${-o.days_to_due}d late` : esc(day(o.due_date)), esc(RISK_LABEL[o.risk.level]),
+  esc(o.risk.confidence), o.risk.late_days_best ?? "–", `orders.csv line ${o.row}`]));
+function riskAnswer(level, call) {
+  const rc = cur().risk_counts;
+  if (!level) {
+    const top = call("list_by_risk", {level: "high"}).slice(0, 3);
+    return R("risk_summary", [`Risk this morning: ${rc.overdue} overdue, ${rc.high} high, ${rc.medium} medium, ${rc.low} low.`,
+        top.length ? `Highest: ${top.map(o => `${o.order_id} (${o.customer}, ${o.risk.late_days_best} working days late at best)`).join(", ")}.` : "No order is rated high risk.",
+        "Risk is a projection of the queue, not a promise. High means even the best case is 5 or more working days late."], {
+      detail: riskRows(cur().orders), sources: [...new Set(cur().orders.map(o => `orders.csv line ${o.row} (${o.order_id})`))].slice(0, 15),
+      chips: [chip("Which orders are high risk?"), chip("What do we expect next week?", "What orders do we expect in the next two weeks?")]});
+  }
+  const xs = call("list_by_risk", {level});
+  if (!xs.length) return R("risk_list", [`No order is rated ${level} risk this morning.`]);
+  return R("risk_list", [`${pl(xs.length, "order")} ${xs.length === 1 ? "is" : "are"} rated ${level} risk.`,
+      `Worst: ${xs.slice(0, 3).map(o => `${o.order_id} (${o.customer}, ${o.risk.late_days_best} working days late at best)`).join(", ")}.`], {
+    detail: riskRows(xs), sources: [...new Set(xs.map(o => `orders.csv line ${o.row} (${o.order_id})`))].slice(0, 15),
+    chips: [chip(`Should we expedite ${xs[0].order_id}?`), chip(`Why is ${xs[0].order_id} flagged?`)]});
+}
+function expediteAnswer(id, call) {
+  const r = call("assess_expedite", {order_id: id}); if (!r) return notFound(id);
+  const o = r.order, e = r.expedite; Object.assign(ctx, {lastOrder: id, lastCustomer: o.customer, lastStage: o.stage});
+  if (!e) return R("expedite", [`${id} is ${SW[o.status]}, so there is nothing to gain from expediting it.`, "I assess expediting only for orders that are overdue or at risk."], {chips: [chip("Why?", `Why is ${id} flagged?`)]});
+  const lines = [`${e.label}: ${e.reason}`];
+  if (e.recommendation !== "investigate") lines.push(`It would cut ${id}'s lateness by ${e.gain} working days and add ${e.cost} days of lateness to other orders (net ${e.net}).`);
+  lines.push("This is a projection, not a promise: queued orders count in full, with no overtime and no extra workshop capacity.");
+  return R("expedite", lines, {
+    detail: e.pushed.length && e.recommendation !== "investigate" ? tbl(["Order slowed", "Customer", "Extra days", "Added lateness", "Pushed past due date"], e.pushed.map(p => [esc(p.order_id), esc(p.customer), p.extra_days, p.added_lateness, p.newly_late ? "yes" : "–"])) : null,
+    sources: [`orders.csv line ${o.row} (${id})`], chips: [chip("Open follow-up panel", "__panel:" + id), chip(`Chase ${id}`)]});
+}
+function forecastAnswer(call) {
+  const f = call("get_forecast", {});
+  if (!f || !f.enough_data) return R("forecast", ["There is not enough order history for a forecast."]);
+  const bt = f.backtest, rel = bt && bt.enough_data ? `On past data it was off by ${bt.mae_forecast} orders on average, against ${bt.mae_same_as_last_period} for simply repeating the last period, so treat it as a rough range.` : "It has not been tested on enough history.";
+  const rows = (xs, k) => xs.map(r => [esc(r[k]), r.expected_orders, `${Math.round(100 * r.chance_any)}%`, n(r.typical_pieces)]);
+  return R("forecast", [`About ${Math.round(f.expected_orders)} orders (${f.orders_low} to ${f.orders_high}) and ${n(f.expected_pieces)} pieces are likely in the next two weeks, to ${day(f.horizon_end)}.`,
+      `Most often ordering: ${f.customers.slice(0, 3).map(c => c.customer).join(", ")}. Most common products: ${f.products.slice(0, 3).map(p => p.product.toLowerCase()).join(", ")}.`, rel], {
+    detail: tbl(["Customer", "Expected orders", "Chance of 1+", "Usual pieces"], rows(f.customers, "customer")) + tbl(["Product", "Expected orders", "Chance of 1+", "Usual pieces"], rows(f.products, "product")),
+    sources: [`Order dates in orders.csv over the last ${f.window_days} days (${f.orders_in_window} orders)`], chips: [chip("Which orders are high risk?")]});
+}
+function targetAnswer(call) {
+  const set = call("get_target_status", {}).filter(t => t.target);
+  if (!set.length) return R("targets", ["No stage targets are set yet.", "Set them under Settings; a stage is flagged when it misses its target 3 working days in a row."]);
+  const bad = set.filter(t => t.missed3), miss = set.filter(t => t.met === false && !t.missed3);
+  const lines = [bad.length ? `${bad.map(t => cap(t.stage)).join(", ")} ${bad.length === 1 ? "has" : "have"} missed ${bad.length === 1 ? "its" : "their"} target for ${Math.max(...bad.map(t => t.streak))} or more working days in a row.` : "No stage has missed its target 3 working days in a row."];
+  if (miss.length) lines.push(`${miss.map(t => cap(t.stage)).join(", ")} missed the target yesterday.`);
+  return R("targets", lines, {detail: tbl(["Stage", "Target per day", "Yesterday", "Working days missed in a row", "Source"], set.map(t => [esc(cap(t.stage)), n(t.target), n(t.yesterday), t.streak, `production_log.csv line ${cur().stages[t.stage].yesterday.evidence[0].row}`])),
+    sources: ["Targets are the values saved in Settings; output is from production_log.csv"]});
+}
+
 /* ---------- feasibility ---------- */
 const VERDICT = {likely: "Likely feasible", tight: "Feasible but tight", only_if_prioritised: "Possible only if it is prioritised", unlikely: "Unlikely"};
 function feasAnswer(pieces, due, call, excl, productWord) {
@@ -318,8 +383,8 @@ function feasAnswer(pieces, due, call, excl, productWord) {
     : `${VERDICT[f.verdict]} by ${day(due)}: at best it finishes around ${day(f.bestDate)}, and if new orders keep arriving ahead of it, it may not finish within ${f.cap} working days. ${pl(f.W, "Working day")} are available.`;
   const l2 = `Bottleneck: ${cap(f.bottleneck)}, with ${n(f.bottleneckAhead)} pieces already queued at a usual ${n(f.bottleneckUsual)} a day.`;
   const assumptions = [
-    "Capacity is each stage's usual daily output (average of the previous 8 same weekdays); no overtime.",
-    "Sundays are closed. Each later stage adds one working day of handoff.",
+    `Capacity is each stage's usual daily output (average of the previous 8 same weekdays) times a workshop factor of ${cur().capacity.workshop_factor}, estimated from what actually finished in the last 60 days (the production log shows less than ships).`,
+    "Sundays are closed. Each later stage adds one working day of handoff, and one order uses at most 60% of a stage's daily output, so it needs several days per stage.",
     "Earlier date = only in-progress orders due on or before your date go first, and nothing new arrives. Later date = every in-progress order goes first.",
     "Pieces already queued are counted in full, even if partly done, so the estimate leans cautious.",
     `Later date also assumes new work keeps arriving at about ${n(Math.round(f.rate))} pieces a working day (average of the last ${cur().arrivals.window_days} days), with the usual lead times; new orders due earlier than this one go ahead of it.`,
@@ -416,15 +481,15 @@ function evaluateWatches() {
 }
 
 /* ---------- refusals ---------- */
-const NO_PRICE = /\b(price|prices|pricing|revenue|profit|margin|sales|income|turnover|earn|earnings|money|invoice|paid|payment|budget|worth)\b|how much (?:does|do|did|is|are).*\b(cost|sell|make)\b/;
-const NO_PEOPLE = /\b(worker|workers|employee|employees|operator|operators|staff|headcount|salary|wages?|who (?:is|was|are|were) (?:working|on shift)|who works|shift|overtime hours)\b/;
-const NO_FORECAST = /\b(forecast|predict|projection|next month|next quarter|next year|demand|trend of orders)\b/;
+const NO_PRICE = /\b(price|prices|pricing|revenue|profit|margin|sales|income|turnover|earn|earnings|money|invoice|paid|payment|budget)\b|how much (?:does|do|did|is|are).*\b(cost|sell|make)\b/;
+const NO_PEOPLE = /\b(worker|workers|employee|employees|operator|operators|staff|headcount|salary|wages?|who (?:is|was|are|were) (?:working|on shift)|who works|overtime hours)\b/;
+const NO_FORECAST = /\b(next month|next quarter|next year|demand|trend of orders)\b/;
 function refusalRoute(ql, call) {
   let why = null, alt = [chip("Did anything go wrong yesterday?"), chip("Where is the bottleneck?")];
   if (NO_PRICE.test(ql)) why = "This system holds no prices, revenue or profit. Orders have pieces, dates and stages only, so any figure would be invented.";
   else if (/\bcost\b/.test(ql)) why = "This system holds no prices or revenue. The source data has a cost per piece for each workshop, but it is not loaded into this view.";
   else if (NO_PEOPLE.test(ql)) why = "No worker names or staffing data are held. Output is recorded per stage per day, not per person.";
-  else if (NO_FORECAST.test(ql)) { why = "There is no demand forecast in this view, so I will not guess at future volumes."; alt = [chip("Can we take 800 hoodies by the 25th?", `Can we take 800 hoodies by ${plus(today(), 16)}?`), chip("How was output yesterday?")]; }
+  else if (NO_FORECAST.test(ql)) { why = "I forecast orders only for the next two weeks. There is no demand forecast beyond that, so I will not guess."; alt = [chip("What orders do we expect in the next two weeks?"), chip("How was output yesterday?")]; }
   if (!why) return null;
   call("explain_no_data", {topic: why.slice(0, 20)});
   return R("no_data", [why, "I would rather say so than give you a made-up number."], {refused: true, chips: alt});
@@ -432,7 +497,7 @@ function refusalRoute(ql, call) {
 
 /* ---------- pending clarifications ---------- */
 function finishOrderIntent(then, id, call, extra) {
-  return then === "why" ? traceAnswer(id, call) : then === "chase" ? chaseProposal(id, call) : then === "watch" ? watchRoute(`tell me if ${id} hasn't moved by ${extra || ""}`.trim(), `tell me if ${id.toLowerCase()} hasn't moved by ${extra || ""}`.trim(), call, false)
+  return then === "expedite" ? expediteAnswer(id, call) : then === "why" ? traceAnswer(id, call) : then === "chase" ? chaseProposal(id, call) : then === "watch" ? watchRoute(`tell me if ${id} hasn't moved by ${extra || ""}`.trim(), `tell me if ${id.toLowerCase()} hasn't moved by ${extra || ""}`.trim(), call, false)
     : then === "note" ? noteProposal(id, extra || "", call) : orderAnswer(id, call);
 }
 function resolvePending(text, ql, call) {
@@ -491,6 +556,12 @@ function route(text, ql, call) {
     ctx.pending = {type: "order", then: "chase"};
     return R("clarify_order", ["Which order should I chase?"], {asks: true, chips: cur().orders.filter(o => o.status !== "on_track").slice(0, 4).map(o => chip(`${o.order_id} · ${o.customer}`, o.order_id))});
   }
+  if (/\bexpedit|\bprioriti[sz](?:e|ing)\b|rush (?:it|this|that|the order)|speed (?:it |this )?up|bump (?:it|this) up\b/.test(ql)) {
+    if (tid) return expediteAnswer(tid, call);
+    if (cust) { const xs = call("list_orders", {customer: cust.customer, sort: "due"}); return xs.length > 1 ? askWhichOrder(cust, "expedite", call) : xs.length ? expediteAnswer(xs[0].order_id, call) : customerAnswer(cust, call); }
+    ctx.pending = {type: "order", then: "expedite"};
+    return R("clarify_order", ["Which order should I assess for expediting?"], {asks: true, chips: cur().orders.filter(o => o.status === "late").slice(0, 4).map(o => chip(`${o.order_id} · ${o.customer}`, o.order_id))});
+  }
   const refusal = refusalRoute(ql, call); if (refusal) return refusal;
 
   if ((/\bcan we\b.*\b(take|do|make|deliver|fit|handle|accept|squeeze|hit|meet)\b/.test(ql) && (!ids.length || /\btake\b/.test(ql))) || /feasib|\bcapacity (?:for|to)\b|take on\b|\bwill we (?:make|hit|meet)\b/.test(ql)
@@ -515,6 +586,10 @@ function route(text, ql, call) {
     return customerAnswer(cust, call);
   }
   if (/\bcustomers\b/.test(ql) && /\b(late|worst|risk|stalled|problem|behind|trouble|affected)\b/.test(ql)) return customersAnswer();
+  if (/\btargets?\b/.test(ql)) return targetAnswer(call);
+  if (/\bforecast\b|\bexpect(?:ed)?\b.*\borders?\b|\borders?\b.*\bexpect(?:ed)?\b|\bincoming orders?\b|orders? (?:coming|arriving)|\borders?\b.*\b(?:next|coming) (?:two weeks|2 weeks|fortnight|week)\b|\bhow many orders\b.*\b(?:next|coming|expect)/.test(ql)) return forecastAnswer(call);
+  { const lv = ql.match(/\b(high|medium|low)[- ]risk\b/); if (lv) return riskAnswer(lv[1], call);
+    if (/\brisk level|how risky|biggest risks?|risk summary|risk this morning|which orders are risky/.test(ql)) return riskAnswer(null, call); }
   if (stage && /\b(waiting|queue|queued|backlog|orders|stuck|in)\b/.test(ql) && !/\boutput|made|produced\b/.test(ql)) {
     const xs = call("list_orders", {stage, sort: "due"}); return listAnswer("stage_orders", `waiting at ${cap(stage)}`, xs);
   }
@@ -578,6 +653,7 @@ function badge() { els.badge.hidden = !ui.unread; els.badge.textContent = ui.unr
 function typing(on) { let t = $c("#chatTyping"); if (on && !t) { t = document.createElement("div"); t.id = "chatTyping"; t.className = "msg bot"; t.innerHTML = `<div class="bubble dots" aria-label="Working"><i></i><i></i><i></i></div>`; els.log.append(t); scrollDown(); } if (!on && t) t.remove(); }
 function send(text) {
   text = String(text || "").trim(); if (!text) return;
+  if (text.startsWith("__panel:")) { if (window.TPPanels) window.TPPanels.openActions(text.slice(8)); return; }
   addUser(text); els.input.value = ""; typing(true);
   const local = () => { typing(false); addBot(respond(text)); };
   if (!ui.backend) return void setTimeout(local, 260);
@@ -593,6 +669,7 @@ function suggestions() {
   const b = cur(), w = worstOrder(), top = b.customers[0], pieces = 800;
   const set = [chip("Did anything go wrong yesterday?"), chip(`How is the ${top ? top.customer : "TrendCart"} order doing?`),
     chip(`Can we take ${pieces} hoodies by the ${fmt(plus(today(), 16), {day: "numeric", month: "long"})}?`), chip(`Chase ${w.order_id}`),
+    chip("Which orders are high risk?"), chip(`Should we expedite ${w.order_id}?`), chip("What orders do we expect in the next two weeks?"),
     chip("Remind me tomorrow if packing is still behind"), chip("What's our revenue this month?")];
   els.suggest.innerHTML = set.map(c => `<button class="chip" data-q="${esc(c.q)}">${esc(c.label)}</button>`).join("");
 }
@@ -649,7 +726,7 @@ window.chatHook = () => {
   ui.lastIdx = idx; evaluateWatches(); suggestions(); renderWatches();
 };
 window.ThreadPilotChat = {
-  respond, apply: applyConfirm, ask: q => { open(true); send(q); }, tools: T, ctx, watches,
+  respond, apply: applyConfirm, ask: q => { open(true); send(q); }, close: () => open(false), tools: T, ctx, watches,
   askFeasibility: id => { const o = cur().orders.find(x => x.order_id === id); if (!o) return; ctx.excludeOrder = id; open(true); send(`Can we take ${o.pieces} ${o.product.toLowerCase()} by ${o.due_date}?`); },
   reset: () => { Object.assign(ctx, {lastOrder: null, lastCustomer: null, lastStage: null, lastFeas: null, pending: null, last: null, excludeOrder: null}); watches.length = 0; },
 };

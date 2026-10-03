@@ -26,6 +26,12 @@ TEMPLATE = Path(__file__).resolve().parent / "demo_template.html"
 BASE_DATE = date(2026, 4, 1)
 
 
+def embed_json(obj) -> str:
+    """JSON that is safe inside a <script> tag. A value containing '</script>' (a customer name from an uploaded
+    spreadsheet, say) would end the tag early and break the page; '<\\/' is the same string in JSON."""
+    return json.dumps(obj).replace("</", "<\\/")
+
+
 def slim(b: dict) -> dict:
     """Drop what the page does not need, to keep the HTML small."""
     b = dict(b)
@@ -61,9 +67,10 @@ def main() -> None:
     payload = {"briefings": pages, "scenario": scenario["events"]}
     html = TEMPLATE.read_text(encoding="utf-8")
     here = Path(__file__).resolve().parent
-    for marker, name in (("/*__CHAT_CSS__*/", "chat.css"), ("<!--__CHAT_HTML__-->", "chat.html"), ("/*__CHAT_JS__*/", "chat.js")):
+    for marker, name in (("/*__CHAT_CSS__*/", "chat.css"), ("/*__PANELS_CSS__*/", "panels.css"), ("<!--__CHAT_HTML__-->", "chat.html"),
+                         ("<!--__PANELS_HTML__-->", "panels.html"), ("/*__CHAT_JS__*/", "chat.js"), ("/*__PANELS_JS__*/", "panels.js")):
         html = html.replace(marker, (here / name).read_text(encoding="utf-8"))
-    html = html.replace("/*__DATA__*/null", json.dumps(payload))
+    html = html.replace("/*__DATA__*/null", embed_json(payload))
     a.html.parent.mkdir(parents=True, exist_ok=True)
     a.html.write_text(html, encoding="utf-8", newline="\n")
     print(f"Wrote {len(pages)} briefings to {a.briefings} and the demo page to {a.html}")

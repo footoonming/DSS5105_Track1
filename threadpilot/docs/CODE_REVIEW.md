@@ -207,3 +207,39 @@ briefing text.
    from the data. (10s)
 
 That answers "is this dynamic?" without anyone having to take your word for it.
+
+
+## Code review of the dashboard and prediction code, October 2026
+
+Tools used: `ruff` (pyflakes, bugbear and simplify rules), `node --check`, a byte-for-byte comparison of all 15 briefings before and after
+the refactor, and new regression tests that were confirmed to fail on the previous code.
+
+**Fixed**
+
+| Problem | Effect | Fix |
+|---|---|---|
+| Stage-target alert pills were added again on every keystroke | Duplicate red pills piled up in the summary while typing a target | Earlier pills are replaced, not appended |
+| Data was embedded in a `<script>` tag as raw JSON | A value containing `</script>` (e.g. a customer name from an uploaded spreadsheet) would break the page | `embed_json` writes `</` as `<\/` |
+| Order IDs were inserted into the orders table without escaping | A crafted order ID could inject HTML | Escaped like every other value |
+| "worth" and "shift" were refusal words | "Is it worth prioritising ORD-120?" and "What caused the shift in output?" were refused | Removed; "prioritise" now means expedite |
+| The chat took the first number as the piece count | "2 orders of 400 hoodies" was read as 2 pieces | Numbers followed by orders, days, weeks and similar are skipped |
+| An order that never finishes was given the 200th working day as its date | A made-up date in the risk reason | Says it does not finish within 200 working days |
+| Memo dates were stored in UTC | Before 08:00 in Singapore a memo showed yesterday's date | Local date stored |
+| Dialogs did not take keyboard focus | Keyboard users had to tab through the page to reach a dialog | Focus moves in on open and back on close |
+| Empty-data-attribute buttons ("Use usual output", "Clear", "Open in email app") did nothing | Found while testing; fixed earlier | `"key" in dataset` instead of a truthiness check |
+| One test used `A and B or C` | It passed almost regardless of the page | Asserts the exact expected text |
+| Calendar helpers were defined in two Python modules | Two copies to keep in step | One module, `simulation/workdays.py` |
+| Test tools were not pinned | CI could pick a newer browser with different behaviour, as happened with the date commas | `requirements-dev.txt`, used by CI |
+| Files opened without closing, unused imports, a lambda capturing a loop variable | Lint warnings | Cleaned; `ruff` passes |
+
+**Recommended, not done (larger changes)**
+
+* `briefing.build()` is about 400 lines. Splitting it into steps (load, derive, discover, assess, summarise) would make each step testable on its own.
+* Feasibility in the chat uses a closed-form estimate in JavaScript; risk and expedite use the Python projection. Both were validated, but feasibility
+  should move to the backend and use `project`, so there is one method.
+* `chat.js` and `panels.js` rely on globals defined by the page (`B`, `idx`, `fmt`, `esc`). Fine for a single-file demo; in the real front end
+  use modules with explicit imports.
+* Intent routing in the demo chat is ordered regular expressions. The test suite guards it, but the backend's intent classifier should do this in production.
+* Settings and memos live in the browser. In production they belong to the user's account and to an `order_amendments` table (see
+  `docs/prediction_validation.md`).
+* The demo page embeds 15 briefings (1.6 MB). A production page should fetch one briefing at a time from the backend.

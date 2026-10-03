@@ -32,6 +32,9 @@ from datetime import date, timedelta
 from pathlib import Path
 from statistics import mean, median, pstdev
 
+from .prediction import assess_expedite, assess_risk, dm, forecast, forecast_backtest, project
+from .workdays import add_working_days, is_working, prev_working, working_days_between
+
 STAGES = ["KNITTING", "ASSEMBLY", "WASHING", "PACKING"]
 BASELINE_WEEKS = 8
 MIN_SAMPLES = 3
@@ -45,8 +48,12 @@ DEFINITIONS = {
     "yesterday": "last working day before the business date",
     "normal": f"mean of the previous {BASELINE_WEEKS} same-weekday working days; band = mean +/- max({BAND_SD} x SD, {int(BAND_MIN_PCT*100)}% of mean); needs at least {MIN_SAMPLES} samples",
     "idle_days": "working days since last_activity_date",
-    "projected_finish": "remaining stages x median working days per stage over completed orders (rough estimate, not a commitment)",
-    "order_status": "late = past due date; at risk = due within 7 days and projected to finish after it, or idle 5+ working days while later-due orders at the same stage moved; otherwise on track",
+    "projected_finish": "expected finish from the queue model: every stage works earliest-due-first at its usual output, new orders keep arriving (an estimate, not a commitment)",
+    "risk": "overdue = past due date; high = even the best case is 5+ working days past the due date; medium = best case 1-4 working days late, or on time only if no new order goes ahead of it; low = on time even then. Confidence is how many working days the estimate sits from the due date (5+ high, 2-4 medium, under 2 low). A stalled order is raised to at least medium (high if due within 10 working days)",
+    "expedite": "moves one order to the front of every queue it still has to pass; reports working days saved and the other orders pushed later, or past their due date. Recommend now if it saves 2+ days and pushes no order past its date; trade-off if it does; later if it saves under 2 days; find the blocker first if the order is stalled",
+    "capacity": "usual output (average of the previous 8 same weekdays in the production log) multiplied by a workshop factor: pieces on orders finished in the last 60 days per working day, divided by the packing output the log shows for the same days. The log shows less than shipped, so the factor raises capacity to what the factory actually delivers",
+    "forecast": "orders expected in the next 12 working days from the frequency of the last 60 days of orders (Poisson range); customer and product shares are their share of those orders",
+    "order_status": "late = past due date; at risk = risk level high or medium; on track = low (see risk)",
     "on_time_delivery": "share of orders completed in the last 30 days with days_late <= 0",
     "ranking": "score (see score_reason) +10 if new since the previous briefing, -4 per extra morning already reported (max -20) unless it got worse; top 5 shown, rest counted",
 }
@@ -75,32 +82,6 @@ def ev(row: dict, fields: list[str]) -> dict:
 
 
 # ---------------------------------------------------------------- calendar
-def is_working(day: date) -> bool:
-    return day.weekday() != 6
-
-
-def prev_working(day: date) -> date:
-    day -= timedelta(days=1)
-    while not is_working(day):
-        day -= timedelta(days=1)
-    return day
-
-
-def working_days_between(a: date, b: date) -> int:
-    """Working days in (a, b]; negative if b < a."""
-    if b < a:
-        return -working_days_between(b, a)
-    return sum(is_working(a + timedelta(days=i)) for i in range(1, (b - a).days + 1))
-
-
-def add_working_days(day: date, n: int) -> date:
-    while n > 0:
-        day += timedelta(days=1)
-        if is_working(day):
-            n -= 1
-    return day
-
-
 # ---------------------------------------------------------------- judgement tool
 def stage_normal(log_by_stage: dict[str, dict[date, dict]], stage: str, day: date) -> dict:
     """Is `stage` output on `day` normal? Same-weekday comparison, Sundays excluded."""
@@ -146,6 +127,8 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
                                       "pieces_completed": sum(r["pieces_completed"] for r in rows if r)}
     yday = prev_working(business_date)
 
+    normals = {s: stage_normal(log_by_stage, s, yday) for s in STAGES}
+
     # -- derived order facts (all arithmetic here, none in the LLM)
     completed = [o for o in orders if o["status"] == "COMPLETE" and o["completed_date"]]
     per_stage = median(
@@ -156,20 +139,6 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
         due, last = date.fromisoformat(o["due_date"]), date.fromisoformat(o["last_activity_date"])
         o["days_to_due"] = (due - business_date).days
         o["idle_days"] = max(0, working_days_between(last, business_date) - 1)  # activity yesterday = 0 idle
-        remaining = len(STAGES) - STAGES.index(o["current_stage"])
-        o["projected_finish"] = add_working_days(business_date, round(remaining * per_stage)).isoformat()
-        o["projected_late"] = o["projected_finish"] > o["due_date"]
-        parts = []
-        if o["days_to_due"] < 0:
-            parts.append(("overdue", min(60, 40 + 2 * -o["days_to_due"])))
-        elif o["days_to_due"] <= DUE_SOON:
-            parts.append(("due within 7 days", 30))
-        if o["projected_late"]:
-            parts.append(("projected late", 20))
-        if o["idle_days"] >= IDLE_ALERT:
-            parts.append((f"idle {o['idle_days']} working days", 15))
-        o["priority"] = sum(p for _, p in parts)
-        o["priority_parts"] = [{"reason": r, "points": p} for r, p in parts]
 
     # An idle order is only suspicious if the queue does not explain it: an order at
     # the same stage with a LATER due date moved in the last two working days.
@@ -184,7 +153,6 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
     findings: list[dict] = []
 
     # -- discovery 1: a stage whose output left its normal band yesterday
-    normals = {s: stage_normal(log_by_stage, s, yday) for s in STAGES}
     for i, s in enumerate(STAGES):
         n = normals[s]
         if n["status"] != "below":
@@ -248,6 +216,57 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
             "order_ids": [o["order_id"] for o in quiet],
             "evidence": [ev(o, ["order_id", "current_stage", "last_activity_date", "due_date"]) for o in quiet]})
 
+    # -- risk: will each order make its due date? (queue model in prediction.py, validated in docs/prediction_validation.md)
+    win = 45
+    recent_orders = [o for o in orders if business_date - timedelta(days=win) <= date.fromisoformat(o["order_date"]) < business_date]
+    wdays = sum(is_working(business_date - timedelta(days=i)) for i in range(1, win + 1))
+    arrivals = {"window_days": win, "orders": len(recent_orders),
+                "pieces_per_working_day": round(sum(o["pieces"] for o in recent_orders) / wdays, 1),
+                "leads": sorted((date.fromisoformat(o["due_date"]) - date.fromisoformat(o["order_date"])).days for o in recent_orders)}
+    usual_log = {st: normals[st]["mean"] for st in STAGES}
+    can_project = all(usual_log.values())
+    # The log does not reconcile with what ships: capacity is calibrated from completions. factor = pieces on orders
+    # finished in the last 60 days per working day, divided by the packing output the log shows for the same days.
+    cwin = business_date - timedelta(days=60)
+    done60 = [o for o in completed if cwin <= date.fromisoformat(o["completed_date"]) < business_date]
+    pack60 = [r["pieces_completed"] for day_, r in log_by_stage["PACKING"].items() if cwin <= day_ < business_date and is_working(day_)]
+    cwdays = sum(is_working(cwin + timedelta(days=i)) for i in range(60))
+    finished_pd = sum(o["pieces"] for o in done60) / cwdays
+    factor = round(min(3.0, max(1.0, finished_pd / mean(pack60))), 3) if len(done60) >= 10 and pack60 else 1.0
+    cap = {st: (usual_log[st] * factor if usual_log[st] else None) for st in STAGES}
+    capacity = {"workshop_factor": factor, "window_days": 60, "orders_finished": len(done60),
+                "finished_pieces_per_day": round(finished_pd), "logged_packing_per_day": round(mean(pack60)) if pack60 else None,
+                "note": "Pieces on orders that finished in the last 60 days, per working day, versus packing output in the production log. "
+                        "The log shows less than shipped (the rest may be outside workshops), so usual output is scaled by this factor."}
+    stalled_ids = {o["order_id"] for o in active
+                   if o["customer"] in stalled_customers or (o["unexplained_idle"] and o["idle_days"] >= IDLE_ALERT)}
+    best_map = project(active, cap, business_date) if can_project else {}
+    exp_map = project(active, cap, business_date, arrivals=arrivals) if can_project else {}
+    for o in active:
+        if can_project:
+            o["risk"] = assess_risk(o, best_map.get(o["order_id"]), exp_map.get(o["order_id"]), business_date, o["order_id"] in stalled_ids)
+            o["projected_finish"] = o["risk"]["expected_date"] or o["risk"]["best_date"]
+        else:  # too little history for a queue estimate: say so, and fall back to the rough per-stage median
+            remaining = len(STAGES) - STAGES.index(o["current_stage"])
+            o["projected_finish"] = add_working_days(business_date, round(remaining * per_stage)).isoformat()
+            o["risk"] = {"level": "overdue" if o["days_to_due"] < 0 else "unknown", "confidence": "none",
+                         "reason": "Not enough production history to estimate", "best_date": None, "expected_date": None,
+                         "working_days_left": 0, "margin": 0, "stalled": o["order_id"] in stalled_ids}
+        o["projected_late"] = o["risk"]["level"] in ("overdue", "high", "medium")
+        parts = []
+        if o["days_to_due"] < 0:
+            parts.append(("overdue", min(60, 40 + 2 * -o["days_to_due"])))
+        elif o["days_to_due"] <= DUE_SOON:
+            parts.append(("due within 7 days", 30))
+        if o["risk"]["level"] == "high":
+            parts.append(("high risk of missing the due date", 20))
+        elif o["risk"]["level"] == "medium":
+            parts.append(("medium risk of missing the due date", 10))
+        if o["idle_days"] >= IDLE_ALERT:
+            parts.append((f"idle {o['idle_days']} working days", 15))
+        o["priority"] = sum(p for _, p in parts)
+        o["priority_parts"] = [{"reason": r, "points": p} for r, p in parts]
+
     # -- discovery 4: overdue, rolled into one finding so it cannot flood the page
     overdue = sorted([o for o in active if o["days_to_due"] < 0], key=lambda o: o["days_to_due"])
     if overdue:
@@ -259,13 +278,13 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
             "order_ids": [o["order_id"] for o in overdue],
             "evidence": [ev(o, ["order_id", "due_date", "current_stage"]) for o in overdue]})
 
-    # -- discovery 5: due this week and the rough projection says it will miss
+    # -- discovery 5: due this week and the risk model says it may miss
     at_risk = [o for o in active if 0 <= o["days_to_due"] <= DUE_SOON and o["projected_late"]]
     if at_risk:
         findings.append({
             "key": "due_soon_at_risk", "type": "due_soon_at_risk",
-            "title": f"{len(at_risk)} orders due within 7 days are projected to finish late",
-            "detail": ", ".join(f"{o['order_id']} due {o['due_date']}, projected {o['projected_finish']}" for o in at_risk[:4]) + ".",
+            "title": f"{len(at_risk)} orders due within 7 days are at risk of missing their date",
+            "detail": "; ".join(f"{o['order_id']} due {dm(date.fromisoformat(o['due_date']))}, {o['risk']['level']} risk" for o in at_risk[:4]) + ".",
             "score": 55 + 3 * len(at_risk), "score_reason": "55 + 3 per order",
             "order_ids": [o["order_id"] for o in at_risk],
             "evidence": [ev(o, ["order_id", "due_date", "current_stage"]) for o in at_risk]})
@@ -274,12 +293,12 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
     for s in STAGES:
         queue = [o for o in active if o["current_stage"] == s]
         pieces = sum(o["pieces"] for o in queue)
-        normal_day = normals[s]["mean"] or 1
+        normal_day = cap[s] if can_project else (normals[s]["mean"] or 1)
         if pieces > 6 * normal_day:
             findings.append({
                 "key": f"wip:{s}", "type": "wip_pileup", "stage": s,
                 "title": f"{len(queue)} orders ({pieces:,} pieces) are waiting at {s.title()}",
-                "detail": f"About {pieces / normal_day:.1f} days of normal {s.title()} output.",
+                "detail": f"About {pieces / normal_day:.1f} days of work at {s.title()}'s estimated {normal_day:,.0f} pieces a day.",
                 "score": 35 + min(25, int(pieces / normal_day)), "score_reason": "35 + days of queued work (max 25)",
                 "order_ids": [o["order_id"] for o in queue],
                 "evidence": [ev(o, ["order_id", "current_stage", "pieces"]) for o in queue]})
@@ -326,19 +345,26 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
     prev_k = (previous or {}).get("kpis", {})
     kpi_delta = {k: (v - prev_k[k]) if k in prev_k else None for k, v in kpis.items()}
 
-    # -- order status in plain words, so the interface never has to judge anything
+    # -- order status in plain words, derived from the risk level so there is one definition of "at risk"
     for o in active:
+        lvl = o["risk"]["level"]
         reasons = []
-        if o["days_to_due"] < 0:
-            status = "late"; reasons.append(f"{-o['days_to_due']} days past due")
+        if lvl == "overdue":
+            status = "late"; reasons.append(o["risk"]["reason"])
+        elif lvl in ("high", "medium"):
+            status = "at_risk"; reasons.append(o["risk"]["reason"])
         else:
-            if o["projected_late"] and o["days_to_due"] <= DUE_SOON:
-                reasons.append(f"projected to finish {date.fromisoformat(o['projected_finish']):%-d %b}, after the {date.fromisoformat(o['due_date']):%-d %b} due date")
-            if o["unexplained_idle"] and o["idle_days"] >= IDLE_ALERT:
-                reasons.append(f"idle {o['idle_days']} working days while later-due orders moved")
-            status = "at_risk" if reasons else "on_track"
+            status = "on_track"
+        if o["unexplained_idle"] and o["idle_days"] >= IDLE_ALERT:
+            reasons.append(f"idle {o['idle_days']} working days while later-due orders moved")
         o["status_label"], o["status_reasons"] = status, reasons
     status_counts = {k: sum(o["status_label"] == k for o in active) for k in ("on_track", "at_risk", "late")}
+    risk_counts = {k: sum(o["risk"]["level"] == k for o in active) for k in ("overdue", "high", "medium", "low", "unknown")}
+
+    # -- expedite assessment for every order that is late or at risk
+    for o in active:
+        o["expedite"] = (assess_expedite(o, active, cap, business_date, o["order_id"] in stalled_ids, o["idle_days"], best_map, exp_map)
+                         if can_project and o["status_label"] in ("late", "at_risk") else None)
 
     # -- on-time delivery over the last 30 days, and the 30 days before that
     def otd(start: date, end: date, rows: bool = False) -> dict:
@@ -381,7 +407,8 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
         pipeline.append({"stage": st, "orders": len(queue), "pieces": pieces,
                          "late": sum(o["status_label"] == "late" for o in queue),
                          "usual_per_day": round(usual) if usual else None,
-                         "days_of_work": round(pieces / usual, 1) if usual else None,
+                         "capacity_per_day": round(cap[st]) if cap[st] else None,
+                         "days_of_work": round(pieces / cap[st], 1) if cap[st] else None,
                          "yesterday": normals[st]["observed"], "status": normals[st]["status"]})
 
     # -- deliveries coming up
@@ -410,7 +437,7 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
 
     # -- series for the stage charts: last 18 working days + 6 working days of "expected if normal"
     series = {}
-    for s in STAGES + ["TOTAL"]:
+    for s in [*STAGES, "TOTAL"]:
         days, probe = [], yday
         while len(days) < 18:
             if is_working(probe):
@@ -442,16 +469,9 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
                           "days_to_due": o["days_to_due"], "idle_days": o["idle_days"],
                           "projected_finish": o["projected_finish"], "status": o["status_label"],
                           "last_activity": o["last_activity_date"], "order_date": o["order_date"],
-                          "reasons": o["status_reasons"], "priority": o["priority"], "row": o["_row"]}
+                          "reasons": o["status_reasons"], "priority": o["priority"], "row": o["_row"],
+                          "risk": o["risk"], "expedite": o["expedite"]}
                          for o in active), key=lambda o: (-o["priority"], o["due_date"]))
-
-    # -- how fast new work has been arriving, and how long customers usually give us (used by feasibility)
-    win = 45
-    recent_orders = [o for o in orders if business_date - timedelta(days=win) <= date.fromisoformat(o["order_date"]) < business_date]
-    wdays = sum(is_working(business_date - timedelta(days=i)) for i in range(1, win + 1))
-    arrivals = {"window_days": win, "orders": len(recent_orders),
-                "pieces_per_working_day": round(sum(o["pieces"] for o in recent_orders) / wdays, 1),
-                "leads": sorted((date.fromisoformat(o["due_date"]) - date.fromisoformat(o["order_date"])).days for o in recent_orders)}
 
     top = findings[:TOP_N]
     newest = [f for f in findings if f["is_new"]]
@@ -475,7 +495,8 @@ def build(folder: Path, business_date: date | None = None, previous: dict | None
         "resolved_since_previous": resolved,
         "stages": series,
         "relevant_orders": relevant_orders,
-        "status_counts": status_counts, "arrivals": arrivals,
+        "status_counts": status_counts, "risk_counts": risk_counts, "arrivals": arrivals, "capacity": capacity,
+        "forecast": {**forecast(orders, business_date), **({"backtest": forecast_backtest(orders, business_date)} if len(orders) >= 20 else {})},
         "on_time_30d": otd_now, "on_time_prev_30d": otd_prev,
         "customers": customers, "pipeline": pipeline, "outlook": outlook, "orders": orders_all,
         "assumptions": {"working_days_per_stage": per_stage},

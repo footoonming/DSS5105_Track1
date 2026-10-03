@@ -49,7 +49,7 @@ ORDER_COLUMNS = [
     "order_id", "customer", "product", "category", "pieces", "order_date", "due_date",
     "status", "current_stage", "last_activity_date", "completed_date", "days_late",
 ]
-ARRIVALS_PER_WORKING_DAY = 1.0     # historical rate is ~1.3; slightly lower keeps WIP stable
+ARRIVALS_PER_WORKING_DAY = 1.0     # historical rate is ~1.3; slightly lower keeps WIP roughly stable
 PER_ORDER_SHARE = 0.6              # one order can take at most 60% of a stage's day
 CAPACITY_NOISE_SD = 0.07           # day-to-day variation around the weekday mean
 MIN_ACTIVITY_PIECES = 20           # less than this does not count as "the order moved"
@@ -106,6 +106,7 @@ class Factory:
                 lo, hi = (0.3, 0.9) if o["current_stage"] == "PACKING" else (0.0, 0.6)
                 self.stage_done[o["order_id"]] = int(int(o["pieces"]) * r.uniform(lo, hi))
         self.next_id = max(int(o["order_id"].split("-")[1]) for o in self.orders) + 1
+        self.factor = self._workshop_factor()
 
     def _weekday_capacity(self) -> dict[tuple[str, int], float]:
         buckets: dict[tuple[str, int], list[int]] = defaultdict(list)
@@ -115,26 +116,33 @@ class Factory:
                 buckets[(r["stage"], day.weekday())].append(int(r["pieces_completed"]))
         return {k: mean(v) for k, v in buckets.items()}
 
+    def _workshop_factor(self) -> float:
+        """The source data does not reconcile: orders that finished in the last 60 days total far more pieces than the
+        production log shows packing handled. The simulator reproduces that: real capacity = logged capacity x factor
+        (the rest being work the log does not show, e.g. outside workshops) and only the logged share is written to the
+        log. Same definition the briefing uses to estimate the factor from completions."""
+        start = self.base_date - timedelta(days=60)
+        done = [o for o in self.orders if o["status"] == "COMPLETE" and o["completed_date"] and start <= d(o["completed_date"]) < self.base_date]
+        packing = [int(r["pieces_completed"]) for r in self.log
+                   if r["stage"] == "PACKING" and start <= d(r["date"]) < self.base_date and d(r["date"]).weekday() != 6]
+        if len(done) < 10 or not packing:
+            return 1.0
+        wdays = sum((start + timedelta(days=i)).weekday() != 6 for i in range(60))
+        return round(min(3.0, max(1.0, sum(int(o["pieces"]) for o in done) / wdays / mean(packing))), 3)
+
     # -- scenario helpers
     def _active_events(self, day: date, kind: str) -> list[dict]:
         out = []
         for ev in self.scenario.get("events", []):
             if ev["type"] != kind:
                 continue
-            if "date" in ev and d(ev["date"]) == day:
-                out.append(ev)
-            elif "start" in ev and d(ev["start"]) <= day <= d(ev["end"]):
+            if ("date" in ev and d(ev["date"]) == day) or ("start" in ev and d(ev["start"]) <= day <= d(ev["end"])):
                 out.append(ev)
         return out
 
     def _on_hold(self, order: dict, day: date) -> bool:
-        for ev in self._active_events(day, "customer_hold"):
-            if ev["customer"] == order["customer"]:
-                return True
-        for ev in self._active_events(day, "order_hold"):
-            if ev["order_id"] == order["order_id"]:
-                return True
-        return False
+        return (any(ev["customer"] == order["customer"] for ev in self._active_events(day, "customer_hold"))
+                or any(ev["order_id"] == order["order_id"] for ev in self._active_events(day, "order_hold")))
 
     # -- one simulated day
     def step(self, day: date) -> None:
@@ -144,6 +152,7 @@ class Factory:
             return
         self._arrivals(day)
         moved_today: set[str] = set()
+        expedited = {ev["order_id"] for ev in self.scenario.get("events", []) if ev["type"] == "expedite" and d(ev["date"]) <= day}
         # Downstream first, so an order can advance at most one stage per day.
         for stage in reversed(STAGES):
             rng = rng_for(self.seed, day, stage)
@@ -152,11 +161,11 @@ class Factory:
             for ev in self._active_events(day, "stage_slowdown"):
                 if ev["stage"] == stage:
                     capacity *= float(ev["factor"])
-            capacity = int(round(capacity))
+            capacity = int(round(capacity * self.factor))
             queue = [o for o in self.orders
                      if o["status"] == "IN_PROGRESS" and o["current_stage"] == stage
                      and o["order_id"] not in moved_today and not self._on_hold(o, day)]
-            queue.sort(key=lambda o: (o["due_date"], o["order_id"]))  # earliest due first
+            queue.sort(key=lambda o: ("", "") if o["order_id"] in expedited else (o["due_date"], o["order_id"]))  # earliest due first
             left, produced = capacity, 0
             for o in queue:
                 if left <= 0:
@@ -174,7 +183,7 @@ class Factory:
                 if self.stage_done[oid] >= pieces:
                     self._advance(o, day)
                     moved_today.add(oid)
-            self.log.append({"date": day.isoformat(), "stage": stage, "pieces_completed": produced})
+            self.log.append({"date": day.isoformat(), "stage": stage, "pieces_completed": int(round(produced / self.factor))})
         # keep the file in date + stage order like the source
         self.log.sort(key=lambda r: (r["date"], STAGES.index(r["stage"])))
 

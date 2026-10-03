@@ -2,136 +2,80 @@
   "business_date": "2026-04-04",
   "covers": "2026-04-03",
   "headline": [
-    "Yesterday (Fri 03 Apr): 2,689 pieces across four stages; Assembly below normal.",
-    "New today: 5 orders (5,300 pieces) are waiting at Packing.",
-    "Decide today: 9 overdue, 8 due this week, 1 new order to confirm."
+    "Yesterday (Fri 03 Apr): 2,688 pieces across four stages; Assembly below normal.",
+    "New today: All 3 active UrbanThread orders have stopped moving.",
+    "Decide today: 7 overdue, 8 due this week, 1 new order to confirm."
   ],
   "kpis": {
-    "active": 36,
-    "overdue": 9,
+    "active": 34,
+    "overdue": 7,
     "due_7d": 8,
-    "idle_5d": 1,
-    "completed_yday": 0,
+    "idle_5d": 0,
+    "completed_yday": 1,
     "new_yday": 1,
-    "output_yday": 2689
+    "output_yday": 2688
   },
   "kpi_delta": {
-    "active": 1,
-    "overdue": 1,
+    "active": 0,
+    "overdue": 0,
     "due_7d": -1,
-    "idle_5d": 0,
-    "completed_yday": -1,
+    "idle_5d": -1,
+    "completed_yday": 0,
     "new_yday": 0,
-    "output_yday": -19
+    "output_yday": -127
   },
   "findings": [
     {
-      "key": "overdue",
-      "type": "overdue",
-      "title": "9 active orders are past their due date",
-      "detail": "Most overdue: ORD-107 (19d, Packing), ORD-120 (18d, Assembly), ORD-083 (12d, Packing).",
-      "score": 86,
-      "score_reason": "50 + 4 per overdue order (max 90)",
+      "key": "customer_stalled:UrbanThread",
+      "type": "customer_stalled",
+      "customer": "UrbanThread",
+      "title": "All 3 active UrbanThread orders have stopped moving",
+      "detail": "Each has been idle at least 3 working days (ORD-053 3d, ORD-036 3d, ORD-015 4d). Later-due orders at the same stages are still moving, so the queue does not explain it; a shared cause (trims, approvals, payment) is more likely.",
+      "score": 76,
+      "score_reason": "70 + 2 per stalled order",
       "order_ids": [
-        "ORD-107",
-        "ORD-120",
-        "ORD-083",
-        "ORD-002",
-        "ORD-093",
-        "ORD-020",
-        "ORD-055",
-        "ORD-029",
-        "ORD-108"
+        "ORD-053",
+        "ORD-036",
+        "ORD-015"
       ],
       "evidence": [
         {
           "file": "orders.csv",
-          "row": 81,
+          "row": 107,
           "values": {
-            "order_id": "ORD-107",
-            "due_date": "2026-03-16",
-            "current_stage": "PACKING"
+            "order_id": "ORD-053",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-10"
           }
         },
         {
           "file": "orders.csv",
-          "row": 76,
+          "row": 109,
           "values": {
-            "order_id": "ORD-120",
-            "due_date": "2026-03-17",
-            "current_stage": "ASSEMBLY"
+            "order_id": "ORD-036",
+            "current_stage": "KNITTING",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-26"
           }
         },
         {
           "file": "orders.csv",
-          "row": 88,
+          "row": 113,
           "values": {
-            "order_id": "ORD-083",
-            "due_date": "2026-03-23",
-            "current_stage": "PACKING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 86,
-          "values": {
-            "order_id": "ORD-002",
-            "due_date": "2026-03-29",
-            "current_stage": "PACKING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 99,
-          "values": {
-            "order_id": "ORD-093",
-            "due_date": "2026-03-29",
-            "current_stage": "PACKING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 90,
-          "values": {
-            "order_id": "ORD-020",
-            "due_date": "2026-03-31",
-            "current_stage": "PACKING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 100,
-          "values": {
-            "order_id": "ORD-055",
-            "due_date": "2026-03-31",
-            "current_stage": "ASSEMBLY"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 92,
-          "values": {
-            "order_id": "ORD-029",
-            "due_date": "2026-04-01",
-            "current_stage": "WASHING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 101,
-          "values": {
-            "order_id": "ORD-108",
-            "due_date": "2026-04-03",
-            "current_stage": "ASSEMBLY"
+            "order_id": "ORD-015",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-16"
           }
         }
       ],
-      "is_new": false,
-      "open_days": 4,
-      "rank_score": 74,
-      "rank_reason": "open 4 mornings (-12)",
-      "severity": "high",
-      "next_step": "Ask the planner for revised ship dates",
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 86,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "critical",
+      "next_step": "Call the customer's account manager",
       "action": "chase"
     },
     {
@@ -237,8 +181,8 @@
     {
       "key": "due_soon_at_risk",
       "type": "due_soon_at_risk",
-      "title": "8 orders due within 7 days are projected to finish late",
-      "detail": "ORD-099 due 2026-04-05, projected 2026-04-16, ORD-103 due 2026-04-04, projected 2026-04-22, ORD-061 due 2026-04-05, projected 2026-04-16, ORD-045 due 2026-04-09, projected 2026-04-16.",
+      "title": "8 orders due within 7 days are at risk of missing their date",
+      "detail": "ORD-099 due 5 Apr, high risk; ORD-103 due 4 Apr, high risk; ORD-061 due 5 Apr, high risk; ORD-045 due 9 Apr, high risk.",
       "score": 79,
       "score_reason": "55 + 3 per order",
       "order_ids": [
@@ -276,7 +220,7 @@
           "values": {
             "order_id": "ORD-061",
             "due_date": "2026-04-05",
-            "current_stage": "WASHING"
+            "current_stage": "PACKING"
           }
         },
         {
@@ -303,7 +247,7 @@
           "values": {
             "order_id": "ORD-062",
             "due_date": "2026-04-08",
-            "current_stage": "KNITTING"
+            "current_stage": "ASSEMBLY"
           }
         },
         {
@@ -321,7 +265,7 @@
           "values": {
             "order_id": "ORD-017",
             "due_date": "2026-04-10",
-            "current_stage": "KNITTING"
+            "current_stage": "ASSEMBLY"
           }
         }
       ],
@@ -334,120 +278,14 @@
       "action": "chase"
     },
     {
-      "key": "quiet:ORD-005",
-      "type": "quiet_order",
-      "order_id": "ORD-005",
-      "title": "ORD-005 (TrendCart) has not moved for 9 working days",
-      "detail": "Still at Knitting, due 2026-04-20 (16 days). Later-due ORD-123 moved past it at the same stage.",
-      "score": 72,
-      "score_reason": "45 + 3 per idle working day (max 30)",
-      "order_ids": [
-        "ORD-005"
-      ],
-      "evidence": [
-        {
-          "file": "orders.csv",
-          "row": 105,
-          "values": {
-            "order_id": "ORD-005",
-            "current_stage": "KNITTING",
-            "last_activity_date": "2026-03-24",
-            "due_date": "2026-04-20"
-          }
-        }
-      ],
-      "is_new": false,
-      "open_days": 4,
-      "rank_score": 60,
-      "rank_reason": "open 4 mornings (-12)",
-      "severity": "watch",
-      "next_step": "Chase the order",
-      "action": "chase"
-    },
-    {
-      "key": "wip:PACKING",
-      "type": "wip_pileup",
-      "stage": "PACKING",
-      "title": "5 orders (5,300 pieces) are waiting at Packing",
-      "detail": "About 8.1 days of normal Packing output.",
-      "score": 43,
-      "score_reason": "35 + days of queued work (max 25)",
-      "order_ids": [
-        "ORD-107",
-        "ORD-002",
-        "ORD-083",
-        "ORD-020",
-        "ORD-093"
-      ],
-      "evidence": [
-        {
-          "file": "orders.csv",
-          "row": 81,
-          "values": {
-            "order_id": "ORD-107",
-            "current_stage": "PACKING",
-            "pieces": 2000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 86,
-          "values": {
-            "order_id": "ORD-002",
-            "current_stage": "PACKING",
-            "pieces": 1000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 88,
-          "values": {
-            "order_id": "ORD-083",
-            "current_stage": "PACKING",
-            "pieces": 1000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 90,
-          "values": {
-            "order_id": "ORD-020",
-            "current_stage": "PACKING",
-            "pieces": 1200
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 99,
-          "values": {
-            "order_id": "ORD-093",
-            "current_stage": "PACKING",
-            "pieces": 100
-          }
-        }
-      ],
-      "is_new": true,
-      "open_days": 1,
-      "rank_score": 53,
-      "rank_reason": "new since yesterday (+10)",
-      "severity": "watch",
-      "next_step": "Consider overtime or moving work to a workshop",
-      "action": "note"
-    }
-  ],
-  "more_findings": 3,
-  "all_findings": [
-    {
       "key": "overdue",
       "type": "overdue",
-      "title": "9 active orders are past their due date",
-      "detail": "Most overdue: ORD-107 (19d, Packing), ORD-120 (18d, Assembly), ORD-083 (12d, Packing).",
-      "score": 86,
+      "title": "7 active orders are past their due date",
+      "detail": "Most overdue: ORD-120 (18d, Washing), ORD-002 (6d, Packing), ORD-093 (6d, Packing).",
+      "score": 78,
       "score_reason": "50 + 4 per overdue order (max 90)",
       "order_ids": [
-        "ORD-107",
         "ORD-120",
-        "ORD-083",
         "ORD-002",
         "ORD-093",
         "ORD-020",
@@ -458,29 +296,11 @@
       "evidence": [
         {
           "file": "orders.csv",
-          "row": 81,
-          "values": {
-            "order_id": "ORD-107",
-            "due_date": "2026-03-16",
-            "current_stage": "PACKING"
-          }
-        },
-        {
-          "file": "orders.csv",
           "row": 76,
           "values": {
             "order_id": "ORD-120",
             "due_date": "2026-03-17",
-            "current_stage": "ASSEMBLY"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 88,
-          "values": {
-            "order_id": "ORD-083",
-            "due_date": "2026-03-23",
-            "current_stage": "PACKING"
+            "current_stage": "WASHING"
           }
         },
         {
@@ -516,7 +336,7 @@
           "values": {
             "order_id": "ORD-055",
             "due_date": "2026-03-31",
-            "current_stage": "ASSEMBLY"
+            "current_stage": "WASHING"
           }
         },
         {
@@ -525,7 +345,7 @@
           "values": {
             "order_id": "ORD-029",
             "due_date": "2026-04-01",
-            "current_stage": "WASHING"
+            "current_stage": "PACKING"
           }
         },
         {
@@ -540,343 +360,36 @@
       ],
       "is_new": false,
       "open_days": 4,
-      "rank_score": 74,
+      "rank_score": 66,
       "rank_reason": "open 4 mornings (-12)",
       "severity": "high",
       "next_step": "Ask the planner for revised ship dates",
       "action": "chase"
-    },
-    {
-      "key": "stage_below:ASSEMBLY",
-      "type": "stage_below_normal",
-      "stage": "ASSEMBLY",
-      "title": "Assembly output was 40.5% below normal yesterday",
-      "detail": "414 pieces on Fri 03 Apr against a normal of 696 (band 522-869, 8 same-weekday samples).",
-      "score": 80,
-      "score_reason": "40 + percentage below the same-weekday mean (max 40)",
-      "order_ids": [],
-      "evidence": [
-        {
-          "file": "production_log.csv",
-          "row": 371,
-          "values": {
-            "date": "2026-04-03",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 414
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 343,
-          "values": {
-            "date": "2026-03-27",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 399
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 315,
-          "values": {
-            "date": "2026-03-20",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 762
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 287,
-          "values": {
-            "date": "2026-03-13",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 799
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 259,
-          "values": {
-            "date": "2026-03-06",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 733
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 231,
-          "values": {
-            "date": "2026-02-27",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 725
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 203,
-          "values": {
-            "date": "2026-02-20",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 710
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 175,
-          "values": {
-            "date": "2026-02-13",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 702
-          }
-        },
-        {
-          "file": "production_log.csv",
-          "row": 147,
-          "values": {
-            "date": "2026-02-06",
-            "stage": "ASSEMBLY",
-            "pieces_completed": 736
-          }
-        }
-      ],
-      "is_new": false,
-      "open_days": 4,
-      "rank_score": 68,
-      "rank_reason": "open 4 mornings (-12)",
-      "severity": "high",
-      "next_step": "Check with the stage supervisor",
-      "action": "note"
-    },
-    {
-      "key": "due_soon_at_risk",
-      "type": "due_soon_at_risk",
-      "title": "8 orders due within 7 days are projected to finish late",
-      "detail": "ORD-099 due 2026-04-05, projected 2026-04-16, ORD-103 due 2026-04-04, projected 2026-04-22, ORD-061 due 2026-04-05, projected 2026-04-16, ORD-045 due 2026-04-09, projected 2026-04-16.",
-      "score": 79,
-      "score_reason": "55 + 3 per order",
-      "order_ids": [
-        "ORD-099",
-        "ORD-103",
-        "ORD-061",
-        "ORD-045",
-        "ORD-053",
-        "ORD-062",
-        "ORD-008",
-        "ORD-017"
-      ],
-      "evidence": [
-        {
-          "file": "orders.csv",
-          "row": 89,
-          "values": {
-            "order_id": "ORD-099",
-            "due_date": "2026-04-05",
-            "current_stage": "WASHING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 91,
-          "values": {
-            "order_id": "ORD-103",
-            "due_date": "2026-04-04",
-            "current_stage": "ASSEMBLY"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 97,
-          "values": {
-            "order_id": "ORD-061",
-            "due_date": "2026-04-05",
-            "current_stage": "WASHING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 106,
-          "values": {
-            "order_id": "ORD-045",
-            "due_date": "2026-04-09",
-            "current_stage": "WASHING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 107,
-          "values": {
-            "order_id": "ORD-053",
-            "due_date": "2026-04-10",
-            "current_stage": "ASSEMBLY"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 110,
-          "values": {
-            "order_id": "ORD-062",
-            "due_date": "2026-04-08",
-            "current_stage": "KNITTING"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 112,
-          "values": {
-            "order_id": "ORD-008",
-            "due_date": "2026-04-09",
-            "current_stage": "ASSEMBLY"
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 114,
-          "values": {
-            "order_id": "ORD-017",
-            "due_date": "2026-04-10",
-            "current_stage": "KNITTING"
-          }
-        }
-      ],
-      "is_new": false,
-      "open_days": 4,
-      "rank_score": 67,
-      "rank_reason": "open 4 mornings (-12)",
-      "severity": "high",
-      "next_step": "Warn the customers or add capacity",
-      "action": "chase"
-    },
-    {
-      "key": "quiet:ORD-005",
-      "type": "quiet_order",
-      "order_id": "ORD-005",
-      "title": "ORD-005 (TrendCart) has not moved for 9 working days",
-      "detail": "Still at Knitting, due 2026-04-20 (16 days). Later-due ORD-123 moved past it at the same stage.",
-      "score": 72,
-      "score_reason": "45 + 3 per idle working day (max 30)",
-      "order_ids": [
-        "ORD-005"
-      ],
-      "evidence": [
-        {
-          "file": "orders.csv",
-          "row": 105,
-          "values": {
-            "order_id": "ORD-005",
-            "current_stage": "KNITTING",
-            "last_activity_date": "2026-03-24",
-            "due_date": "2026-04-20"
-          }
-        }
-      ],
-      "is_new": false,
-      "open_days": 4,
-      "rank_score": 60,
-      "rank_reason": "open 4 mornings (-12)",
-      "severity": "watch",
-      "next_step": "Chase the order",
-      "action": "chase"
-    },
-    {
-      "key": "wip:PACKING",
-      "type": "wip_pileup",
-      "stage": "PACKING",
-      "title": "5 orders (5,300 pieces) are waiting at Packing",
-      "detail": "About 8.1 days of normal Packing output.",
-      "score": 43,
-      "score_reason": "35 + days of queued work (max 25)",
-      "order_ids": [
-        "ORD-107",
-        "ORD-002",
-        "ORD-083",
-        "ORD-020",
-        "ORD-093"
-      ],
-      "evidence": [
-        {
-          "file": "orders.csv",
-          "row": 81,
-          "values": {
-            "order_id": "ORD-107",
-            "current_stage": "PACKING",
-            "pieces": 2000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 86,
-          "values": {
-            "order_id": "ORD-002",
-            "current_stage": "PACKING",
-            "pieces": 1000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 88,
-          "values": {
-            "order_id": "ORD-083",
-            "current_stage": "PACKING",
-            "pieces": 1000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 90,
-          "values": {
-            "order_id": "ORD-020",
-            "current_stage": "PACKING",
-            "pieces": 1200
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 99,
-          "values": {
-            "order_id": "ORD-093",
-            "current_stage": "PACKING",
-            "pieces": 100
-          }
-        }
-      ],
-      "is_new": true,
-      "open_days": 1,
-      "rank_score": 53,
-      "rank_reason": "new since yesterday (+10)",
-      "severity": "watch",
-      "next_step": "Consider overtime or moving work to a workshop",
-      "action": "note"
     },
     {
       "key": "wip:ASSEMBLY",
       "type": "wip_pileup",
       "stage": "ASSEMBLY",
-      "title": "11 orders (11,200 pieces) are waiting at Assembly",
-      "detail": "About 16.1 days of normal Assembly output.",
-      "score": 51,
+      "title": "13 orders (13,300 pieces) are waiting at Assembly",
+      "detail": "About 11.1 days of work at Assembly's estimated 1,202 pieces a day.",
+      "score": 46,
       "score_reason": "35 + days of queued work (max 25)",
       "order_ids": [
-        "ORD-120",
         "ORD-103",
-        "ORD-055",
         "ORD-108",
         "ORD-081",
+        "ORD-096",
         "ORD-053",
         "ORD-073",
+        "ORD-062",
         "ORD-066",
         "ORD-008",
         "ORD-015",
-        "ORD-024"
+        "ORD-017",
+        "ORD-024",
+        "ORD-122"
       ],
       "evidence": [
-        {
-          "file": "orders.csv",
-          "row": 76,
-          "values": {
-            "order_id": "ORD-120",
-            "current_stage": "ASSEMBLY",
-            "pieces": 1500
-          }
-        },
         {
           "file": "orders.csv",
           "row": 91,
@@ -884,15 +397,6 @@
             "order_id": "ORD-103",
             "current_stage": "ASSEMBLY",
             "pieces": 2000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 100,
-          "values": {
-            "order_id": "ORD-055",
-            "current_stage": "ASSEMBLY",
-            "pieces": 800
           }
         },
         {
@@ -915,6 +419,15 @@
         },
         {
           "file": "orders.csv",
+          "row": 104,
+          "values": {
+            "order_id": "ORD-096",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
           "row": 107,
           "values": {
             "order_id": "ORD-053",
@@ -929,6 +442,15 @@
             "order_id": "ORD-073",
             "current_stage": "ASSEMBLY",
             "pieces": 400
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 110,
+          "values": {
+            "order_id": "ORD-062",
+            "current_stage": "ASSEMBLY",
+            "pieces": 2000
           }
         },
         {
@@ -960,63 +482,65 @@
         },
         {
           "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "current_stage": "ASSEMBLY",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
           "row": 116,
           "values": {
             "order_id": "ORD-024",
             "current_stage": "ASSEMBLY",
             "pieces": 300
           }
+        },
+        {
+          "file": "orders.csv",
+          "row": 123,
+          "values": {
+            "order_id": "ORD-122",
+            "current_stage": "ASSEMBLY",
+            "pieces": 600
+          }
         }
       ],
       "is_new": false,
       "open_days": 4,
-      "rank_score": 39,
+      "rank_score": 34,
       "rank_reason": "open 4 mornings (-12)",
       "severity": "watch",
       "next_step": "Consider overtime or moving work to a workshop",
       "action": "note"
-    },
+    }
+  ],
+  "more_findings": 0,
+  "all_findings": [
     {
-      "key": "wip:KNITTING",
-      "type": "wip_pileup",
-      "stage": "KNITTING",
-      "title": "14 orders (11,600 pieces) are waiting at Knitting",
-      "detail": "About 13.2 days of normal Knitting output.",
-      "score": 48,
-      "score_reason": "35 + days of queued work (max 25)",
+      "key": "customer_stalled:UrbanThread",
+      "type": "customer_stalled",
+      "customer": "UrbanThread",
+      "title": "All 3 active UrbanThread orders have stopped moving",
+      "detail": "Each has been idle at least 3 working days (ORD-053 3d, ORD-036 3d, ORD-015 4d). Later-due orders at the same stages are still moving, so the queue does not explain it; a shared cause (trims, approvals, payment) is more likely.",
+      "score": 76,
+      "score_reason": "70 + 2 per stalled order",
       "order_ids": [
-        "ORD-096",
-        "ORD-005",
+        "ORD-053",
         "ORD-036",
-        "ORD-062",
-        "ORD-017",
-        "ORD-010",
-        "ORD-035",
-        "ORD-040",
-        "ORD-063",
-        "ORD-082",
-        "ORD-095",
-        "ORD-121",
-        "ORD-122",
-        "ORD-123"
+        "ORD-015"
       ],
       "evidence": [
         {
           "file": "orders.csv",
-          "row": 104,
+          "row": 107,
           "values": {
-            "order_id": "ORD-096",
-            "current_stage": "KNITTING",
-            "pieces": 1000
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 105,
-          "values": {
-            "order_id": "ORD-005",
-            "current_stage": "KNITTING",
-            "pieces": 500
+            "order_id": "ORD-053",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-10"
           }
         },
         {
@@ -1025,132 +549,145 @@
           "values": {
             "order_id": "ORD-036",
             "current_stage": "KNITTING",
-            "pieces": 1000
+            "last_activity_date": "2026-03-31",
+            "due_date": "2026-04-26"
           }
         },
         {
           "file": "orders.csv",
-          "row": 110,
+          "row": 113,
           "values": {
-            "order_id": "ORD-062",
-            "current_stage": "KNITTING",
-            "pieces": 2000
+            "order_id": "ORD-015",
+            "current_stage": "ASSEMBLY",
+            "last_activity_date": "2026-03-30",
+            "due_date": "2026-04-16"
+          }
+        }
+      ],
+      "is_new": true,
+      "open_days": 1,
+      "rank_score": 86,
+      "rank_reason": "new since yesterday (+10)",
+      "severity": "critical",
+      "next_step": "Call the customer's account manager",
+      "action": "chase"
+    },
+    {
+      "key": "stage_below:ASSEMBLY",
+      "type": "stage_below_normal",
+      "stage": "ASSEMBLY",
+      "title": "Assembly output was 40.5% below normal yesterday",
+      "detail": "414 pieces on Fri 03 Apr against a normal of 696 (band 522-869, 8 same-weekday samples).",
+      "score": 80,
+      "score_reason": "40 + percentage below the same-weekday mean (max 40)",
+      "order_ids": [],
+      "evidence": [
+        {
+          "file": "production_log.csv",
+          "row": 371,
+          "values": {
+            "date": "2026-04-03",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 414
           }
         },
         {
-          "file": "orders.csv",
-          "row": 114,
+          "file": "production_log.csv",
+          "row": 343,
           "values": {
-            "order_id": "ORD-017",
-            "current_stage": "KNITTING",
-            "pieces": 800
+            "date": "2026-03-27",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 399
           }
         },
         {
-          "file": "orders.csv",
-          "row": 115,
+          "file": "production_log.csv",
+          "row": 315,
           "values": {
-            "order_id": "ORD-010",
-            "current_stage": "KNITTING",
-            "pieces": 1000
+            "date": "2026-03-20",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 762
           }
         },
         {
-          "file": "orders.csv",
-          "row": 117,
+          "file": "production_log.csv",
+          "row": 287,
           "values": {
-            "order_id": "ORD-035",
-            "current_stage": "KNITTING",
-            "pieces": 300
+            "date": "2026-03-13",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 799
           }
         },
         {
-          "file": "orders.csv",
-          "row": 118,
+          "file": "production_log.csv",
+          "row": 259,
           "values": {
-            "order_id": "ORD-040",
-            "current_stage": "KNITTING",
-            "pieces": 1200
+            "date": "2026-03-06",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 733
           }
         },
         {
-          "file": "orders.csv",
-          "row": 119,
+          "file": "production_log.csv",
+          "row": 231,
           "values": {
-            "order_id": "ORD-063",
-            "current_stage": "KNITTING",
-            "pieces": 100
+            "date": "2026-02-27",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 725
           }
         },
         {
-          "file": "orders.csv",
-          "row": 120,
+          "file": "production_log.csv",
+          "row": 203,
           "values": {
-            "order_id": "ORD-082",
-            "current_stage": "KNITTING",
-            "pieces": 600
+            "date": "2026-02-20",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 710
           }
         },
         {
-          "file": "orders.csv",
-          "row": 121,
+          "file": "production_log.csv",
+          "row": 175,
           "values": {
-            "order_id": "ORD-095",
-            "current_stage": "KNITTING",
-            "pieces": 800
+            "date": "2026-02-13",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 702
           }
         },
         {
-          "file": "orders.csv",
-          "row": 122,
+          "file": "production_log.csv",
+          "row": 147,
           "values": {
-            "order_id": "ORD-121",
-            "current_stage": "KNITTING",
-            "pieces": 1200
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 123,
-          "values": {
-            "order_id": "ORD-122",
-            "current_stage": "KNITTING",
-            "pieces": 600
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 124,
-          "values": {
-            "order_id": "ORD-123",
-            "current_stage": "KNITTING",
-            "pieces": 500
+            "date": "2026-02-06",
+            "stage": "ASSEMBLY",
+            "pieces_completed": 736
           }
         }
       ],
       "is_new": false,
       "open_days": 4,
-      "rank_score": 36,
+      "rank_score": 68,
       "rank_reason": "open 4 mornings (-12)",
-      "severity": "watch",
-      "next_step": "Consider overtime or moving work to a workshop",
+      "severity": "high",
+      "next_step": "Check with the stage supervisor",
       "action": "note"
     },
     {
-      "key": "wip:WASHING",
-      "type": "wip_pileup",
-      "stage": "WASHING",
-      "title": "6 orders (5,050 pieces) are waiting at Washing",
-      "detail": "About 6.9 days of normal Washing output.",
-      "score": 41,
-      "score_reason": "35 + days of queued work (max 25)",
+      "key": "due_soon_at_risk",
+      "type": "due_soon_at_risk",
+      "title": "8 orders due within 7 days are at risk of missing their date",
+      "detail": "ORD-099 due 5 Apr, high risk; ORD-103 due 4 Apr, high risk; ORD-061 due 5 Apr, high risk; ORD-045 due 9 Apr, high risk.",
+      "score": 79,
+      "score_reason": "55 + 3 per order",
       "order_ids": [
         "ORD-099",
-        "ORD-029",
-        "ORD-109",
+        "ORD-103",
         "ORD-061",
-        "ORD-041",
-        "ORD-045"
+        "ORD-045",
+        "ORD-053",
+        "ORD-062",
+        "ORD-008",
+        "ORD-017"
       ],
       "evidence": [
         {
@@ -1158,26 +695,17 @@
           "row": 89,
           "values": {
             "order_id": "ORD-099",
-            "current_stage": "WASHING",
-            "pieces": 1500
+            "due_date": "2026-04-05",
+            "current_stage": "WASHING"
           }
         },
         {
           "file": "orders.csv",
-          "row": 92,
+          "row": 91,
           "values": {
-            "order_id": "ORD-029",
-            "current_stage": "WASHING",
-            "pieces": 1500
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 93,
-          "values": {
-            "order_id": "ORD-109",
-            "current_stage": "WASHING",
-            "pieces": 500
+            "order_id": "ORD-103",
+            "due_date": "2026-04-04",
+            "current_stage": "ASSEMBLY"
           }
         },
         {
@@ -1185,17 +713,8 @@
           "row": 97,
           "values": {
             "order_id": "ORD-061",
-            "current_stage": "WASHING",
-            "pieces": 800
-          }
-        },
-        {
-          "file": "orders.csv",
-          "row": 103,
-          "values": {
-            "order_id": "ORD-041",
-            "current_stage": "WASHING",
-            "pieces": 600
+            "due_date": "2026-04-05",
+            "current_stage": "PACKING"
           }
         },
         {
@@ -1203,14 +722,289 @@
           "row": 106,
           "values": {
             "order_id": "ORD-045",
-            "current_stage": "WASHING",
-            "pieces": 150
+            "due_date": "2026-04-09",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 107,
+          "values": {
+            "order_id": "ORD-053",
+            "due_date": "2026-04-10",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 110,
+          "values": {
+            "order_id": "ORD-062",
+            "due_date": "2026-04-08",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "due_date": "2026-04-09",
+            "current_stage": "ASSEMBLY"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "due_date": "2026-04-10",
+            "current_stage": "ASSEMBLY"
           }
         }
       ],
       "is_new": false,
       "open_days": 4,
-      "rank_score": 29,
+      "rank_score": 67,
+      "rank_reason": "open 4 mornings (-12)",
+      "severity": "high",
+      "next_step": "Warn the customers or add capacity",
+      "action": "chase"
+    },
+    {
+      "key": "overdue",
+      "type": "overdue",
+      "title": "7 active orders are past their due date",
+      "detail": "Most overdue: ORD-120 (18d, Washing), ORD-002 (6d, Packing), ORD-093 (6d, Packing).",
+      "score": 78,
+      "score_reason": "50 + 4 per overdue order (max 90)",
+      "order_ids": [
+        "ORD-120",
+        "ORD-002",
+        "ORD-093",
+        "ORD-020",
+        "ORD-055",
+        "ORD-029",
+        "ORD-108"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 76,
+          "values": {
+            "order_id": "ORD-120",
+            "due_date": "2026-03-17",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 86,
+          "values": {
+            "order_id": "ORD-002",
+            "due_date": "2026-03-29",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 99,
+          "values": {
+            "order_id": "ORD-093",
+            "due_date": "2026-03-29",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 90,
+          "values": {
+            "order_id": "ORD-020",
+            "due_date": "2026-03-31",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 100,
+          "values": {
+            "order_id": "ORD-055",
+            "due_date": "2026-03-31",
+            "current_stage": "WASHING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 92,
+          "values": {
+            "order_id": "ORD-029",
+            "due_date": "2026-04-01",
+            "current_stage": "PACKING"
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 101,
+          "values": {
+            "order_id": "ORD-108",
+            "due_date": "2026-04-03",
+            "current_stage": "ASSEMBLY"
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 4,
+      "rank_score": 66,
+      "rank_reason": "open 4 mornings (-12)",
+      "severity": "high",
+      "next_step": "Ask the planner for revised ship dates",
+      "action": "chase"
+    },
+    {
+      "key": "wip:ASSEMBLY",
+      "type": "wip_pileup",
+      "stage": "ASSEMBLY",
+      "title": "13 orders (13,300 pieces) are waiting at Assembly",
+      "detail": "About 11.1 days of work at Assembly's estimated 1,202 pieces a day.",
+      "score": 46,
+      "score_reason": "35 + days of queued work (max 25)",
+      "order_ids": [
+        "ORD-103",
+        "ORD-108",
+        "ORD-081",
+        "ORD-096",
+        "ORD-053",
+        "ORD-073",
+        "ORD-062",
+        "ORD-066",
+        "ORD-008",
+        "ORD-015",
+        "ORD-017",
+        "ORD-024",
+        "ORD-122"
+      ],
+      "evidence": [
+        {
+          "file": "orders.csv",
+          "row": 91,
+          "values": {
+            "order_id": "ORD-103",
+            "current_stage": "ASSEMBLY",
+            "pieces": 2000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 101,
+          "values": {
+            "order_id": "ORD-108",
+            "current_stage": "ASSEMBLY",
+            "pieces": 2000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 102,
+          "values": {
+            "order_id": "ORD-081",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1500
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 104,
+          "values": {
+            "order_id": "ORD-096",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 107,
+          "values": {
+            "order_id": "ORD-053",
+            "current_stage": "ASSEMBLY",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 108,
+          "values": {
+            "order_id": "ORD-073",
+            "current_stage": "ASSEMBLY",
+            "pieces": 400
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 110,
+          "values": {
+            "order_id": "ORD-062",
+            "current_stage": "ASSEMBLY",
+            "pieces": 2000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 111,
+          "values": {
+            "order_id": "ORD-066",
+            "current_stage": "ASSEMBLY",
+            "pieces": 1000
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 112,
+          "values": {
+            "order_id": "ORD-008",
+            "current_stage": "ASSEMBLY",
+            "pieces": 600
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 113,
+          "values": {
+            "order_id": "ORD-015",
+            "current_stage": "ASSEMBLY",
+            "pieces": 300
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 114,
+          "values": {
+            "order_id": "ORD-017",
+            "current_stage": "ASSEMBLY",
+            "pieces": 800
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 116,
+          "values": {
+            "order_id": "ORD-024",
+            "current_stage": "ASSEMBLY",
+            "pieces": 300
+          }
+        },
+        {
+          "file": "orders.csv",
+          "row": 123,
+          "values": {
+            "order_id": "ORD-122",
+            "current_stage": "ASSEMBLY",
+            "pieces": 600
+          }
+        }
+      ],
+      "is_new": false,
+      "open_days": 4,
+      "rank_score": 34,
       "rank_reason": "open 4 mornings (-12)",
       "severity": "watch",
       "next_step": "Consider overtime or moving work to a workshop",
@@ -1219,8 +1013,8 @@
   ],
   "resolved_since_previous": [
     {
-      "key": "stage_below:PACKING",
-      "title": "Packing output was 13.0% below normal yesterday"
+      "key": "quiet:ORD-005",
+      "title": "ORD-005 (TrendCart) has not moved for 8 working days"
     },
     {
       "key": "new:ORD-122",
@@ -1638,7 +1432,7 @@
         },
         {
           "date": "2026-04-02",
-          "value": 498,
+          "value": 499,
           "low": 567.4,
           "high": 918.8,
           "mean": 743.1,
@@ -1680,9 +1474,9 @@
         },
         {
           "date": "2026-04-09",
-          "mean": 707.2,
-          "low": 496.6,
-          "high": 917.9
+          "mean": 707.4,
+          "low": 497.0,
+          "high": 917.8
         },
         {
           "date": "2026-04-10",
@@ -1924,7 +1718,7 @@
         },
         {
           "date": "2026-04-03",
-          "value": 779,
+          "value": 778,
           "low": 625.3,
           "high": 835.2,
           "mean": 730.2,
@@ -1964,17 +1758,17 @@
         },
         {
           "date": "2026-04-10",
-          "mean": 728.9,
+          "mean": 728.8,
           "low": 625.5,
-          "high": 832.2
+          "high": 832.0
         }
       ],
       "yesterday": {
-        "observed": 779,
+        "observed": 778,
         "mean": 730.2,
         "low": 625.3,
         "high": 835.2,
-        "pct_vs_mean": 6.7,
+        "pct_vs_mean": 6.5,
         "status": "normal",
         "samples": 8,
         "evidence": [
@@ -1984,7 +1778,7 @@
             "values": {
               "date": "2026-04-03",
               "stage": "WASHING",
-              "pieces_completed": 779
+              "pieces_completed": 778
             }
           },
           {
@@ -2186,7 +1980,7 @@
         },
         {
           "date": "2026-04-01",
-          "value": 649,
+          "value": 642,
           "low": 593.1,
           "high": 747.4,
           "mean": 670.2,
@@ -2194,7 +1988,7 @@
         },
         {
           "date": "2026-04-02",
-          "value": 581,
+          "value": 687,
           "low": 603.6,
           "high": 731.4,
           "mean": 667.5,
@@ -2230,15 +2024,15 @@
         },
         {
           "date": "2026-04-08",
-          "mean": 661.2,
-          "low": 589.4,
-          "high": 733.1
+          "mean": 660.4,
+          "low": 588.1,
+          "high": 732.7
         },
         {
           "date": "2026-04-09",
-          "mean": 666.8,
-          "low": 600.6,
-          "high": 732.9
+          "mean": 680,
+          "low": 635.0,
+          "high": 725.0
         },
         {
           "date": "2026-04-10",
@@ -2464,7 +2258,7 @@
         },
         {
           "date": "2026-04-01",
-          "value": 2611,
+          "value": 2604,
           "low": 2728.2,
           "high": 3312.8,
           "mean": 3020.5,
@@ -2472,7 +2266,7 @@
         },
         {
           "date": "2026-04-02",
-          "value": 2708,
+          "value": 2815,
           "low": 2877.9,
           "high": 3180.8,
           "mean": 3029.4,
@@ -2480,7 +2274,7 @@
         },
         {
           "date": "2026-04-03",
-          "value": 2689,
+          "value": 2688,
           "low": 2675.8,
           "high": 3230.4,
           "mean": 2953.1,
@@ -2508,29 +2302,29 @@
         },
         {
           "date": "2026-04-08",
-          "mean": 2961.6,
-          "low": 2609.9,
-          "high": 3313.4
+          "mean": 2960.8,
+          "low": 2607.0,
+          "high": 3314.5
         },
         {
           "date": "2026-04-09",
-          "mean": 2990.8,
-          "low": 2773.2,
-          "high": 3208.3
+          "mean": 3004.1,
+          "low": 2822.1,
+          "high": 3186.2
         },
         {
           "date": "2026-04-10",
-          "mean": 2914.8,
-          "low": 2610.3,
-          "high": 3219.2
+          "mean": 2914.6,
+          "low": 2610.0,
+          "high": 3219.3
         }
       ],
       "yesterday": {
-        "observed": 2689,
+        "observed": 2688,
         "mean": 2953.1,
         "low": 2675.8,
         "high": 3230.4,
-        "pct_vs_mean": -8.9,
+        "pct_vs_mean": -9.0,
         "status": "normal",
         "samples": 8,
         "evidence": [
@@ -2540,7 +2334,7 @@
             "values": {
               "date": "2026-04-03",
               "stage": "TOTAL",
-              "pieces_completed": 2689
+              "pieces_completed": 2688
             }
           },
           {
@@ -2621,76 +2415,24 @@
   },
   "relevant_orders": [
     {
-      "order_id": "ORD-107",
-      "customer": "Northwind Apparel",
-      "product": "Cardigan",
-      "pieces": 2000,
-      "current_stage": "PACKING",
-      "due_date": "2026-03-16",
-      "days_to_due": -19,
-      "idle_days": 0,
-      "projected_finish": "2026-04-10",
-      "projected_late": true,
-      "priority": 80,
-      "priority_parts": [
-        {
-          "reason": "overdue",
-          "points": 60
-        },
-        {
-          "reason": "projected late",
-          "points": 20
-        }
-      ],
-      "_row": 81
-    },
-    {
       "order_id": "ORD-120",
       "customer": "TrendCart",
       "product": "Vest",
       "pieces": 1500,
-      "current_stage": "ASSEMBLY",
+      "current_stage": "WASHING",
       "due_date": "2026-03-17",
       "days_to_due": -18,
       "idle_days": 0,
-      "projected_finish": "2026-04-22",
+      "projected_finish": "2026-04-09",
       "projected_late": true,
-      "priority": 80,
+      "priority": 60,
       "priority_parts": [
         {
           "reason": "overdue",
           "points": 60
-        },
-        {
-          "reason": "projected late",
-          "points": 20
         }
       ],
       "_row": 76
-    },
-    {
-      "order_id": "ORD-083",
-      "customer": "Maple & Co",
-      "product": "Hoodie",
-      "pieces": 1000,
-      "current_stage": "PACKING",
-      "due_date": "2026-03-23",
-      "days_to_due": -12,
-      "idle_days": 0,
-      "projected_finish": "2026-04-10",
-      "projected_late": true,
-      "priority": 80,
-      "priority_parts": [
-        {
-          "reason": "overdue",
-          "points": 60
-        },
-        {
-          "reason": "projected late",
-          "points": 20
-        }
-      ],
-      "_row": 88
     },
     {
       "order_id": "ORD-002",
@@ -2701,17 +2443,13 @@
       "due_date": "2026-03-29",
       "days_to_due": -6,
       "idle_days": 0,
-      "projected_finish": "2026-04-10",
+      "projected_finish": "2026-04-06",
       "projected_late": true,
-      "priority": 72,
+      "priority": 52,
       "priority_parts": [
         {
           "reason": "overdue",
           "points": 52
-        },
-        {
-          "reason": "projected late",
-          "points": 20
         }
       ],
       "_row": 86
@@ -2725,98 +2463,149 @@
       "due_date": "2026-03-29",
       "days_to_due": -6,
       "idle_days": 1,
-      "projected_finish": "2026-04-10",
+      "projected_finish": "2026-04-04",
       "projected_late": true,
-      "priority": 72,
+      "priority": 52,
       "priority_parts": [
         {
           "reason": "overdue",
           "points": 52
-        },
-        {
-          "reason": "projected late",
-          "points": 20
         }
       ],
       "_row": 99
     },
     {
-      "order_id": "ORD-020",
-      "customer": "TrendCart",
-      "product": "Vest",
-      "pieces": 1200,
-      "current_stage": "PACKING",
-      "due_date": "2026-03-31",
-      "days_to_due": -4,
-      "idle_days": 0,
-      "projected_finish": "2026-04-10",
-      "projected_late": true,
-      "priority": 68,
-      "priority_parts": [
-        {
-          "reason": "overdue",
-          "points": 48
-        },
-        {
-          "reason": "projected late",
-          "points": 20
-        }
-      ],
-      "_row": 90
-    },
-    {
-      "order_id": "ORD-055",
-      "customer": "Cotton Club",
-      "product": "Crewneck sweater",
-      "pieces": 800,
+      "order_id": "ORD-103",
+      "customer": "Bright Basics",
+      "product": "Scarf",
+      "pieces": 2000,
       "current_stage": "ASSEMBLY",
-      "due_date": "2026-03-31",
-      "days_to_due": -4,
-      "idle_days": 0,
-      "projected_finish": "2026-04-22",
-      "projected_late": true,
-      "priority": 68,
-      "priority_parts": [
-        {
-          "reason": "overdue",
-          "points": 48
-        },
-        {
-          "reason": "projected late",
-          "points": 20
-        }
-      ],
-      "_row": 100
-    },
-    {
-      "order_id": "ORD-029",
-      "customer": "Northwind Apparel",
-      "product": "Beanie",
-      "pieces": 1500,
-      "current_stage": "WASHING",
-      "due_date": "2026-04-01",
-      "days_to_due": -3,
-      "idle_days": 0,
+      "due_date": "2026-04-04",
+      "days_to_due": 0,
+      "idle_days": 4,
       "projected_finish": "2026-04-16",
       "projected_late": true,
-      "priority": 66,
+      "priority": 50,
       "priority_parts": [
         {
-          "reason": "overdue",
-          "points": 46
+          "reason": "due within 7 days",
+          "points": 30
         },
         {
-          "reason": "projected late",
+          "reason": "high risk of missing the due date",
           "points": 20
         }
       ],
-      "_row": 92
+      "_row": 91
+    },
+    {
+      "order_id": "ORD-099",
+      "customer": "Northwind Apparel",
+      "product": "Polo shirt",
+      "pieces": 1500,
+      "current_stage": "WASHING",
+      "due_date": "2026-04-05",
+      "days_to_due": 1,
+      "idle_days": 0,
+      "projected_finish": "2026-04-17",
+      "projected_late": true,
+      "priority": 50,
+      "priority_parts": [
+        {
+          "reason": "due within 7 days",
+          "points": 30
+        },
+        {
+          "reason": "high risk of missing the due date",
+          "points": 20
+        }
+      ],
+      "_row": 89
+    },
+    {
+      "order_id": "ORD-061",
+      "customer": "Harbor Knits",
+      "product": "Scarf",
+      "pieces": 800,
+      "current_stage": "PACKING",
+      "due_date": "2026-04-05",
+      "days_to_due": 1,
+      "idle_days": 0,
+      "projected_finish": "2026-04-11",
+      "projected_late": true,
+      "priority": 50,
+      "priority_parts": [
+        {
+          "reason": "due within 7 days",
+          "points": 30
+        },
+        {
+          "reason": "high risk of missing the due date",
+          "points": 20
+        }
+      ],
+      "_row": 97
+    },
+    {
+      "order_id": "ORD-062",
+      "customer": "Bright Basics",
+      "product": "Scarf",
+      "pieces": 2000,
+      "current_stage": "ASSEMBLY",
+      "due_date": "2026-04-08",
+      "days_to_due": 4,
+      "idle_days": 1,
+      "projected_finish": "2026-04-20",
+      "projected_late": true,
+      "priority": 50,
+      "priority_parts": [
+        {
+          "reason": "due within 7 days",
+          "points": 30
+        },
+        {
+          "reason": "high risk of missing the due date",
+          "points": 20
+        }
+      ],
+      "_row": 110
+    },
+    {
+      "order_id": "ORD-045",
+      "customer": "Cotton Club",
+      "product": "Vest",
+      "pieces": 150,
+      "current_stage": "WASHING",
+      "due_date": "2026-04-09",
+      "days_to_due": 5,
+      "idle_days": 4,
+      "projected_finish": "2026-04-18",
+      "projected_late": true,
+      "priority": 50,
+      "priority_parts": [
+        {
+          "reason": "due within 7 days",
+          "points": 30
+        },
+        {
+          "reason": "high risk of missing the due date",
+          "points": 20
+        }
+      ],
+      "_row": 106
     }
   ],
   "status_counts": {
-    "on_track": 18,
-    "at_risk": 9,
-    "late": 9
+    "on_track": 0,
+    "at_risk": 27,
+    "late": 7
+  },
+  "risk_counts": {
+    "overdue": 7,
+    "high": 22,
+    "medium": 5,
+    "low": 0,
+    "unknown": 0
   },
   "arrivals": {
     "window_days": 45,
@@ -2882,10 +2671,115 @@
       35
     ]
   },
+  "capacity": {
+    "workshop_factor": 1.727,
+    "window_days": 60,
+    "orders_finished": 77,
+    "finished_pieces_per_day": 1143,
+    "logged_packing_per_day": 662,
+    "note": "Pieces on orders that finished in the last 60 days, per working day, versus packing output in the production log. The log shows less than shipped (the rest may be outside workshops), so usual output is scaled by this factor."
+  },
+  "forecast": {
+    "enough_data": true,
+    "window_days": 60,
+    "orders_in_window": 74,
+    "horizon_working_days": 12,
+    "horizon_end": "2026-04-17",
+    "expected_orders": 17.1,
+    "orders_low": 12,
+    "orders_high": 22,
+    "expected_pieces": 13177,
+    "pieces_low": 9259,
+    "pieces_high": 16976,
+    "mean_pieces": 772,
+    "customers": [
+      {
+        "customer": "Northwind Apparel",
+        "share": 0.162,
+        "expected_orders": 2.77,
+        "chance_any": 0.94,
+        "typical_pieces": 1050
+      },
+      {
+        "customer": "Cotton Club",
+        "share": 0.149,
+        "expected_orders": 2.54,
+        "chance_any": 0.92,
+        "typical_pieces": 764
+      },
+      {
+        "customer": "Maple & Co",
+        "share": 0.149,
+        "expected_orders": 2.54,
+        "chance_any": 0.92,
+        "typical_pieces": 514
+      },
+      {
+        "customer": "Harbor Knits",
+        "share": 0.149,
+        "expected_orders": 2.54,
+        "chance_any": 0.92,
+        "typical_pieces": 918
+      },
+      {
+        "customer": "Loom & Leaf",
+        "share": 0.108,
+        "expected_orders": 1.85,
+        "chance_any": 0.84,
+        "typical_pieces": 475
+      }
+    ],
+    "products": [
+      {
+        "product": "Vest",
+        "share": 0.203,
+        "expected_orders": 3.46,
+        "chance_any": 0.97,
+        "typical_pieces": 627
+      },
+      {
+        "product": "Hoodie",
+        "share": 0.176,
+        "expected_orders": 3.0,
+        "chance_any": 0.95,
+        "typical_pieces": 735
+      },
+      {
+        "product": "Scarf",
+        "share": 0.162,
+        "expected_orders": 2.77,
+        "chance_any": 0.94,
+        "typical_pieces": 971
+      },
+      {
+        "product": "Cardigan",
+        "share": 0.162,
+        "expected_orders": 2.77,
+        "chance_any": 0.94,
+        "typical_pieces": 725
+      },
+      {
+        "product": "Crewneck sweater",
+        "share": 0.108,
+        "expected_orders": 1.85,
+        "chance_any": 0.84,
+        "typical_pieces": 825
+      }
+    ],
+    "method": "Order counts over the last 60 days, projected 12 working days ahead; the range is the 10th to 90th percentile of a Poisson count. Customer and product shares are their share of those orders. Frequency counting, not a promise.",
+    "backtest": {
+      "enough_data": true,
+      "starting_points": 7,
+      "mae_forecast": 2.7,
+      "chance_top3_customer_rate": 0.38,
+      "mae_same_as_last_period": 1.7,
+      "top3_customer_hit_rate": 0.29
+    }
+  },
   "on_time_30d": {
-    "completed": 34,
+    "completed": 36,
     "on_time": 19,
-    "pct": 56,
+    "pct": 53,
     "orders": [
       {
         "order_id": "ORD-085",
@@ -3121,9 +3015,23 @@
       {
         "order_id": "ORD-114",
         "customer": "Northwind Apparel",
-        "completed_date": "2026-04-02",
-        "days_late": 10,
+        "completed_date": "2026-04-01",
+        "days_late": 9,
         "row": 85
+      },
+      {
+        "order_id": "ORD-107",
+        "customer": "Northwind Apparel",
+        "completed_date": "2026-04-02",
+        "days_late": 17,
+        "row": 81
+      },
+      {
+        "order_id": "ORD-083",
+        "customer": "Maple & Co",
+        "completed_date": "2026-04-03",
+        "days_late": 11,
+        "row": 88
       }
     ]
   },
@@ -3137,74 +3045,30 @@
       "customer": "TrendCart",
       "active": 6,
       "late": 2,
-      "at_risk": 2,
-      "on_track": 2,
+      "at_risk": 4,
+      "on_track": 0,
       "pieces": 5600,
       "next_due": "2026-04-10",
       "otd_60d": 20,
       "stalled": false
     },
     {
-      "customer": "Northwind Apparel",
-      "active": 5,
-      "late": 2,
-      "at_risk": 1,
-      "on_track": 2,
-      "pieces": 6500,
-      "next_due": "2026-04-05",
-      "otd_60d": 60,
-      "stalled": false
-    },
-    {
-      "customer": "Cotton Club",
-      "active": 4,
-      "late": 2,
-      "at_risk": 1,
-      "on_track": 1,
-      "pieces": 2950,
-      "next_due": "2026-04-09",
-      "otd_60d": 64,
-      "stalled": false
-    },
-    {
-      "customer": "Maple & Co",
-      "active": 3,
-      "late": 2,
-      "at_risk": 0,
-      "on_track": 1,
-      "pieces": 1700,
-      "next_due": "2026-04-16",
-      "otd_60d": 47,
-      "stalled": false
-    },
-    {
       "customer": "Harbor Knits",
       "active": 6,
       "late": 1,
-      "at_risk": 1,
-      "on_track": 4,
+      "at_risk": 5,
+      "on_track": 0,
       "pieces": 6600,
       "next_due": "2026-04-05",
       "otd_60d": 56,
       "stalled": false
     },
     {
-      "customer": "Bright Basics",
-      "active": 3,
-      "late": 0,
-      "at_risk": 2,
-      "on_track": 1,
-      "pieces": 4800,
-      "next_due": "2026-04-04",
-      "otd_60d": 57,
-      "stalled": false
-    },
-    {
       "customer": "Loom & Leaf",
       "active": 6,
       "late": 0,
-      "at_risk": 1,
-      "on_track": 5,
+      "at_risk": 6,
+      "on_track": 0,
       "pieces": 2900,
       "next_due": "2026-04-09",
       "otd_60d": 83,
@@ -3214,32 +3078,78 @@
       "customer": "UrbanThread",
       "active": 3,
       "late": 0,
-      "at_risk": 1,
-      "on_track": 2,
+      "at_risk": 3,
+      "on_track": 0,
       "pieces": 2100,
       "next_due": "2026-04-10",
       "otd_60d": 100,
+      "stalled": true
+    },
+    {
+      "customer": "Cotton Club",
+      "active": 4,
+      "late": 2,
+      "at_risk": 2,
+      "on_track": 0,
+      "pieces": 2950,
+      "next_due": "2026-04-09",
+      "otd_60d": 64,
+      "stalled": false
+    },
+    {
+      "customer": "Northwind Apparel",
+      "active": 4,
+      "late": 1,
+      "at_risk": 3,
+      "on_track": 0,
+      "pieces": 4500,
+      "next_due": "2026-04-05",
+      "otd_60d": 55,
+      "stalled": false
+    },
+    {
+      "customer": "Bright Basics",
+      "active": 3,
+      "late": 0,
+      "at_risk": 3,
+      "on_track": 0,
+      "pieces": 4800,
+      "next_due": "2026-04-04",
+      "otd_60d": 57,
+      "stalled": false
+    },
+    {
+      "customer": "Maple & Co",
+      "active": 2,
+      "late": 1,
+      "at_risk": 1,
+      "on_track": 0,
+      "pieces": 700,
+      "next_due": "2026-04-16",
+      "otd_60d": 44,
       "stalled": false
     }
   ],
   "pipeline": [
     {
       "stage": "KNITTING",
-      "orders": 14,
-      "pieces": 11600,
+      "orders": 10,
+      "pieces": 7200,
       "late": 0,
       "usual_per_day": 876,
-      "days_of_work": 13.2,
+      "capacity_per_day": 1513,
+      "days_of_work": 4.8,
       "yesterday": 876,
       "status": "normal"
     },
     {
       "stage": "ASSEMBLY",
-      "orders": 11,
-      "pieces": 11200,
-      "late": 3,
+      "orders": 13,
+      "pieces": 13300,
+      "late": 1,
       "usual_per_day": 696,
-      "days_of_work": 16.1,
+      "capacity_per_day": 1202,
+      "days_of_work": 11.1,
       "yesterday": 414,
       "status": "below"
     },
@@ -3247,19 +3157,21 @@
       "stage": "WASHING",
       "orders": 6,
       "pieces": 5050,
-      "late": 1,
+      "late": 2,
       "usual_per_day": 730,
-      "days_of_work": 6.9,
-      "yesterday": 779,
+      "capacity_per_day": 1261,
+      "days_of_work": 4.0,
+      "yesterday": 778,
       "status": "normal"
     },
     {
       "stage": "PACKING",
       "orders": 5,
-      "pieces": 5300,
-      "late": 5,
+      "pieces": 4600,
+      "late": 4,
       "usual_per_day": 651,
-      "days_of_work": 8.1,
+      "capacity_per_day": 1124,
+      "days_of_work": 4.1,
       "yesterday": 620,
       "status": "normal"
     }
@@ -3268,10 +3180,10 @@
     {
       "key": "late",
       "label": "Already late",
-      "orders": 9,
-      "pieces": 11100,
+      "orders": 7,
+      "pieces": 8100,
       "at_risk": 0,
-      "late": 9
+      "late": 7
     },
     {
       "key": "week",
@@ -3286,7 +3198,7 @@
       "label": "Due in 8-14 days",
       "orders": 6,
       "pieces": 4200,
-      "at_risk": 0,
+      "at_risk": 6,
       "late": 0
     },
     {
@@ -3294,67 +3206,55 @@
       "label": "Due later",
       "orders": 13,
       "pieces": 9200,
-      "at_risk": 1,
+      "at_risk": 13,
       "late": 0
     }
   ],
   "orders": [
     {
-      "order_id": "ORD-107",
-      "customer": "Northwind Apparel",
-      "product": "Cardigan",
-      "pieces": 2000,
-      "stage": "PACKING",
-      "due_date": "2026-03-16",
-      "days_to_due": -19,
-      "idle_days": 0,
-      "projected_finish": "2026-04-10",
-      "status": "late",
-      "last_activity": "2026-04-03",
-      "order_date": "2026-03-01",
-      "reasons": [
-        "19 days past due"
-      ],
-      "priority": 80,
-      "row": 81
-    },
-    {
       "order_id": "ORD-120",
       "customer": "TrendCart",
       "product": "Vest",
       "pieces": 1500,
-      "stage": "ASSEMBLY",
+      "stage": "WASHING",
       "due_date": "2026-03-17",
       "days_to_due": -18,
       "idle_days": 0,
-      "projected_finish": "2026-04-22",
+      "projected_finish": "2026-04-09",
       "status": "late",
       "last_activity": "2026-04-03",
       "order_date": "2026-02-27",
       "reasons": [
-        "18 days past due"
+        "18 days past the 17 Mar due date"
       ],
-      "priority": 80,
-      "row": 76
-    },
-    {
-      "order_id": "ORD-083",
-      "customer": "Maple & Co",
-      "product": "Hoodie",
-      "pieces": 1000,
-      "stage": "PACKING",
-      "due_date": "2026-03-23",
-      "days_to_due": -12,
-      "idle_days": 0,
-      "projected_finish": "2026-04-10",
-      "status": "late",
-      "last_activity": "2026-04-03",
-      "order_date": "2026-03-07",
-      "reasons": [
-        "12 days past due"
-      ],
-      "priority": 80,
-      "row": 88
+      "priority": 60,
+      "row": 76,
+      "risk": {
+        "best_date": "2026-04-09",
+        "expected_date": "2026-04-09",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 5,
+        "late_days_expected": 5,
+        "reason": "18 days past the 17 Mar due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by only 0 working days. Keep it in the normal queue and review again tomorrow.",
+        "days_saved": 0,
+        "gain": 0,
+        "cost": 0,
+        "net": 0,
+        "finish_now": "2026-04-09",
+        "finish_expedited": "2026-04-09",
+        "newly_late": [],
+        "pushed": [],
+        "pushed_total": 0
+      }
     },
     {
       "order_id": "ORD-002",
@@ -3365,15 +3265,41 @@
       "due_date": "2026-03-29",
       "days_to_due": -6,
       "idle_days": 0,
-      "projected_finish": "2026-04-10",
+      "projected_finish": "2026-04-06",
       "status": "late",
       "last_activity": "2026-04-03",
       "order_date": "2026-03-06",
       "reasons": [
-        "6 days past due"
+        "6 days past the 29 Mar due date"
       ],
-      "priority": 72,
-      "row": 86
+      "priority": 52,
+      "row": 86,
+      "risk": {
+        "best_date": "2026-04-06",
+        "expected_date": "2026-04-06",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 2,
+        "late_days_expected": 2,
+        "reason": "6 days past the 29 Mar due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by only 0 working days. Keep it in the normal queue and review again tomorrow.",
+        "days_saved": 0,
+        "gain": 0,
+        "cost": 0,
+        "net": 0,
+        "finish_now": "2026-04-06",
+        "finish_expedited": "2026-04-06",
+        "newly_late": [],
+        "pushed": [],
+        "pushed_total": 0
+      }
     },
     {
       "order_id": "ORD-093",
@@ -3384,91 +3310,41 @@
       "due_date": "2026-03-29",
       "days_to_due": -6,
       "idle_days": 1,
-      "projected_finish": "2026-04-10",
+      "projected_finish": "2026-04-04",
       "status": "late",
       "last_activity": "2026-04-02",
       "order_date": "2026-03-14",
       "reasons": [
-        "6 days past due"
+        "6 days past the 29 Mar due date"
       ],
-      "priority": 72,
-      "row": 99
-    },
-    {
-      "order_id": "ORD-020",
-      "customer": "TrendCart",
-      "product": "Vest",
-      "pieces": 1200,
-      "stage": "PACKING",
-      "due_date": "2026-03-31",
-      "days_to_due": -4,
-      "idle_days": 0,
-      "projected_finish": "2026-04-10",
-      "status": "late",
-      "last_activity": "2026-04-03",
-      "order_date": "2026-03-08",
-      "reasons": [
-        "4 days past due"
-      ],
-      "priority": 68,
-      "row": 90
-    },
-    {
-      "order_id": "ORD-055",
-      "customer": "Cotton Club",
-      "product": "Crewneck sweater",
-      "pieces": 800,
-      "stage": "ASSEMBLY",
-      "due_date": "2026-03-31",
-      "days_to_due": -4,
-      "idle_days": 0,
-      "projected_finish": "2026-04-22",
-      "status": "late",
-      "last_activity": "2026-04-03",
-      "order_date": "2026-03-15",
-      "reasons": [
-        "4 days past due"
-      ],
-      "priority": 68,
-      "row": 100
-    },
-    {
-      "order_id": "ORD-029",
-      "customer": "Northwind Apparel",
-      "product": "Beanie",
-      "pieces": 1500,
-      "stage": "WASHING",
-      "due_date": "2026-04-01",
-      "days_to_due": -3,
-      "idle_days": 0,
-      "projected_finish": "2026-04-16",
-      "status": "late",
-      "last_activity": "2026-04-03",
-      "order_date": "2026-03-10",
-      "reasons": [
-        "3 days past due"
-      ],
-      "priority": 66,
-      "row": 92
-    },
-    {
-      "order_id": "ORD-108",
-      "customer": "Harbor Knits",
-      "product": "Scarf",
-      "pieces": 2000,
-      "stage": "ASSEMBLY",
-      "due_date": "2026-04-03",
-      "days_to_due": -1,
-      "idle_days": 3,
-      "projected_finish": "2026-04-22",
-      "status": "late",
-      "last_activity": "2026-03-31",
-      "order_date": "2026-03-17",
-      "reasons": [
-        "1 days past due"
-      ],
-      "priority": 62,
-      "row": 101
+      "priority": 52,
+      "row": 99,
+      "risk": {
+        "best_date": "2026-04-04",
+        "expected_date": "2026-04-04",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 1,
+        "late_days_expected": 1,
+        "reason": "6 days past the 29 Mar due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by only 0 working days. Keep it in the normal queue and review again tomorrow.",
+        "days_saved": 0,
+        "gain": 0,
+        "cost": 0,
+        "net": 0,
+        "finish_now": "2026-04-04",
+        "finish_expedited": "2026-04-04",
+        "newly_late": [],
+        "pushed": [],
+        "pushed_total": 0
+      }
     },
     {
       "order_id": "ORD-103",
@@ -3479,15 +3355,49 @@
       "due_date": "2026-04-04",
       "days_to_due": 0,
       "idle_days": 4,
-      "projected_finish": "2026-04-22",
+      "projected_finish": "2026-04-16",
       "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-09",
       "reasons": [
-        "projected to finish 22 Apr, after the 4 Apr due date"
+        "Even in the best case it finishes Thu 16 Apr, 10 working days after the 4 Apr due date"
       ],
       "priority": 50,
-      "row": 91
+      "row": 91,
+      "risk": {
+        "best_date": "2026-04-16",
+        "expected_date": "2026-04-16",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 1,
+        "margin": 10,
+        "late_days_best": 10,
+        "late_days_expected": 10,
+        "reason": "Even in the best case it finishes Thu 16 Apr, 10 working days after the 4 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 2 working days but add 2 days of lateness across 1 other order, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 2,
+        "gain": 2,
+        "cost": 2,
+        "net": 0,
+        "finish_now": "2026-04-16",
+        "finish_expedited": "2026-04-14",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 1
+      }
     },
     {
       "order_id": "ORD-099",
@@ -3497,54 +3407,261 @@
       "stage": "WASHING",
       "due_date": "2026-04-05",
       "days_to_due": 1,
-      "idle_days": 3,
-      "projected_finish": "2026-04-16",
+      "idle_days": 0,
+      "projected_finish": "2026-04-17",
       "status": "at_risk",
-      "last_activity": "2026-03-31",
+      "last_activity": "2026-04-03",
       "order_date": "2026-03-07",
       "reasons": [
-        "projected to finish 16 Apr, after the 5 Apr due date"
+        "Even in the best case it finishes Fri 17 Apr, 11 working days after the 5 Apr due date"
       ],
       "priority": 50,
-      "row": 89
+      "row": 89,
+      "risk": {
+        "best_date": "2026-04-17",
+        "expected_date": "2026-04-17",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 1,
+        "margin": 11,
+        "late_days_best": 11,
+        "late_days_expected": 11,
+        "reason": "Even in the best case it finishes Fri 17 Apr, 11 working days after the 5 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 7 working days but add 9 days of lateness across 5 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 7,
+        "gain": 7,
+        "cost": 9,
+        "net": -2,
+        "finish_now": "2026-04-17",
+        "finish_expedited": "2026-04-09",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 5,
+            "added_lateness": 5,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-029",
+            "customer": "Northwind Apparel",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-055",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-120",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 5
+      }
     },
     {
       "order_id": "ORD-061",
       "customer": "Harbor Knits",
       "product": "Scarf",
       "pieces": 800,
-      "stage": "WASHING",
+      "stage": "PACKING",
       "due_date": "2026-04-05",
       "days_to_due": 1,
-      "idle_days": 4,
-      "projected_finish": "2026-04-16",
+      "idle_days": 0,
+      "projected_finish": "2026-04-11",
       "status": "at_risk",
-      "last_activity": "2026-03-30",
+      "last_activity": "2026-04-03",
       "order_date": "2026-03-12",
       "reasons": [
-        "projected to finish 16 Apr, after the 5 Apr due date"
+        "Even in the best case it finishes Sat 11 Apr, 6 working days after the 5 Apr due date"
       ],
       "priority": 50,
-      "row": 97
+      "row": 97,
+      "risk": {
+        "best_date": "2026-04-11",
+        "expected_date": "2026-04-11",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 1,
+        "margin": 6,
+        "late_days_best": 6,
+        "late_days_expected": 6,
+        "reason": "Even in the best case it finishes Sat 11 Apr, 6 working days after the 5 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 5 working days but add 13 days of lateness across 13 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 5,
+        "gain": 5,
+        "cost": 13,
+        "net": -8,
+        "finish_now": "2026-04-11",
+        "finish_expedited": "2026-04-06",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-020",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-055",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-063",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-066",
+            "customer": "Northwind Apparel",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 13
+      }
     },
     {
       "order_id": "ORD-062",
       "customer": "Bright Basics",
       "product": "Scarf",
       "pieces": 2000,
-      "stage": "KNITTING",
+      "stage": "ASSEMBLY",
       "due_date": "2026-04-08",
       "days_to_due": 4,
-      "idle_days": 0,
-      "projected_finish": "2026-04-28",
+      "idle_days": 1,
+      "projected_finish": "2026-04-20",
       "status": "at_risk",
-      "last_activity": "2026-04-03",
+      "last_activity": "2026-04-02",
       "order_date": "2026-03-22",
       "reasons": [
-        "projected to finish 28 Apr, after the 8 Apr due date"
+        "Even in the best case it finishes Mon 20 Apr, 10 working days after the 8 Apr due date"
       ],
       "priority": 50,
-      "row": 110
+      "row": 110,
+      "risk": {
+        "best_date": "2026-04-20",
+        "expected_date": "2026-04-20",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 4,
+        "margin": 10,
+        "late_days_best": 10,
+        "late_days_expected": 10,
+        "reason": "Even in the best case it finishes Mon 20 Apr, 10 working days after the 8 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 5 working days but add 8 days of lateness across 5 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 5,
+        "gain": 5,
+        "cost": 8,
+        "net": -3,
+        "finish_now": "2026-04-20",
+        "finish_expedited": "2026-04-14",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-099",
+            "customer": "Northwind Apparel",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 5
+      }
     },
     {
       "order_id": "ORD-045",
@@ -3555,15 +3672,56 @@
       "due_date": "2026-04-09",
       "days_to_due": 5,
       "idle_days": 4,
-      "projected_finish": "2026-04-16",
+      "projected_finish": "2026-04-18",
       "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-21",
       "reasons": [
-        "projected to finish 16 Apr, after the 9 Apr due date"
+        "Even in the best case it finishes Sat 18 Apr, 8 working days after the 9 Apr due date"
       ],
       "priority": 50,
-      "row": 106
+      "row": 106,
+      "risk": {
+        "best_date": "2026-04-18",
+        "expected_date": "2026-04-18",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 5,
+        "margin": 8,
+        "late_days_best": 8,
+        "late_days_expected": 8,
+        "reason": "Even in the best case it finishes Sat 18 Apr, 8 working days after the 9 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "now",
+        "label": "Expedite now",
+        "reason": "Expediting cuts its lateness by 8 working days (18 Apr to 6 Apr); the delay it adds elsewhere is 2 working days in total and pushes no on-time order late.",
+        "days_saved": 11,
+        "gain": 8,
+        "cost": 2,
+        "net": 6,
+        "finish_now": "2026-04-18",
+        "finish_expedited": "2026-04-06",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 2
+      }
     },
     {
       "order_id": "ORD-008",
@@ -3573,16 +3731,71 @@
       "stage": "ASSEMBLY",
       "due_date": "2026-04-09",
       "days_to_due": 5,
-      "idle_days": 1,
-      "projected_finish": "2026-04-22",
+      "idle_days": 2,
+      "projected_finish": "2026-04-18",
       "status": "at_risk",
-      "last_activity": "2026-04-02",
+      "last_activity": "2026-04-01",
       "order_date": "2026-03-23",
       "reasons": [
-        "projected to finish 22 Apr, after the 9 Apr due date"
+        "Even in the best case it finishes Sat 18 Apr, 8 working days after the 9 Apr due date"
       ],
       "priority": 50,
-      "row": 112
+      "row": 112,
+      "risk": {
+        "best_date": "2026-04-18",
+        "expected_date": "2026-04-18",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 5,
+        "margin": 8,
+        "late_days_best": 8,
+        "late_days_expected": 8,
+        "reason": "Even in the best case it finishes Sat 18 Apr, 8 working days after the 9 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "now",
+        "label": "Expedite now",
+        "reason": "Expediting cuts its lateness by 8 working days (18 Apr to 7 Apr); the delay it adds elsewhere is 4 working days in total and pushes no on-time order late.",
+        "days_saved": 10,
+        "gain": 8,
+        "cost": 4,
+        "net": 4,
+        "finish_now": "2026-04-18",
+        "finish_expedited": "2026-04-07",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-120",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 4
+      }
     },
     {
       "order_id": "ORD-053",
@@ -3598,48 +3811,392 @@
       "last_activity": "2026-03-31",
       "order_date": "2026-03-21",
       "reasons": [
-        "projected to finish 22 Apr, after the 10 Apr due date"
+        "Not moving, and the projection assumes it moves. Even in the best case it finishes Wed 22 Apr, 10 working days after the 10 Apr due date"
       ],
       "priority": 50,
-      "row": 107
+      "row": 107,
+      "risk": {
+        "best_date": "2026-04-22",
+        "expected_date": "2026-04-22",
+        "stalled": true,
+        "level": "high",
+        "confidence": "medium",
+        "working_days_left": 6,
+        "margin": 10,
+        "late_days_best": 10,
+        "late_days_expected": 10,
+        "reason": "Not moving, and the projection assumes it moves. Even in the best case it finishes Wed 22 Apr, 10 working days after the 10 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "investigate",
+        "label": "Find the blocker first",
+        "reason": "It has not moved for 3 working days, so moving it up the queue will not help until the blocker is found. Ask what is holding it.",
+        "days_saved": 10,
+        "gain": 10,
+        "cost": 6,
+        "net": 4,
+        "finish_now": "2026-04-22",
+        "finish_expedited": "2026-04-10",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 6
+      }
     },
     {
       "order_id": "ORD-017",
       "customer": "TrendCart",
       "product": "Cardigan",
       "pieces": 800,
-      "stage": "KNITTING",
+      "stage": "ASSEMBLY",
       "due_date": "2026-04-10",
       "days_to_due": 6,
-      "idle_days": 0,
-      "projected_finish": "2026-04-28",
+      "idle_days": 1,
+      "projected_finish": "2026-04-21",
       "status": "at_risk",
-      "last_activity": "2026-04-03",
+      "last_activity": "2026-04-02",
       "order_date": "2026-03-23",
       "reasons": [
-        "projected to finish 28 Apr, after the 10 Apr due date"
+        "Even in the best case it finishes Tue 21 Apr, 9 working days after the 10 Apr due date"
       ],
       "priority": 50,
-      "row": 114
+      "row": 114,
+      "risk": {
+        "best_date": "2026-04-21",
+        "expected_date": "2026-04-21",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 6,
+        "margin": 9,
+        "late_days_best": 9,
+        "late_days_expected": 9,
+        "reason": "Even in the best case it finishes Tue 21 Apr, 9 working days after the 10 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "now",
+        "label": "Expedite now",
+        "reason": "Expediting cuts its lateness by 9 working days (21 Apr to 10 Apr); the delay it adds elsewhere is 6 working days in total and pushes no on-time order late.",
+        "days_saved": 9,
+        "gain": 9,
+        "cost": 6,
+        "net": 3,
+        "finish_now": "2026-04-21",
+        "finish_expedited": "2026-04-10",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 6
+      }
     },
     {
-      "order_id": "ORD-005",
+      "order_id": "ORD-020",
       "customer": "TrendCart",
-      "product": "Scarf",
-      "pieces": 500,
-      "stage": "KNITTING",
-      "due_date": "2026-04-20",
-      "days_to_due": 16,
-      "idle_days": 9,
-      "projected_finish": "2026-04-28",
-      "status": "at_risk",
-      "last_activity": "2026-03-24",
-      "order_date": "2026-03-21",
+      "product": "Vest",
+      "pieces": 1200,
+      "stage": "PACKING",
+      "due_date": "2026-03-31",
+      "days_to_due": -4,
+      "idle_days": 1,
+      "projected_finish": "2026-04-07",
+      "status": "late",
+      "last_activity": "2026-04-02",
+      "order_date": "2026-03-08",
       "reasons": [
-        "idle 9 working days while later-due orders moved"
+        "4 days past the 31 Mar due date"
       ],
-      "priority": 35,
-      "row": 105
+      "priority": 48,
+      "row": 90,
+      "risk": {
+        "best_date": "2026-04-07",
+        "expected_date": "2026-04-07",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 3,
+        "late_days_expected": 3,
+        "reason": "4 days past the 31 Mar due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by only 1 working day. Keep it in the normal queue and review again tomorrow.",
+        "days_saved": 1,
+        "gain": 1,
+        "cost": 2,
+        "net": -1,
+        "finish_now": "2026-04-07",
+        "finish_expedited": "2026-04-06",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-093",
+            "customer": "Maple & Co",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 1
+      }
+    },
+    {
+      "order_id": "ORD-055",
+      "customer": "Cotton Club",
+      "product": "Crewneck sweater",
+      "pieces": 800,
+      "stage": "WASHING",
+      "due_date": "2026-03-31",
+      "days_to_due": -4,
+      "idle_days": 0,
+      "projected_finish": "2026-04-09",
+      "status": "late",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-03-15",
+      "reasons": [
+        "4 days past the 31 Mar due date"
+      ],
+      "priority": 48,
+      "row": 100,
+      "risk": {
+        "best_date": "2026-04-09",
+        "expected_date": "2026-04-09",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 5,
+        "late_days_expected": 5,
+        "reason": "4 days past the 31 Mar due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by only 1 working day. Keep it in the normal queue and review again tomorrow.",
+        "days_saved": 1,
+        "gain": 1,
+        "cost": 1,
+        "net": 0,
+        "finish_now": "2026-04-09",
+        "finish_expedited": "2026-04-08",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-120",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 1
+      }
+    },
+    {
+      "order_id": "ORD-029",
+      "customer": "Northwind Apparel",
+      "product": "Beanie",
+      "pieces": 1500,
+      "stage": "PACKING",
+      "due_date": "2026-04-01",
+      "days_to_due": -3,
+      "idle_days": 0,
+      "projected_finish": "2026-04-11",
+      "status": "late",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-03-10",
+      "reasons": [
+        "3 days past the 1 Apr due date"
+      ],
+      "priority": 46,
+      "row": 92,
+      "risk": {
+        "best_date": "2026-04-11",
+        "expected_date": "2026-04-11",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "3 days past the 1 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 4 working days but add 6 days of lateness across 4 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 4,
+        "gain": 4,
+        "cost": 6,
+        "net": -2,
+        "finish_now": "2026-04-11",
+        "finish_expedited": "2026-04-07",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-020",
+            "customer": "TrendCart",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-093",
+            "customer": "Maple & Co",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-002",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-055",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 4
+      }
+    },
+    {
+      "order_id": "ORD-108",
+      "customer": "Harbor Knits",
+      "product": "Scarf",
+      "pieces": 2000,
+      "stage": "ASSEMBLY",
+      "due_date": "2026-04-03",
+      "days_to_due": -1,
+      "idle_days": 0,
+      "projected_finish": "2026-04-14",
+      "status": "late",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-03-17",
+      "reasons": [
+        "1 day past the 3 Apr due date"
+      ],
+      "priority": 42,
+      "row": 101,
+      "risk": {
+        "best_date": "2026-04-14",
+        "expected_date": "2026-04-14",
+        "stalled": false,
+        "level": "overdue",
+        "confidence": "certain",
+        "working_days_left": 0,
+        "margin": 0,
+        "late_days_best": 9,
+        "late_days_expected": 9,
+        "reason": "1 day past the 3 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by only 0 working days. Keep it in the normal queue and review again tomorrow.",
+        "days_saved": 0,
+        "gain": 0,
+        "cost": 0,
+        "net": 0,
+        "finish_now": "2026-04-14",
+        "finish_expedited": "2026-04-14",
+        "newly_late": [],
+        "pushed": [],
+        "pushed_total": 0
+      }
     },
     {
       "order_id": "ORD-109",
@@ -3650,13 +4207,84 @@
       "due_date": "2026-04-13",
       "days_to_due": 9,
       "idle_days": 4,
-      "projected_finish": "2026-04-16",
-      "status": "on_track",
+      "projected_finish": "2026-04-23",
+      "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-10",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Thu 23 Apr, 9 working days after the 13 Apr due date"
+      ],
       "priority": 20,
-      "row": 93
+      "row": 93,
+      "risk": {
+        "best_date": "2026-04-23",
+        "expected_date": "2026-04-23",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 8,
+        "margin": 9,
+        "late_days_best": 9,
+        "late_days_expected": 9,
+        "reason": "Even in the best case it finishes Thu 23 Apr, 9 working days after the 13 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 9 working days but add 8 days of lateness across 6 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 15,
+        "gain": 9,
+        "cost": 8,
+        "net": 1,
+        "finish_now": "2026-04-23",
+        "finish_expedited": "2026-04-06",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 3,
+            "added_lateness": 3,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-020",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 6
+      }
     },
     {
       "order_id": "ORD-081",
@@ -3667,13 +4295,98 @@
       "due_date": "2026-04-13",
       "days_to_due": 9,
       "idle_days": 4,
-      "projected_finish": "2026-04-22",
-      "status": "on_track",
+      "projected_finish": "2026-04-23",
+      "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-18",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Thu 23 Apr, 9 working days after the 13 Apr due date"
+      ],
       "priority": 20,
-      "row": 102
+      "row": 102,
+      "risk": {
+        "best_date": "2026-04-23",
+        "expected_date": "2026-04-23",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 8,
+        "margin": 9,
+        "late_days_best": 9,
+        "late_days_expected": 9,
+        "reason": "Even in the best case it finishes Thu 23 Apr, 9 working days after the 13 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 9 working days but add 13 days of lateness across 9 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 9,
+        "gain": 9,
+        "cost": 13,
+        "net": -4,
+        "finish_now": "2026-04-23",
+        "finish_expedited": "2026-04-13",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-017",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-053",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-099",
+            "customer": "Northwind Apparel",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 9
+      }
     },
     {
       "order_id": "ORD-024",
@@ -3684,13 +4397,77 @@
       "due_date": "2026-04-15",
       "days_to_due": 11,
       "idle_days": 2,
-      "projected_finish": "2026-04-22",
-      "status": "on_track",
+      "projected_finish": "2026-04-23",
+      "status": "at_risk",
       "last_activity": "2026-04-01",
       "order_date": "2026-03-24",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Thu 23 Apr, 7 working days after the 15 Apr due date"
+      ],
       "priority": 20,
-      "row": 116
+      "row": 116,
+      "risk": {
+        "best_date": "2026-04-23",
+        "expected_date": "2026-04-23",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 10,
+        "margin": 7,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "Even in the best case it finishes Thu 23 Apr, 7 working days after the 15 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 7 working days but add 7 days of lateness across 5 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 14,
+        "gain": 7,
+        "cost": 7,
+        "net": 0,
+        "finish_now": "2026-04-23",
+        "finish_expedited": "2026-04-07",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 3,
+            "added_lateness": 3,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-020",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 5
+      }
     },
     {
       "order_id": "ORD-015",
@@ -3701,47 +4478,390 @@
       "due_date": "2026-04-16",
       "days_to_due": 12,
       "idle_days": 4,
-      "projected_finish": "2026-04-22",
-      "status": "on_track",
+      "projected_finish": "2026-04-24",
+      "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-23",
-      "reasons": [],
+      "reasons": [
+        "Not moving, and the projection assumes it moves. Even in the best case it finishes Fri 24 Apr, 7 working days after the 16 Apr due date"
+      ],
       "priority": 20,
-      "row": 113
+      "row": 113,
+      "risk": {
+        "best_date": "2026-04-24",
+        "expected_date": "2026-04-24",
+        "stalled": true,
+        "level": "high",
+        "confidence": "medium",
+        "working_days_left": 11,
+        "margin": 7,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "Not moving, and the projection assumes it moves. Even in the best case it finishes Fri 24 Apr, 7 working days after the 16 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "investigate",
+        "label": "Find the blocker first",
+        "reason": "It has not moved for 4 working days, so moving it up the queue will not help until the blocker is found. Ask what is holding it.",
+        "days_saved": 15,
+        "gain": 7,
+        "cost": 8,
+        "net": -1,
+        "finish_now": "2026-04-24",
+        "finish_expedited": "2026-04-07",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 3,
+            "added_lateness": 3,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-020",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 6
+      }
     },
     {
       "order_id": "ORD-122",
       "customer": "Maple & Co",
       "product": "Cardigan",
       "pieces": 600,
-      "stage": "KNITTING",
+      "stage": "ASSEMBLY",
       "due_date": "2026-04-16",
       "days_to_due": 12,
-      "idle_days": 1,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
-      "last_activity": "2026-04-02",
+      "idle_days": 0,
+      "projected_finish": "2026-04-24",
+      "status": "at_risk",
+      "last_activity": "2026-04-03",
       "order_date": "2026-04-02",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Fri 24 Apr, 7 working days after the 16 Apr due date"
+      ],
       "priority": 20,
-      "row": 123
+      "row": 123,
+      "risk": {
+        "best_date": "2026-04-24",
+        "expected_date": "2026-04-24",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 11,
+        "margin": 7,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "Even in the best case it finishes Fri 24 Apr, 7 working days after the 16 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 7 working days but add 9 days of lateness across 9 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 15,
+        "gain": 7,
+        "cost": 9,
+        "net": -2,
+        "finish_now": "2026-04-24",
+        "finish_expedited": "2026-04-07",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-109",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 9
+      }
     },
     {
       "order_id": "ORD-096",
       "customer": "TrendCart",
       "product": "Beanie",
       "pieces": 1000,
-      "stage": "KNITTING",
+      "stage": "ASSEMBLY",
       "due_date": "2026-04-17",
       "days_to_due": 13,
-      "idle_days": 2,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
-      "last_activity": "2026-04-01",
+      "idle_days": 0,
+      "projected_finish": "2026-04-27",
+      "status": "at_risk",
+      "last_activity": "2026-04-03",
       "order_date": "2026-03-19",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Mon 27 Apr, 8 working days after the 17 Apr due date"
+      ],
       "priority": 20,
-      "row": 104
+      "row": 104,
+      "risk": {
+        "best_date": "2026-04-27",
+        "expected_date": "2026-04-27",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 12,
+        "margin": 8,
+        "late_days_best": 8,
+        "late_days_expected": 8,
+        "reason": "Even in the best case it finishes Mon 27 Apr, 8 working days after the 17 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 8 working days but add 13 days of lateness across 13 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 14,
+        "gain": 8,
+        "cost": 13,
+        "net": -5,
+        "finish_now": "2026-04-27",
+        "finish_expedited": "2026-04-10",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-015",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-017",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-053",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 13
+      }
+    },
+    {
+      "order_id": "ORD-005",
+      "customer": "TrendCart",
+      "product": "Scarf",
+      "pieces": 500,
+      "stage": "KNITTING",
+      "due_date": "2026-04-20",
+      "days_to_due": 16,
+      "idle_days": 0,
+      "projected_finish": "2026-04-27",
+      "status": "at_risk",
+      "last_activity": "2026-04-03",
+      "order_date": "2026-03-21",
+      "reasons": [
+        "Even in the best case it finishes Mon 27 Apr, 6 working days after the 20 Apr due date"
+      ],
+      "priority": 20,
+      "row": 105,
+      "risk": {
+        "best_date": "2026-04-27",
+        "expected_date": "2026-04-27",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 14,
+        "margin": 6,
+        "late_days_best": 6,
+        "late_days_expected": 6,
+        "reason": "Even in the best case it finishes Mon 27 Apr, 6 working days after the 20 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 6 working days but add 8 days of lateness across 8 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 16,
+        "gain": 6,
+        "cost": 8,
+        "net": -2,
+        "finish_now": "2026-04-27",
+        "finish_expedited": "2026-04-08",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-122",
+            "customer": "Maple & Co",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 8
+      }
     },
     {
       "order_id": "ORD-073",
@@ -3752,13 +4872,200 @@
       "due_date": "2026-04-20",
       "days_to_due": 16,
       "idle_days": 3,
-      "projected_finish": "2026-04-22",
-      "status": "on_track",
+      "projected_finish": "2026-04-27",
+      "status": "at_risk",
       "last_activity": "2026-03-31",
       "order_date": "2026-03-21",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Mon 27 Apr, 6 working days after the 20 Apr due date"
+      ],
       "priority": 20,
-      "row": 108
+      "row": 108,
+      "risk": {
+        "best_date": "2026-04-27",
+        "expected_date": "2026-04-27",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 14,
+        "margin": 6,
+        "late_days_best": 6,
+        "late_days_expected": 6,
+        "reason": "Even in the best case it finishes Mon 27 Apr, 6 working days after the 20 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 6 working days but add 8 days of lateness across 8 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 17,
+        "gain": 6,
+        "cost": 8,
+        "net": -2,
+        "finish_now": "2026-04-27",
+        "finish_expedited": "2026-04-07",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-020",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-122",
+            "customer": "Maple & Co",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 8
+      }
+    },
+    {
+      "order_id": "ORD-041",
+      "customer": "Harbor Knits",
+      "product": "Beanie",
+      "pieces": 600,
+      "stage": "WASHING",
+      "due_date": "2026-04-21",
+      "days_to_due": 17,
+      "idle_days": 2,
+      "projected_finish": "2026-04-29",
+      "status": "at_risk",
+      "last_activity": "2026-04-01",
+      "order_date": "2026-03-19",
+      "reasons": [
+        "Even in the best case it finishes Wed 29 Apr, 7 working days after the 21 Apr due date"
+      ],
+      "priority": 20,
+      "row": 103,
+      "risk": {
+        "best_date": "2026-04-29",
+        "expected_date": "2026-04-29",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 15,
+        "margin": 7,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "Even in the best case it finishes Wed 29 Apr, 7 working days after the 21 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 7 working days but add 15 days of lateness across 13 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 20,
+        "gain": 7,
+        "cost": 15,
+        "net": -8,
+        "finish_now": "2026-04-29",
+        "finish_expedited": "2026-04-06",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 3,
+            "added_lateness": 3,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-066",
+            "customer": "Northwind Apparel",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 13
+      }
     },
     {
       "order_id": "ORD-040",
@@ -3770,12 +5077,97 @@
       "days_to_due": 17,
       "idle_days": 2,
       "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "status": "at_risk",
       "last_activity": "2026-04-01",
       "order_date": "2026-03-25",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Tue 28 Apr, 6 working days after the 21 Apr due date"
+      ],
       "priority": 20,
-      "row": 118
+      "row": 118,
+      "risk": {
+        "best_date": "2026-04-28",
+        "expected_date": "2026-04-28",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 15,
+        "margin": 6,
+        "late_days_best": 6,
+        "late_days_expected": 6,
+        "reason": "Even in the best case it finishes Tue 28 Apr, 6 working days after the 21 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 6 working days but add 19 days of lateness across 15 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 13,
+        "gain": 6,
+        "cost": 19,
+        "net": -13,
+        "finish_now": "2026-04-28",
+        "finish_expedited": "2026-04-13",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-005",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-015",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-017",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 15
+      }
     },
     {
       "order_id": "ORD-121",
@@ -3786,30 +5178,98 @@
       "due_date": "2026-04-22",
       "days_to_due": 18,
       "idle_days": 2,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "projected_finish": "2026-04-30",
+      "status": "at_risk",
       "last_activity": "2026-04-01",
       "order_date": "2026-04-01",
-      "reasons": [],
+      "reasons": [
+        "Even in the best case it finishes Thu 30 Apr, 7 working days after the 22 Apr due date"
+      ],
       "priority": 20,
-      "row": 122
-    },
-    {
-      "order_id": "ORD-010",
-      "customer": "Cotton Club",
-      "product": "Cardigan",
-      "pieces": 1000,
-      "stage": "KNITTING",
-      "due_date": "2026-04-25",
-      "days_to_due": 21,
-      "idle_days": 4,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
-      "last_activity": "2026-03-30",
-      "order_date": "2026-03-24",
-      "reasons": [],
-      "priority": 20,
-      "row": 115
+      "row": 122,
+      "risk": {
+        "best_date": "2026-04-30",
+        "expected_date": "2026-04-30",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 16,
+        "margin": 7,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "Even in the best case it finishes Thu 30 Apr, 7 working days after the 22 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 7 working days but add 23 days of lateness across 19 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 15,
+        "gain": 7,
+        "cost": 23,
+        "net": -16,
+        "finish_now": "2026-04-30",
+        "finish_expedited": "2026-04-13",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-108",
+            "customer": "Harbor Knits",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-005",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-015",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 19
+      }
     },
     {
       "order_id": "ORD-036",
@@ -3820,47 +5280,98 @@
       "due_date": "2026-04-26",
       "days_to_due": 22,
       "idle_days": 3,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "projected_finish": "2026-05-02",
+      "status": "at_risk",
       "last_activity": "2026-03-31",
       "order_date": "2026-03-22",
-      "reasons": [],
+      "reasons": [
+        "Not moving, and the projection assumes it moves. Even in the best case it finishes Sat 2 May, 6 working days after the 26 Apr due date"
+      ],
       "priority": 20,
-      "row": 109
-    },
-    {
-      "order_id": "ORD-095",
-      "customer": "Bright Basics",
-      "product": "Hoodie",
-      "pieces": 800,
-      "stage": "KNITTING",
-      "due_date": "2026-04-26",
-      "days_to_due": 22,
-      "idle_days": 2,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
-      "last_activity": "2026-04-01",
-      "order_date": "2026-03-27",
-      "reasons": [],
-      "priority": 20,
-      "row": 121
-    },
-    {
-      "order_id": "ORD-041",
-      "customer": "Harbor Knits",
-      "product": "Beanie",
-      "pieces": 600,
-      "stage": "WASHING",
-      "due_date": "2026-04-21",
-      "days_to_due": 17,
-      "idle_days": 2,
-      "projected_finish": "2026-04-16",
-      "status": "on_track",
-      "last_activity": "2026-04-01",
-      "order_date": "2026-03-19",
-      "reasons": [],
-      "priority": 0,
-      "row": 103
+      "row": 109,
+      "risk": {
+        "best_date": "2026-05-02",
+        "expected_date": "2026-05-02",
+        "stalled": true,
+        "level": "high",
+        "confidence": "medium",
+        "working_days_left": 19,
+        "margin": 6,
+        "late_days_best": 6,
+        "late_days_expected": 6,
+        "reason": "Not moving, and the projection assumes it moves. Even in the best case it finishes Sat 2 May, 6 working days after the 26 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "investigate",
+        "label": "Find the blocker first",
+        "reason": "It has not moved for 3 working days, so moving it up the queue will not help until the blocker is found. Ask what is holding it.",
+        "days_saved": 17,
+        "gain": 6,
+        "cost": 19,
+        "net": -13,
+        "finish_now": "2026-05-02",
+        "finish_expedited": "2026-04-13",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-015",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-017",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 17
+      }
     },
     {
       "order_id": "ORD-066",
@@ -3871,13 +5382,302 @@
       "due_date": "2026-04-26",
       "days_to_due": 22,
       "idle_days": 4,
-      "projected_finish": "2026-04-22",
-      "status": "on_track",
+      "projected_finish": "2026-05-02",
+      "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-22",
-      "reasons": [],
-      "priority": 0,
-      "row": 111
+      "reasons": [
+        "Even in the best case it finishes Sat 2 May, 6 working days after the 26 Apr due date"
+      ],
+      "priority": 20,
+      "row": 111,
+      "risk": {
+        "best_date": "2026-05-02",
+        "expected_date": "2026-05-02",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 19,
+        "margin": 6,
+        "late_days_best": 6,
+        "late_days_expected": 6,
+        "reason": "Even in the best case it finishes Sat 2 May, 6 working days after the 26 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 6 working days but add 18 days of lateness across 18 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 19,
+        "gain": 6,
+        "cost": 18,
+        "net": -12,
+        "finish_now": "2026-05-02",
+        "finish_expedited": "2026-04-10",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-015",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-017",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-036",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 18
+      }
+    },
+    {
+      "order_id": "ORD-095",
+      "customer": "Bright Basics",
+      "product": "Hoodie",
+      "pieces": 800,
+      "stage": "KNITTING",
+      "due_date": "2026-04-26",
+      "days_to_due": 22,
+      "idle_days": 2,
+      "projected_finish": "2026-05-04",
+      "status": "at_risk",
+      "last_activity": "2026-04-01",
+      "order_date": "2026-03-27",
+      "reasons": [
+        "Even in the best case it finishes Mon 4 May, 7 working days after the 26 Apr due date"
+      ],
+      "priority": 20,
+      "row": 121,
+      "risk": {
+        "best_date": "2026-05-04",
+        "expected_date": "2026-05-04",
+        "stalled": false,
+        "level": "high",
+        "confidence": "high",
+        "working_days_left": 19,
+        "margin": 7,
+        "late_days_best": 7,
+        "late_days_expected": 7,
+        "reason": "Even in the best case it finishes Mon 4 May, 7 working days after the 26 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 7 working days but add 15 days of lateness across 15 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 19,
+        "gain": 7,
+        "cost": 15,
+        "net": -8,
+        "finish_now": "2026-05-04",
+        "finish_expedited": "2026-04-11",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-053",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-066",
+            "customer": "Northwind Apparel",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 15
+      }
+    },
+    {
+      "order_id": "ORD-010",
+      "customer": "Cotton Club",
+      "product": "Cardigan",
+      "pieces": 1000,
+      "stage": "KNITTING",
+      "due_date": "2026-04-25",
+      "days_to_due": 21,
+      "idle_days": 4,
+      "projected_finish": "2026-04-30",
+      "status": "at_risk",
+      "last_activity": "2026-03-30",
+      "order_date": "2026-03-24",
+      "reasons": [
+        "Even in the best case it finishes Thu 30 Apr, 4 working days after the 25 Apr due date"
+      ],
+      "priority": 10,
+      "row": 115,
+      "risk": {
+        "best_date": "2026-04-30",
+        "expected_date": "2026-04-30",
+        "stalled": false,
+        "level": "medium",
+        "confidence": "medium",
+        "working_days_left": 19,
+        "margin": 4,
+        "late_days_best": 4,
+        "late_days_expected": 4,
+        "reason": "Even in the best case it finishes Thu 30 Apr, 4 working days after the 25 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 4 working days but add 18 days of lateness across 16 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 15,
+        "gain": 4,
+        "cost": 18,
+        "net": -14,
+        "finish_now": "2026-04-30",
+        "finish_expedited": "2026-04-13",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-103",
+            "customer": "Bright Basics",
+            "extra_days": 2,
+            "added_lateness": 2,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-015",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-017",
+            "customer": "TrendCart",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-053",
+            "customer": "UrbanThread",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 16
+      }
     },
     {
       "order_id": "ORD-035",
@@ -3888,13 +5688,98 @@
       "due_date": "2026-04-29",
       "days_to_due": 25,
       "idle_days": 2,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
       "last_activity": "2026-04-01",
       "order_date": "2026-03-25",
-      "reasons": [],
-      "priority": 0,
-      "row": 117
+      "reasons": [
+        "Even in the best case it finishes Mon 4 May, 4 working days after the 29 Apr due date"
+      ],
+      "priority": 10,
+      "row": 117,
+      "risk": {
+        "best_date": "2026-05-04",
+        "expected_date": "2026-05-05",
+        "stalled": false,
+        "level": "medium",
+        "confidence": "medium",
+        "working_days_left": 22,
+        "margin": 4,
+        "late_days_best": 4,
+        "late_days_expected": 5,
+        "reason": "Even in the best case it finishes Mon 4 May, 4 working days after the 29 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 5 working days but add 12 days of lateness across 10 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 23,
+        "gain": 5,
+        "cost": 12,
+        "net": -7,
+        "finish_now": "2026-05-05",
+        "finish_expedited": "2026-04-08",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 3,
+            "added_lateness": 3,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-066",
+            "customer": "Northwind Apparel",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 10
+      }
     },
     {
       "order_id": "ORD-063",
@@ -3905,13 +5790,70 @@
       "due_date": "2026-04-29",
       "days_to_due": 25,
       "idle_days": 4,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "projected_finish": "2026-05-05",
+      "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-27",
-      "reasons": [],
-      "priority": 0,
-      "row": 119
+      "reasons": [
+        "Even in the best case it finishes Mon 4 May, 4 working days after the 29 Apr due date"
+      ],
+      "priority": 10,
+      "row": 119,
+      "risk": {
+        "best_date": "2026-05-04",
+        "expected_date": "2026-05-05",
+        "stalled": false,
+        "level": "medium",
+        "confidence": "medium",
+        "working_days_left": 22,
+        "margin": 4,
+        "late_days_best": 4,
+        "late_days_expected": 5,
+        "reason": "Even in the best case it finishes Mon 4 May, 4 working days after the 29 Apr due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 5 working days but add 4 days of lateness across 4 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 23,
+        "gain": 5,
+        "cost": 4,
+        "net": 1,
+        "finish_now": "2026-05-05",
+        "finish_expedited": "2026-04-08",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-081",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 4
+      }
     },
     {
       "order_id": "ORD-082",
@@ -3922,13 +5864,98 @@
       "due_date": "2026-05-01",
       "days_to_due": 27,
       "idle_days": 4,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "projected_finish": "2026-05-07",
+      "status": "at_risk",
       "last_activity": "2026-03-30",
       "order_date": "2026-03-27",
-      "reasons": [],
-      "priority": 0,
-      "row": 120
+      "reasons": [
+        "Even in the best case it finishes Tue 5 May, 3 working days after the 1 May due date"
+      ],
+      "priority": 10,
+      "row": 120,
+      "risk": {
+        "best_date": "2026-05-05",
+        "expected_date": "2026-05-07",
+        "stalled": false,
+        "level": "medium",
+        "confidence": "medium",
+        "working_days_left": 24,
+        "margin": 3,
+        "late_days_best": 3,
+        "late_days_expected": 5,
+        "reason": "Even in the best case it finishes Tue 5 May, 3 working days after the 1 May due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 5 working days but add 16 days of lateness across 16 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 25,
+        "gain": 5,
+        "cost": 16,
+        "net": -11,
+        "finish_now": "2026-05-07",
+        "finish_expedited": "2026-04-08",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-035",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 16
+      }
     },
     {
       "order_id": "ORD-123",
@@ -3939,25 +5966,114 @@
       "due_date": "2026-05-03",
       "days_to_due": 29,
       "idle_days": 0,
-      "projected_finish": "2026-04-28",
-      "status": "on_track",
+      "projected_finish": "2026-05-09",
+      "status": "at_risk",
       "last_activity": "2026-04-03",
       "order_date": "2026-04-03",
-      "reasons": [],
-      "priority": 0,
-      "row": 124
+      "reasons": [
+        "Even in the best case it finishes Tue 5 May, 2 working days after the 3 May due date"
+      ],
+      "priority": 10,
+      "row": 124,
+      "risk": {
+        "best_date": "2026-05-05",
+        "expected_date": "2026-05-09",
+        "stalled": false,
+        "level": "medium",
+        "confidence": "medium",
+        "working_days_left": 25,
+        "margin": 2,
+        "late_days_best": 2,
+        "late_days_expected": 6,
+        "reason": "Even in the best case it finishes Tue 5 May, 2 working days after the 3 May due date"
+      },
+      "expedite": {
+        "recommendation": "later",
+        "label": "Expedite later, or not needed",
+        "reason": "Expediting would cut its lateness by 6 working days but add 14 days of lateness across 14 other orders, so overall almost nothing is gained. Keep the normal order.",
+        "days_saved": 27,
+        "gain": 6,
+        "cost": 14,
+        "net": -8,
+        "finish_now": "2026-05-09",
+        "finish_expedited": "2026-04-08",
+        "newly_late": [],
+        "pushed": [
+          {
+            "order_id": "ORD-008",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-010",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-024",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-035",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-040",
+            "customer": "Loom & Leaf",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-045",
+            "customer": "Cotton Club",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-061",
+            "customer": "Harbor Knits",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          },
+          {
+            "order_id": "ORD-062",
+            "customer": "Bright Basics",
+            "extra_days": 1,
+            "added_lateness": 1,
+            "newly_late": false
+          }
+        ],
+        "pushed_total": 14
+      }
     }
   ],
   "assumptions": {
-    "working_days_per_stage": 5.0
+    "working_days_per_stage": 5.25
   },
   "definitions": {
     "working_day": "Monday to Saturday; the factory is closed on Sundays",
     "yesterday": "last working day before the business date",
     "normal": "mean of the previous 8 same-weekday working days; band = mean +/- max(1.5 x SD, 5% of mean); needs at least 3 samples",
     "idle_days": "working days since last_activity_date",
-    "projected_finish": "remaining stages x median working days per stage over completed orders (rough estimate, not a commitment)",
-    "order_status": "late = past due date; at risk = due within 7 days and projected to finish after it, or idle 5+ working days while later-due orders at the same stage moved; otherwise on track",
+    "projected_finish": "expected finish from the queue model: every stage works earliest-due-first at its usual output, new orders keep arriving (an estimate, not a commitment)",
+    "risk": "overdue = past due date; high = even the best case is 5+ working days past the due date; medium = best case 1-4 working days late, or on time only if no new order goes ahead of it; low = on time even then. Confidence is how many working days the estimate sits from the due date (5+ high, 2-4 medium, under 2 low). A stalled order is raised to at least medium (high if due within 10 working days)",
+    "expedite": "moves one order to the front of every queue it still has to pass; reports working days saved and the other orders pushed later, or past their due date. Recommend now if it saves 2+ days and pushes no order past its date; trade-off if it does; later if it saves under 2 days; find the blocker first if the order is stalled",
+    "capacity": "usual output (average of the previous 8 same weekdays in the production log) multiplied by a workshop factor: pieces on orders finished in the last 60 days per working day, divided by the packing output the log shows for the same days. The log shows less than shipped, so the factor raises capacity to what the factory actually delivers",
+    "forecast": "orders expected in the next 12 working days from the frequency of the last 60 days of orders (Poisson range); customer and product shares are their share of those orders",
+    "order_status": "late = past due date; at risk = risk level high or medium; on track = low (see risk)",
     "on_time_delivery": "share of orders completed in the last 30 days with days_late <= 0",
     "ranking": "score (see score_reason) +10 if new since the previous briefing, -4 per extra morning already reported (max -20) unless it got worse; top 5 shown, rest counted"
   }
