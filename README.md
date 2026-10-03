@@ -110,7 +110,8 @@ All commands run inside the `threadpilot/` folder unless a step says otherwise.
 
 Open [`threadpilot/demo/briefing_demo.html`](threadpilot/demo/briefing_demo.html) in a browser (download it, or clone
 the repository). Use the date picker or the arrow keys to move between mornings, **Replay** to step through the
-fortnight, and **Ask ThreadPilot** to open the chat. To rebuild it after changing the simulator:
+fortnight, and **Ask ThreadPilot** to open the chat. When the full system is running (B or C below), the same page is
+also at <http://127.0.0.1:8000/dashboard>. To rebuild it after changing the simulator:
 
 ```bash
 python -m simulation.render_demo --days 14
@@ -151,6 +152,7 @@ You need [Docker Desktop](https://www.docker.com/products/docker-desktop/) and a
    ```
 
 5. **Open <http://127.0.0.1:8000>** and type `Open ORD-005`. Health check: <http://127.0.0.1:8000/api/v1/health>.
+   For the morning dashboard, click **Enter today’s dashboard** on that page (or go to <http://127.0.0.1:8000/dashboard>).
    Interactive API documentation: <http://127.0.0.1:8000/docs>.
 
 Stop with `docker compose down` (data is kept). Start again later with `docker compose up -d`. Wipe the database with
@@ -288,8 +290,10 @@ real-world accuracy.
 
 ## The dashboard
 
-The demo page ([`demo/briefing_demo.html`](threadpilot/demo/briefing_demo.html)) is designed for a manager reading on a
-phone between meetings:
+The demo page ([`demo/briefing_demo.html`](threadpilot/demo/briefing_demo.html)) opens straight from the file, and the
+backend also serves it at `/dashboard`: the cover page's **Enter today’s dashboard** button opens it, and its **Live app**
+button goes back. It is designed for a manager
+reading on a phone between meetings:
 
 * **Morning summary** in three lines, with what is new or cleared since yesterday.
 * **Order health**, **KPI tiles** with two-week trend lines, and **Needs your attention** (top five findings, each
@@ -342,7 +346,7 @@ it behind a password** (see the next section), because every question uses OpenA
 
 ```bash
 # backend: temporary SQLite and mocked model calls, so no MySQL and no API key
-cd backend && uv run --locked pytest -q              # 70 passed, 1 skipped (MySQL test needs TEST_MYSQL_URL)
+cd backend && uv run --locked pytest -q              # 73 passed, 1 skipped (MySQL test needs TEST_MYSQL_URL)
 
 # simulator, briefing, predictions, dashboard and chat (headless browser)
 python -m pip install -r requirements-dev.txt && python -m playwright install chromium
@@ -431,6 +435,8 @@ public, set a monthly OpenAI spending limit, keep secrets only in the server's `
 * **The order forecast is no better than repeating the last period**, and its customer ranking is no better than chance
   on the provided data. It is shown as a rough range.
 * **The predictions were checked only against the simulator**, which follows the same scheduling rule.
+* **The dashboard shows the simulated fortnight saved inside the page, not your live database**, even at `/dashboard`.
+  Connecting it to live data (a briefing endpoint built from MySQL) is the next step.
 * **The demo chat recognises phrasings, not meaning**; unusual wording falls back to a help message. The backend's
   intent classifier handles free-form questions.
 * **Settings and memos live in the browser**; memos do not yet change the risk model. Production needs a database
